@@ -12,8 +12,8 @@ jobs:
     strategy:
       matrix:
         repo:
-          - owner: OWNER_MHJ
-            name: REPO_MHJ
+          - owner: moonhyukjin
+            name: final-06-GuDog-release
             token: TOKEN_MHJ
             email: EMAIL_MHJ
           - owner: sooorAyun
@@ -28,7 +28,7 @@ jobs:
             name: final-06-GuDog-release
             token: TOKEN_SJH
             email: EMAIL_SJH
-            
+
     steps:
       - uses: actions/checkout@v2
       - name: Install mustache (to update the date)
