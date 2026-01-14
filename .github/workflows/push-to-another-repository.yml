@@ -17,7 +17,7 @@ jobs:
             token: TOKEN_MHJ
             email: EMAIL_MHJ
           - owner: sooorAyun
-            name: febc15-final-auto-release
+            name: final-06-GuDog-release
             token: TOKEN_YSR
             email: EMAIL_YSR
           - owner: byeolscript
