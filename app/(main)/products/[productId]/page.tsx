@@ -18,6 +18,9 @@ export default function Product() {
             <Image
               className="block h-138 w-134.5 rounded-4xl object-cover"
               src="/images/ADT-S-01  스몰어덜트 치킨앤라이스 2.png"
+              width={538}
+              height={552}
+              alt="어덜트 밸런스 치킨 상품 이미지"
             />
           </div>
 
@@ -94,8 +97,8 @@ export default function Product() {
 
       {/* 상세정보 */}
       <section>
-        <Image src="/images/image 27.png" />
-        <Image src="/images/image 28.png" />
+        <Image src="/images/image 27.png" width={1200} height={800} alt="상품 상세 이미지 1" />
+        <Image src="/images/image 28.png" width={1200} height={800} alt="상품 상세 이미지 2" />
 
         <div className="flex flex-col items-center self-stretch border-y border-black/[0.06] bg-white/95 px-[2.625rem] py-[1.09375rem] backdrop-blur-[12px]">
           <button
@@ -148,6 +151,9 @@ export default function Product() {
             <Image
               src="/images/ADT-S-01  스몰어덜트 치킨앤라이스 2.png"
               className="block h-full w-full rounded-[1.125rem] object-cover"
+              width={140}
+              height={140}
+              alt="리뷰 상품 이미지"
             />
           </div>
 
