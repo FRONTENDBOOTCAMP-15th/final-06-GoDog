@@ -23,7 +23,7 @@ interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "classN
 const Input = forwardRef<HTMLInputElement, InputProps>(
   (
     { label, hideLabel = false, isError = false, isSearch = false, className = "", id, ...props },
-    ref,
+    ref
   ) => {
     const generatedId = useId();
     const inputId = id ?? generatedId;
@@ -60,7 +60,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         </div>
       </div>
     );
-  },
+  }
 );
 
 Input.displayName = "Input";
