@@ -21,6 +21,7 @@ export default async function Subscription() {
 
       <div className="flex flex-row gap-7 justify-center pt-[57px] pb-[110px] ">
         <MyItemList
+          className=" "
           title="나인독 정밀 사료A"
           image={<Product404 />}
           href="/app/(main)/products/[productId]/page.tsx"

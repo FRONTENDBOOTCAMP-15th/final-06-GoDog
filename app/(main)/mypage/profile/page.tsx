@@ -59,7 +59,7 @@ export default function Profile() {
                 {/* {id는 자스에서 요소 식별 id, name은 서버로 데이터를 보낼 때 사용할 이름, accept는 이미지 파일만 선택하도록 제한} */}
                 <div className="w-[35px] h-[35px] ml-16 -mt-8  flex justify-center items-center">
                   <label htmlFor="profileImageUpload">
-                    <div className="w-[35px] h-[35px] bg-[#FBA613] rounded-full flex flex-row justify-center items-center border-2 border-[#FFFFFF]">
+                    <div className="w-[35px] h-[35px] bg-[#FBA613] rounded-full flex flex-row justify-center items-center border-2 border-[#FFFFFF] hover:cursor-pointer">
                       <CameraIcon className="text-white " />
                     </div>
                   </label>
@@ -79,14 +79,22 @@ export default function Profile() {
             </div>
           </div>
 
-          <Input className="mb-[22px]" label="이메일 주소" placeholder="hello@9Dog.co.kr"></Input>
+          <Input
+            className="mb-[22px]  [&>label]:text-black [&>label]:font-black [&>label]:text-[12px] [&>label]:font-['Pretendard'] "
+            label="이메일 주소"
+            placeholder="hello@9Dog.co.kr"
+          ></Input>
           {/* {배송 주소 입력 폼} */}
           <div className="">
             <div className="flex flex-row gap-[11px] ">
-              <Input className="w-[112px]" label="배송 주소" placeholder="12345"></Input>
+              <Input
+                className="w-[112px] [&>label]:text-black [&>label]:font-black [&>label]:text-[12px] [&>label]:font-['Pretendard'] "
+                label="배송 주소"
+                placeholder="12345"
+              ></Input>
 
-              <Button className="w-[81px] " size="xs" variant="primary">
-                주소
+              <Button className="w-[81px] mt-[28px]" size="xs" variant="primary">
+                주소 찾기
               </Button>
             </div>
             <div className="mb-[73px]">
@@ -103,7 +111,7 @@ export default function Profile() {
                 </Button>
 
                 <Button
-                  className="rounded-[14px] border-2 border-black/10 w-[270px]"
+                  className="rounded-[14px] border-2 border-black/10 w-[270px]  text-black font-black text-[12px] font-['Pretendard'] "
                   size="md"
                   variant="ghost"
                 >

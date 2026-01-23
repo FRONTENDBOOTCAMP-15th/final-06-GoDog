@@ -1,8 +1,9 @@
 "use client";
+import { InputHTMLAttributes } from "react";
 
 import Link from "next/link";
 
-interface MyItemListProps {
+interface MyItemListProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "className"> {
   title: string;
   content: string;
   image: React.ReactElement; // 아이콘 컴포넌트
@@ -11,6 +12,7 @@ interface MyItemListProps {
   mark: React.ReactElement;
   period?: string;
   date?: string;
+  className?: string;
 }
 
 export default function MyItemList({
@@ -22,13 +24,16 @@ export default function MyItemList({
   period,
   price,
   mark,
+  className = "",
 }: MyItemListProps) {
   // 마우스 올렸을 때 스타일 변화
 
   return (
     <>
-      <div className="w-[270px] h-[505px]  rounded-[42px] border border-[rgba(0,0,0,0.06)] bg-[#FFFFFF] shadow-[0_2px_12px_0_rgba(0,0,0,0.03)]">
-        <div className="w-[210px] h-[210px] pt-[30px] pl-[30px]  rounded-3xl">{image}</div>
+      <div
+        className={`w-[270px] h-[505px] rounded-[42px] border border-[rgba(0,0,0,0.06)] bg-[#FFFFFF] shadow-[0_2px_12px_0_rgba(0,0,0,0.03)] ${className}`}
+      >
+        <div className="w-[210px] h-[210px] mt-[30px] ml-[30px]  rounded-3xl">{image}</div>
         <div className="pt-[27px] pl-[29px] pb-[14.5px] text-[#1A1A1C]  text-[17.5px] font-black leading-[24.5px] tracking-[-0.437px] not-italic">
           {title}
         </div>
@@ -36,13 +41,13 @@ export default function MyItemList({
           <p className="text-[#909094]  text-[12.3px] font-medium leading-[17.5px] not-italic">
             주문일
           </p>
-          <p>{date}</p>
+          <p className="text-[#646468]">{date}</p>
         </div>
         <div className="pb-[7px] flex flex-row pl-[29px] justify-between pr-[29px]">
           <p className="text-[#909094]  text-[12.3px] font-medium leading-[17.5px] not-italic">
             주기
           </p>
-          <p>{period}</p>
+          <p className="text-[#646468]">{period}</p>
         </div>
         <div className=" w-[211px] h-[1px] bg-[rgba(0,0,0,0.06)] mx-auto" />
         <div className="pb-[36px] pt-[15px] flex flex-row pl-[29px] justify-between pr-[29px] ">
