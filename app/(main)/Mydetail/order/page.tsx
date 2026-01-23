@@ -19,7 +19,7 @@ export default async function Orders() {
         </p>
       </div>
 
-      <div className="flex flex-row gap-7 justify-center pt-[57px] pb-[109px]">
+      <div className="flex flex-row gap-7 justify-center pt-[57px] pb-[100px]">
         <MyItemList
           title="나인독 정밀 사료A"
           image={<Product404 />}

@@ -64,8 +64,10 @@ export default function MyItemList({
           className="pt-[20px] flex flex-row pl-[29px] justify-center gap-[12px]"
           href={"/Mydetail/Subplan"}
         >
-          <div>{content}</div>
-          <div className="translate-y-0.75">{mark}</div>
+          <div className="text-[#FBA613] text-center font-['Pretendard'] text-[10.5px] font-black leading-[14px] tracking-[1.05px] uppercase not-italic mt-[5px]">
+            {content}
+          </div>
+          <div className="mt-[5px]">{mark}</div>
         </Link>
       </div>
     </>

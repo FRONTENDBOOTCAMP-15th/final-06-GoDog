@@ -39,7 +39,7 @@ export default function Mypagelayout({ children }: Readonly<{ children: React.Re
 
           <MyTapButton
             content="회원 정보"
-            href="profile"
+            href="/mypage/profile"
             icon={
               <UserIcon className="w-16.25 h-16.25 bg-[#FFF9F2] flex justify-center items-center rounded-[14px]" />
             }
@@ -76,7 +76,7 @@ pt-[26.56px] pr-[29.5px] pb-[30.145px] pl-[29.5px]
 
           <MyTapButton
             content="정기 구독"
-            href="subscription"
+            href="/mypage/subscription"
             icon={
               <SubscriptIcon className="w-16.25 h-16.25 bg-[#FFF9F2] flex justify-center items-center rounded-[14px]" />
             }
@@ -174,7 +174,7 @@ pt-[26.56px] pr-[29.5px] pb-[30.145px] pl-[29.5px]
           </button> */}
           <MyTapButton
             content="관심 상품"
-            href="wishlist"
+            href="/mypage/wishlist"
             icon={
               <HeartIcon className="w-16.25 h-16.25 bg-[#FFF9F2] flex justify-center items-center rounded-[14px]" />
             }

@@ -1,5 +1,6 @@
 "use client";
 
+import TextArea from "@/app/(main)/mypage/_components/Contentdetail";
 import Contentdetail from "@/app/(main)/mypage/_components/Contentdetail";
 import { PlusIcon, PrevIcon } from "@/app/(main)/mypage/_components/Icons";
 import StarComponent from "@/app/(main)/mypage/_components/StarComponent";
@@ -11,7 +12,8 @@ import { useState } from "react";
 
 export default function Review() {
   const [preview, setPreview] = useState("/images/moomin.png");
-
+  const [reviewContent, setReviewContent] = useState("");
+  const MAX_LEN = 100; // 최대 글자 수 설정
   const handleImageChange = (e) => {
     const file = e.target.files[0];
 
@@ -53,7 +55,15 @@ export default function Review() {
           </div>
           <Input className="w-[532px] pb-[35px]" label="" placeholder="제목을 입력해 주세요" />
 
-          <Contentdetail />
+          <Contentdetail
+            className="w-[532px]"
+            label="상세 내용"
+            placeholder="아이의 반응이나 제품에 대한 솔직한 후기를 남겨주세요 (최대 100자)"
+            currentLength={reviewContent.length} // 실시간 글자 수 전달
+            maxLength={MAX_LEN} // 최대 글자 수 전달
+            value={reviewContent} // 입력된 값 연결
+            onChange={(e) => setReviewContent(e.target.value)} // 입력 시 상태 업데이트
+          />
 
           {/* {사진 업로드 기능} */}
           <div className="flex flex-col  items-center mt-[35px]">
