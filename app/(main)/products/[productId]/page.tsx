@@ -452,7 +452,7 @@ export default function Product() {
             <div className="flex items-start gap-6 ">
               <Image src="/images/product-404.jpg" alt="상품 이미지" width={150} height={150} />
               <div className="h-full items-center">
-                <p>일회성 구매</p>
+                {purchaseType !== "subscribe" && <p>일회성 구매</p>}
                 <p className="text-center font-bold text-2xl">어덜트 밸런스 치킨</p>
                 <div className="flex items-center gap-2">
                   {purchaseType === "subscribe" && (
