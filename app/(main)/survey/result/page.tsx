@@ -6,6 +6,7 @@ import Link from "next/link";
 import Badge from "@/components/common/Badge";
 import Button from "@/components/common/Button";
 import { parseResultCodes, getProductByCode, type ProductData } from "@/lib/recommendProducts";
+import ProductImage from "@/components/common/ProductImage";
 
 function SurveyResultContent() {
   const router = useRouter();
@@ -40,7 +41,7 @@ function SurveyResultContent() {
   };
 
   const handleSelectProduct = (product: ProductData) => {
-    router.push(`/products/\({product.code}`);
+    router.push(`/products/${product.extra.code}`);
   };
 
   const handleViewAll = () => {
@@ -99,14 +100,13 @@ function SurveyResultContent() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          {/* 🎖️ 메인 추천 제품 비주얼 (1순위) */}
+          {/* 메인 추천 제품 비주얼 (1순위) */}
           <div className="lg:col-span-5 animate-in fade-in slide-in-from-left-8 duration-700">
             <div className="bg-white rounded-[4rem] p-4 shadow-card border border-border-primary overflow-hidden group">
               <div className="aspect-square rounded-[3.5rem] overflow-hidden bg-bg-warm relative flex items-center justify-center">
-                {/* 실제 제품 이미지로 교체 */}
-                {mainProduct.mainImages[0] ? (
-                  <img
-                    src={`\){mainProduct.mainImages[0].path}/\({mainProduct.mainImages[0].name}`}
+                {mainProduct.mainImages?.[0] ? (
+                  <ProductImage
+                    src={`${mainProduct.mainImages[0].path}/${mainProduct.mainImages[0].name}`}
                     alt={mainProduct.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
@@ -126,7 +126,10 @@ function SurveyResultContent() {
                 </div>
               </div>
               <div className="p-10 text-center">
-                <p className="text-sm text-text-tertiary font-mono mb-2">{mainProduct.code}</p>
+                {/* ✅ extra.code로 변경 */}
+                <p className="text-sm text-text-tertiary font-mono mb-2">
+                  {mainProduct.extra.code}
+                </p>
                 <h3 className="text-3xl font-black text-text-primary mb-3 tracking-tighter">
                   {mainProduct.name}
                 </h3>
@@ -277,7 +280,7 @@ function SurveyResultContent() {
           </div>
         </div>
 
-        {/* 🧩 다른 추천 제품 보기 (2~5순위) */}
+        {/* 다른 추천 제품 보기 (2~5순위) */}
         {topProducts.length > 1 && (
           <div className="mt-20 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
             <div className="flex items-center justify-between mb-10">
@@ -293,13 +296,13 @@ function SurveyResultContent() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {topProducts.slice(1).map((product, index) => (
                 <div
-                  key={product.code}
-                  className="bg-white rounded-3xl border border-border-primary shadow-card overflow-hidden hover:shadow-lg hover:border-accent-soft transition-all group cursor-pointer"
+                  key={product.extra.code}
+                  className="bg-white rounded-3xl border border-border-primary shadow-card overflow-hidden hover:shadow-lg hover:border-accent-soft transition-all group cursor-pointer relative"
                   onClick={() => handleSelectProduct(product)}
                 >
-                  <div className="aspect-square bg-bg-warm flex items-center justify-center p-4">
-                    {product.mainImages[0] ? (
-                      <img
+                  <div className="aspect-square bg-bg-warm flex items-center justify-center p-4 relative">
+                    {product.mainImages?.[0] ? (
+                      <ProductImage
                         src={`${product.mainImages[0].path}/${product.mainImages[0].name}`}
                         alt={product.name}
                         className="w-full h-full object-cover rounded-2xl group-hover:scale-105 transition-transform duration-500"
@@ -315,7 +318,7 @@ function SurveyResultContent() {
                     </div>
                   </div>
                   <div className="p-6">
-                    <p className="text-xs text-text-tertiary mb-1">{product.code}</p>
+                    <p className="text-xs text-text-tertiary mb-1">{product.extra.code}</p>
                     <h4 className="font-black text-text-primary mb-2 line-clamp-2">
                       {product.name}
                     </h4>
