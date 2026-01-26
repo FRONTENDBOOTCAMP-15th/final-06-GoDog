@@ -7,11 +7,14 @@ import Image from "next/image";
 export default function Checkout() {
   return (
     <div className="bg-(--color-bg-secondary)">
-      <div className="xl:max-w-300 min-w-90 mx-auto px-4 py-8">
-        <div className="flex flex-col items-center gap-3.5 mt-6">
-          <Badge variant="accent">CHECKOUT</Badge>
-          <h2 className="text-3xl mb-14 font-black text-center">주문/결제</h2>
-        </div>
+      <div className="xl:max-w-300 min-w-90 mx-auto px-4 pt-8 pb-[8.75em]">
+        {/* 헤더 */}
+        <section className="text-center mb-16 mt-10">
+          <Badge variant="accent" className="mb-3.5">
+            CHECKOUT
+          </Badge>
+          <h2 className="text-[2rem] font-black">주문/결제</h2>
+        </section>
         <div className="flex flex-col xl:flex-row gap-10">
           <div className="flex flex-col gap-9 xl:w-2/3">
             {/* 주문 상품 정보 */}
@@ -43,12 +46,7 @@ export default function Checkout() {
             {/* 배송 정보 */}
             <section>
               <div className="border border-[#F9F9FB] rounded-[0.875rem] px-3 py-3 sm:px-7 sm:py-7 bg-white shadow-(--shadow-card)">
-                <div className="flex justify-between items-center">
-                  <h2 className="text-lg text-(--color-text-primary) font-black mb-7">배송 정보</h2>
-                  <p className="text-[0.625rem] text-(--color-text-secondary) font-bold">
-                    최근 배송지
-                  </p>
-                </div>
+                <h2 className="text-lg text-(--color-text-primary) font-black mb-7">배송 정보</h2>
                 <div className="flex flex-col gap-5">
                   <div className="flex gap-5">
                     <Input label="수령인" placeholder="" className="w-full" />
@@ -73,7 +71,7 @@ export default function Checkout() {
               </div>
             </section>
 
-            {/* 결제 수단 선택 */}
+            {/* 결제 수단 선택
             <section>
               <div className="flex flex-col gap-7 border border-[#F9F9FB] rounded-[0.875rem] px-3 py-3 sm:px-7 sm:py-7 bg-white shadow-(--shadow-card)">
                 <h2 className="text-lg text-(--color-text-primary) font-black">결제 수단 선택</h2>
@@ -90,7 +88,7 @@ export default function Checkout() {
                   </button>
                 </div>
               </div>
-            </section>
+            </section> */}
           </div>
 
           {/* 최종 결제 금액 */}
