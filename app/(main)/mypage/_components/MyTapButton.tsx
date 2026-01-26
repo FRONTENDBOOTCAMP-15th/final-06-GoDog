@@ -23,23 +23,19 @@ export default function MyTapButton({ content, icon, isActive = false, href }: M
     <Link
       href={href}
       className={`flex flex-col items-center shrink-0 active:scale-95 transition-all
-        w-[274.25px] 
-        p-[28px] 
+        w-[274px] 
+        p-[28px]
+        max-lg:w-[140px] 
         rounded-[35px] 
         gap-[10px] 
         ${containerStyle}`}
     >
-      {/* 아이콘 배경 컨테이너 (56x56 고정) */}
       <div
         className={`flex items-center justify-center w-[56px] h-[56px] shrink-0 rounded-[14px] ${iconBgStyle}`}
       >
-        <div className={`${iconColor} flex items-center justify-center`}>
-          {/* 아이콘 컴포넌트 내부의 svg 색상을 currentColor로 제어하기 위해 text 컬러 적용 */}
-          {icon}
-        </div>
+        <div className={`${iconColor} flex items-center justify-center`}>{icon}</div>
       </div>
 
-      {/* 텍스트 스타일 가이드 적용 */}
       <span
         className="
           text-center 
