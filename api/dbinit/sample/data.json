@@ -108,6 +108,12 @@
   ],
   "product": [
     {
+      "pagination": {
+        "page": 1,
+        "limit": 8,
+        "total": 1,
+        "totalPages": 1
+      },
       "_id": "1",
       "price": 45000,
       "quantity": 127,
