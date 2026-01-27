@@ -3,13 +3,7 @@ import FeatureItem from "@/app/(main)/_components/FeatureItem";
 import HeroSwiper from "@/app/(main)/_components/HeroSwiper";
 import ProductCard from "@/app/(main)/_components/ProductCard";
 import SectionTitle from "@/app/(main)/_components/SectionTitle";
-import Badge from "@/components/common/Badge";
-import Button from "@/components/common/Button";
-import Checkbox from "@/components/common/Checkbox";
-import Input from "@/components/common/Input";
-import ProductImage from "@/components/common/ProductImage";
 import Image from "next/image";
-import Link from "next/link";
 
 export default function Home() {
   return (
@@ -101,7 +95,7 @@ export default function Home() {
               href="/products/puppy-growth"
             />
             <ProductCard
-              image="/images/product-puppy.png"
+              image=""
               title="고메 그로스2"
               kcal="1,200 kcal"
               description="성장기 퍼피를 위한 최적의 칼슘과 DHA 배합으로 튼튼한 골격을 형성합니다."

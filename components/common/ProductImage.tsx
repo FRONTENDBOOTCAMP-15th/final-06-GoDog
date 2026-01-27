@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface ProductImageProps {
   src: string;
@@ -17,18 +17,23 @@ export default function ProductImage({
   fallback = DEFAULT_FALLBACK,
   className = "",
 }: ProductImageProps) {
-  const [error, setError] = useState(false);
+  const [imageSrc, setImageSrc] = useState(fallback);
 
-  const imageSrc = error || !src ? fallback : src;
+  useEffect(() => {
+    if (!src) {
+      setImageSrc(fallback);
+      return;
+    }
+
+    const img = new Image();
+    img.src = src;
+    img.onload = () => setImageSrc(src);
+    img.onerror = () => setImageSrc(fallback);
+  }, [src, fallback]);
 
   return (
     <div className="relative aspect-square w-full bg-[#FFF9F2]">
-      <img
-        src={imageSrc}
-        alt={alt}
-        className={`w-full h-full object-cover ${className}`}
-        onError={() => setError(true)}
-      />
+      <img src={imageSrc} alt={alt} className={`w-full h-full object-cover ${className}`} />
     </div>
   );
 }

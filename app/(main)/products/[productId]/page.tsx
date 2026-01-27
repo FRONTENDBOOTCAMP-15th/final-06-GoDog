@@ -658,6 +658,7 @@ export default function Product() {
                 </svg>
               </span>
             </button>
+            
             {/* 아코디언 메뉴바 */}
             <div
               className={`flex bg-gray-200 overflow-hidden transition-all duration-300 ${openQnaId === 2 ? "max-h-96 py-7 px-7" : "max-h-0 py-0 px-0"}`}
