@@ -19,7 +19,11 @@ export default async function Orders() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-[20px] lg:gap-7 justify-items-center">
           <MyItemList
             title="나인독 정밀 사료A"
-            image={<Product404 />}
+            image={
+              <div className="rounded-3xl overflow-hidden w-full h-full">
+                <Product404 />
+              </div>
+            }
             href="/mypage/orders/1"
             content="리뷰 작성"
             date="2026.01.20"
@@ -29,7 +33,11 @@ export default async function Orders() {
           />
           <MyItemList
             title="나인독 정밀 사료A"
-            image={<Product404 />}
+            image={
+              <div className="rounded-3xl overflow-hidden w-full h-full">
+                <Product404 />
+              </div>
+            }
             href="/mypage/orders/1"
             content="리뷰 작성"
             date="2026.01.20"
@@ -39,7 +47,11 @@ export default async function Orders() {
           />
           <MyItemList
             title="나인독 정밀 사료A"
-            image={<Product404 />}
+            image={
+              <div className="rounded-3xl overflow-hidden w-full h-full">
+                <Product404 />
+              </div>
+            }
             href="/mypage/orders/1"
             content="리뷰 작성"
             date="2026.01.20"
@@ -49,7 +61,11 @@ export default async function Orders() {
           />
           <MyItemList
             title="나인독 정밀 사료A"
-            image={<Product404 />}
+            image={
+              <div className="rounded-3xl overflow-hidden w-full h-full">
+                <Product404 />
+              </div>
+            }
             href="/mypage/orders/1"
             content="리뷰 작성"
             date="2026.01.20"

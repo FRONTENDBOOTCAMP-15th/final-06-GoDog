@@ -17,7 +17,11 @@ export default async function Subscription() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-[20px] lg:gap-7 justify-items-center">
           <MyItemList
             title="나인독 정밀 사료A"
-            image={<Product404 />}
+            image={
+              <div className="rounded-3xl overflow-hidden w-full h-full">
+                <Product404 />
+              </div>
+            }
             href="/products/1"
             content="상세 보기"
             date="2026.01.20"
@@ -25,32 +29,41 @@ export default async function Subscription() {
             price="45,800원"
             mark={<RigthMark />}
           />
-
           <MyItemList
             title="나인독 정밀 사료A"
-            image={<Product404 />}
+            image={
+              <div className="rounded-3xl overflow-hidden w-full h-full">
+                <Product404 />
+              </div>
+            }
             href="/products/1"
             content="상세 보기"
             date="2026.01.20"
             period="2주 주기 배송"
             price="45,800원"
             mark={<RigthMark />}
-          />
-
+          />{" "}
           <MyItemList
             title="나인독 정밀 사료A"
-            image={<Product404 />}
+            image={
+              <div className="rounded-3xl overflow-hidden w-full h-full">
+                <Product404 />
+              </div>
+            }
             href="/products/1"
             content="상세 보기"
             date="2026.01.20"
             period="2주 주기 배송"
             price="45,800원"
             mark={<RigthMark />}
-          />
-
+          />{" "}
           <MyItemList
             title="나인독 정밀 사료A"
-            image={<Product404 />}
+            image={
+              <div className="rounded-3xl overflow-hidden w-full h-full">
+                <Product404 />
+              </div>
+            }
             href="/products/1"
             content="상세 보기"
             date="2026.01.20"

@@ -29,11 +29,11 @@ export default function SubscriptionEdit() {
         </div>
 
         <div className=" flex flex-col lg:flex-row lg:justify-center pt-[35px] gap-[35px] items-center lg:items-start">
-          <div className="w-full max-w-[400px] lg:w-auto">
+          <div className="w-full  lg:w-auto">
             <DetailSub title="고메 화식 패키지" image={<Product404 />} price="45,000 원" />
           </div>
 
-          <div className="flex flex-col gap-[28px] w-full max-w-[400px] lg:max-w-none lg:flex-none lg:w-[486px]">
+          <div className="flex flex-col gap-[28px] w-full lg:max-w-none lg:flex-none lg:w-[486px]">
             <DeliveryPeri />
             <Adjustdelivery />
 

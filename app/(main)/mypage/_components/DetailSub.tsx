@@ -13,7 +13,9 @@ export default function DetailSub({ title, image, price }: DetailSubProps) {
   return (
     <>
       <div className="  rounded-[49px] border border-[rgba(0,0,0,0.06)] bg-white shadow-[0_2px_12px_0_rgba(0,0,0,0.03)] p-8 ">
-        <div className="max-w-[259px]">{image}</div>
+        <div className="max-w-[259px] mx-auto overflow-hidden rounded-3xl flex justify-center items-center">
+          {image}
+        </div>
         <div className="flex justify-center  pb-[14px] ">
           <Badge className="mt-[28px]" variant="status">
             {"구독중"}

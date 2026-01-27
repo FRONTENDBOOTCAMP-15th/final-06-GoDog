@@ -47,30 +47,22 @@ export default function MyItemList({
       <div
         className={`rounded-[42px] border border-[rgba(0,0,0,0.06)] bg-[#FFFFFF] shadow-[0_2px_12px_0_rgba(0,0,0,0.03)] ${className}`}
       >
-        <div className=" mt-[30px] ml-[30px] mr-[30px]  rounded-3xl">{image}</div>
-        <div className="pt-[27px] pl-[29px] pb-[14.5px] text-[#1A1A1C]  text-[17.5px] font-black leading-[24.5px] tracking-[-0.437px] not-italic">
+        <div className=" mt-[30px] ml-[30px] mr-[30px]  ">{image}</div>
+        <div className="pt-[27px] pl-[29px] pb-[14.5px] text-[#1A1A1C]  text-[18px] font-black ">
           {title}
         </div>
         <div className="flex flex-row pl-[29px] justify-between pr-[29px]">
-          <p className="text-[#909094]  text-[12.3px] font-medium leading-[17.5px] not-italic">
-            주문일
-          </p>
+          <p className="text-[#909094]  text-[12px] font-medium ">주문일</p>
           <p className="text-[#646468]">{date}</p>
         </div>
         <div className="pb-[7px] flex flex-row pl-[29px] justify-between pr-[29px]">
-          <p className="text-[#909094]  text-[12.3px] font-medium leading-[17.5px] not-italic">
-            주기
-          </p>
+          <p className="text-[#909094]  text-[12px] font-medium ">주기</p>
           <p className="text-[#646468]">{period}</p>
         </div>
         <div className="  h-[1px] bg-[rgba(0,0,0,0.06)] mx-auto" />
         <div className="pb-[36px] pt-[15px] flex flex-row pl-[29px] justify-between pr-[29px] ">
-          <p className=" text-[#1A1A1C]  text-[12.3px] font-black leading-[17.5px] not-italic">
-            결제금액
-          </p>
-          <p className="text-[#FBA613] font-['Pretendard'] text-[12.3px] font-black leading-[17.5px] not-italic">
-            {price}
-          </p>
+          <p className=" text-[#1A1A1C]  text-[12px] font-black ">결제금액</p>
+          <p className="text-[#FBA613] font-['Pretendard'] text-[12px] font-black ">{price}</p>
         </div>
         <div className=" h-[1px] bg-[rgba(0,0,0,0.06)] mx-auto" />
 
@@ -78,7 +70,7 @@ export default function MyItemList({
           className="pt-[20px] flex flex-row pl-[29px] justify-center gap-[12px]"
           href={getHref()}
         >
-          <div className="pb-[22px] text-[#FBA613] text-center font-['Pretendard'] text-[10.5px] font-black leading-[14px] tracking-[1.05px] uppercase not-italic mt-[5px]">
+          <div className="pb-[22px] text-[#FBA613] text-center font-['Pretendard'] text-[11px] font-black mt-[5px]">
             {content}
           </div>
           <div className="mt-[5px]">{mark}</div>
