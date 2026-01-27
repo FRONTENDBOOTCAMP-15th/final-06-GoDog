@@ -1,0 +1,20 @@
+meta {
+  name: 데이터 초기화
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{url}}/db/init?initData
+  body: none
+  auth: inherit
+}
+
+params:query {
+  initData: 
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

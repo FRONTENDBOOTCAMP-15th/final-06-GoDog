@@ -1,17 +1,17 @@
 meta {
-  name: 목록조회
+  name: 파일 업로드(먼저)
   type: http
   seq: 1
 }
 
-get {
-  url: {{url}}/posts?type=info
+post {
+  url: {{url}}/db/init?attach
   body: none
   auth: inherit
 }
 
 params:query {
-  type: info
+  attach: 
 }
 
 settings {
