@@ -743,98 +743,443 @@
       }
     },
     {
-      "seller_id": 3,
-      "price": 21600,
-      "shippingFees": 5500,
+      "pagination": {
+        "page": 1,
+        "limit": 8,
+        "total": 1,
+        "totalPages": 1
+      },
+      "_id": "9",
+      "price": 50000,
+      "quantity": 36,
+      "seller_id": 1,
+      "buyQuantity": 36,
+      "shippingFees": 0,
+      "quantityInStock": 36,
       "show": true,
       "active": true,
-      "name": "KC인증 스키비디 토일렛 피규어 블럭 4종 중국 호환 레고 블록 장난감 어린이 선물",
-      "quantity": 99,
-      "buyQuantity": 94,
+      "name": "라지어덜트 치킨앤현미",
+      "content": "글루코사민 800mg과 콘드로이틴 400mg이 함유되어 대형견의 무거운 체중을 지탱하는 관절과 연골 건강을 적극적으로 보호합니다. 대형견에게 적합한 350kcal의 적정 칼로리로 설계되어 과체중을 예방하고 관절에 가해지는 부담을 최소화합니다.",
       "mainImages": [
         {
-          "path": "uploadFiles/sample-skibidi21.jpg",
-          "name": "sample-skibidi21.jpg"
+          "path": "/images/large_adult_chicken_brownrice.png",
+          "name": "large_adult_chicken_brownrice.png"
         }
       ],
-      "content": "<div align=\"center\"><img src=\"uploadFiles/sample-skibidi22.jpg\"></div><div align=\"center\"><br></div><div align=\"center\"><img src=\"uploadFiles/sample-skibidi23.jpg\"></div><div align=\"center\"><br></div><div align=\"center\"><img src=\"uploadFiles/sample-skibidi24.jpg\"></div>",
       "extra": {
-        "isNew": true,
-        "isBest": false,
-        "category": ["PC01", "PC0103"],
-        "sort": 6
-      }
-    },
-    {
-      "seller_id": 3,
-      "price": 12900,
-      "show": true,
-      "active": true,
-      "name": "푸쉬팝게임기 팝잇 푸시팝 게임기 두더지게임 핑거 뽁뽁이 애니멀 1+1",
-      "quantity": 300,
-      "buyQuantity": 298,
-      "mainImages": [
-        {
-          "path": "uploadFiles/sample-pushpop01.jpg",
-          "name": "sample-pushpop01.jpg"
+        "state": ["1회구매", "구독중"],
+        "orderdate": "2026-01-27",
+        "period": "2주 배송",
+        "code": "ADT-L-0",
+        "discount": "5000",
+        "weight": 1500,
+        "size": ["대형견"],
+        "lifeStage": ["성견"],
+        "bodyType": ["적정", "과체중"],
+        "activityLevel": ["보통", "많음"],
+        "neutered": "both",
+        "mainProtein": ["닭고기"],
+        "grainFree": false,
+        "category": ["퍼피", "주니어", "시니어"],
+        "feedstuff": true,
+        "foodType": "건식",
+        "healthBenefits": ["관절/뼈 건강"],
+        "kcalPer100g": 350,
+        "ingredients": {
+          "contains": ["닭고기", "현미"],
+          "avoid": []
         },
-        {
-          "path": "uploadFiles/sample-pushpop02.jpg",
-          "name": "sample-pushpop02.jpg"
+        "avoidIf": {
+          "allergies": ["닭고기", "밀/곡물"],
+          "diseases": []
         },
-        {
-          "path": "uploadFiles/sample-pushpop03.jpg",
-          "name": "sample-pushpop03.jpg"
-        }
-      ],
-      "content": "<div align=\"center\"><p>푸쉬팝게임기 팝잇 푸시팝 게임기 두더지게임 핑거 뽁뽁이 애니멀을 구매하시는 모든 분께 사은품(무작위)으로 하나 더 드립니다.</p></div><div align=\"center\"><img src=\"uploadFiles/sample-pushpop04.gif\"></div><div align=\"center\"><br></div><div align=\"center\"><img src=\"uploadFiles/sample-pushpop05.jpg\"></div><div align=\"center\"><br></div><div align=\"center\"><img src=\"uploadFiles/sample-pushpop06.jpg\"></div>",
-      "extra": {
-        "isNew": false,
-        "isBest": true,
-        "category": ["PC01", "PC0102"],
-        "sort": 5
+        "specialFeatures": ["관절 영양 강화"],
+        "nutrition": { "protein": 25, "fat": 12, "moisture": 10 }
       }
     },
     {
-      "seller_id": 3,
-      "price": 12900,
-      "shippingFees": 3500,
+      "pagination": {
+        "page": 1,
+        "limit": 8,
+        "total": 1,
+        "totalPages": 1
+      },
+      "_id": "10",
+      "price": 52000,
+      "quantity": 29,
+      "seller_id": 1,
+      "buyQuantity": 29,
+      "shippingFees": 0,
+      "quantityInStock": 29,
       "show": true,
       "active": true,
-      "name": "샤넬 NO.5",
-      "quantity": 999999,
-      "buyQuantity": 0,
+      "name": "라지어덜트 연어앤감자",
+      "content": "오메가-3와 오메가-6 지방산이 이상적인 비율로 함유되어 대형견의 넓은 피부 면적을 건강하게 유지하고 풍성한 모질을 가꿔줍니다. 연어는 생체이용률이 높은 고품질 단백질원으로, 대형견의 큰 근육량을 유지합니다.",
       "mainImages": [
         {
-          "path": "uploadFiles/sample-pushpop01.jpg",
-          "name": "sample-pushpop01.jpg"
+          "path": "/images/large_adult_salmon_potato.png",
+          "name": "large_adult_salmon_potato.png"
         }
       ],
-      "content": "샤넬 향수",
       "extra": {
-        "depth": 1
+        "state": ["1회구매", "구독중"],
+        "orderdate": "2026-01-27",
+        "period": "2주 배송",
+        "code": "ADT-L-02",
+        "discount": "5200",
+        "weight": 1500,
+        "size": ["대형견"],
+        "lifeStage": ["성견"],
+        "bodyType": ["적정"],
+        "activityLevel": ["보통", "많음"],
+        "neutered": "both",
+        "mainProtein": ["연어"],
+        "grainFree": false,
+        "category": ["퍼피", "주니어", "시니어"],
+        "feedstuff": true,
+        "foodType": "건식",
+        "healthBenefits": ["피부/모질"],
+        "kcalPer100g": 345,
+        "ingredients": {
+          "contains": ["연어", "감자", "연어오일"],
+          "avoid": []
+        },
+        "avoidIf": {
+          "allergies": ["생선", "밀/곡물"],
+          "diseases": []
+        },
+        "specialFeatures": ["오메가3 풍부"],
+        "nutrition": { "protein": 24, "fat": 12, "moisture": 10 }
       }
     },
     {
-      "seller_id": 3,
-      "price": 6900,
-      "shippingFees": 3500,
-      "name": "샤넬 NO.5",
-      "quantity": 1,
-      "buyQuantity": 0,
+      "pagination": {
+        "page": 1,
+        "limit": 8,
+        "total": 1,
+        "totalPages": 1
+      },
+      "_id": "11",
+      "price": 54000,
+      "quantity": 47,
+      "seller_id": 1,
+      "buyQuantity": 47,
+      "shippingFees": 0,
+      "quantityInStock": 47,
       "show": true,
       "active": true,
+      "name": "스킨케어 연어앤고구마",
+      "content": "오메가-3, 오메가-6, 오메가-9 지방산이 황금 비율로 함유되어 피부 세포막을 강화하고, 건조하거나 민감한 피부의 장벽 기능을 회복시킵니다. 비오틴과 아연이 강화되어 모낭 건강을 개선하고, 푸석하거나 빠지기 쉬운 털을 윤기 있고 탄력 있는 건강한 모질로 가꿔줍니다.",
       "mainImages": [
         {
-          "path": "uploadFiles/sample-pushpop03.jpg",
-          "name": "sample-pushpop03.jpg"
+          "path": "/images/skincare_salmon_sweetpotato.png",
+          "name": "skincare_salmon_sweetpotato.png"
         }
       ],
-      "content": "3달 쓴 향수입니다.",
       "extra": {
-        "depth": 2,
-        "parent": 15,
-        "size": "200mm"
+        "state": ["1회구매", "구독중"],
+        "orderdate": "2026-01-27",
+        "period": "2주 배송",
+        "code": "FNC-SK-01",
+        "discount": "5400",
+        "weight": 1000,
+        "size": ["소형견", "중형견", "대형견"],
+        "lifeStage": ["성견"],
+        "bodyType": ["적정"],
+        "activityLevel": ["적음", "보통", "많음"],
+        "neutered": "both",
+        "mainProtein": ["연어"],
+        "grainFree": true,
+        "category": ["퍼피", "주니어", "시니어"],
+        "feedstuff": true,
+        "foodType": "건식",
+        "healthBenefits": ["피부/모질"],
+        "kcalPer100g": 360,
+        "ingredients": {
+          "contains": ["연어", "고구마", "연어오일", "아마씨"],
+          "avoid": ["밀", "옥수수", "쌀", "곡물 전체"]
+        },
+        "avoidIf": {
+          "allergies": ["생선"],
+          "diseases": []
+        },
+        "specialFeatures": ["그레인프리", "오메가3 풍부", "저자극성"],
+        "nutrition": { "protein": 26, "fat": 15, "moisture": 10 }
+      }
+    },
+    {
+      "pagination": {
+        "page": 1,
+        "limit": 8,
+        "total": 1,
+        "totalPages": 1
+      },
+      "_id": "12",
+      "price": 53000,
+      "quantity": 68,
+      "seller_id": 1,
+      "buyQuantity": 68,
+      "shippingFees": 0,
+      "quantityInStock": 68,
+      "show": true,
+      "active": true,
+      "name": "다이제스티브 오리앤귀리",
+      "content": "특허받은 프로바이오틱스 균주가 장내 유익균 증식을 촉진하여 소화 기능을 개선하고, 무른 변이나 설사 증상을 완화하는 데 도움을 줍니다. 프리바이오틱스인 FOS와 MOS가 장 점막을 보호하고 영양소 흡수율을 높입니다.",
+      "mainImages": [
+        {
+          "path": "/images/digestive_duck_oat.png",
+          "name": "digestive_duck_oat.png"
+        }
+      ],
+      "extra": {
+        "state": ["1회구매", "구독중"],
+        "orderdate": "2026-01-27",
+        "period": "2주 배송",
+        "code": "FNC-DG-01",
+        "discount": "5300",
+        "weight": 1000,
+        "size": ["소형견", "중형견", "대형견"],
+        "lifeStage": ["성견"],
+        "bodyType": ["적정"],
+        "activityLevel": ["적음", "보통"],
+        "neutered": "both",
+        "mainProtein": ["오리고기"],
+        "grainFree": false,
+        "category": ["퍼피", "주니어", "시니어"],
+        "feedstuff": true,
+        "foodType": "건식",
+        "healthBenefits": ["소화/장 건강"],
+        "kcalPer100g": 355,
+        "ingredients": {
+          "contains": ["오리고기", "귀리", "비트펄프"],
+          "avoid": []
+        },
+        "avoidIf": {
+          "allergies": ["밀/곡물"],
+          "diseases": []
+        },
+        "specialFeatures": ["저자극성"],
+        "nutrition": { "protein": 25, "fat": 13, "moisture": 10 }
+      }
+    },
+    {
+      "pagination": {
+        "page": 1,
+        "limit": 8,
+        "total": 1,
+        "totalPages": 1
+      },
+      "_id": "13",
+      "price": 55000,
+      "quantity": 32,
+      "seller_id": 1,
+      "buyQuantity": 32,
+      "shippingFees": 0,
+      "quantityInStock": 32,
+      "show": true,
+      "active": true,
+      "name": "조인트케어 치킨앤현미",
+      "content": "글루코사민 1,200mg이 연골 조직의 주요 구성 성분을 보충하여 닳아진 연골을 보호하고, 관절의 충격 흡수 능력을 유지합니다. 콘드로이틴 설페이트가 관절액의 점성을 높여 뼈와 뼈 사이의 마찰을 줄이고 부드러운 움직임이 가능하도록 합니다.",
+      "mainImages": [
+        {
+          "path": "/images/jointcare_chicken_brownric.png",
+          "name": "jointcare_chicken_brownric.png"
+        }
+      ],
+      "extra": {
+        "state": ["1회구매", "구독중"],
+        "orderdate": "2026-01-27",
+        "period": "2주 배송",
+        "code": "FNC-JT-01",
+        "discount": "5500",
+        "weight": 1200,
+        "size": ["중형견", "대형견"],
+        "lifeStage": ["성견"],
+        "bodyType": ["적정", "과체중"],
+        "activityLevel": ["보통", "많음"],
+        "neutered": "both",
+        "mainProtein": ["닭고기"],
+        "grainFree": false,
+        "category": ["퍼피", "주니어", "시니어"],
+        "feedstuff": true,
+        "foodType": "건식",
+        "healthBenefits": ["관절/뼈 건강"],
+        "kcalPer100g": 350,
+        "ingredients": {
+          "contains": ["닭고기", "현미", "크랜베리"],
+          "avoid": []
+        },
+        "avoidIf": {
+          "allergies": ["닭고기", "밀/곡물"],
+          "diseases": []
+        },
+        "specialFeatures": ["관절 영양 강화"],
+        "nutrition": { "protein": 26, "fat": 12, "moisture": 10 }
+      }
+    },
+    {
+      "pagination": {
+        "page": 1,
+        "limit": 8,
+        "total": 1,
+        "totalPages": 1
+      },
+      "_id": "14",
+      "price": 56000,
+      "quantity": 24,
+      "seller_id": 1,
+      "buyQuantity": 24,
+      "shippingFees": 0,
+      "quantityInStock": 24,
+      "show": true,
+      "active": true,
+      "name": "조인트케어 연어앤감",
+      "content": "연어에 풍부한 오메가-3 지방산(EPA, DHA)이 관절 내 염증 물질 생성을 억제하여 관절염으로 인한 통증과 뻣뻣함을 자연스럽게 완화합니다. 글루코사민과 콘드로이틴이 복합적으로 작용하여 연골 손상을 예방합니다.",
+      "mainImages": [
+        {
+          "path": "/images/jointcare_salmon_potato.png",
+          "name": "jointcare_salmon_potato.png"
+        }
+      ],
+      "extra": {
+        "state": ["1회구매", "구독중"],
+        "orderdate": "2026-01-27",
+        "period": "2주 배송",
+        "code": "FNC-JT-02",
+        "discount": "5600",
+        "weight": 1200,
+        "size": ["중형견", "대형견"],
+        "lifeStage": ["성견"],
+        "bodyType": ["적정", "과체중"],
+        "activityLevel": ["보통", "많음"],
+        "neutered": "both",
+        "mainProtein": ["연어"],
+        "grainFree": false,
+        "category": ["퍼피", "주니어", "시니어"],
+        "feedstuff": true,
+        "foodType": "건식",
+        "healthBenefits": ["관절/뼈 건강"],
+        "kcalPer100g": 345,
+        "ingredients": {
+          "contains": ["연어", "감자", "연어오일"],
+          "avoid": []
+        },
+        "avoidIf": {
+          "allergies": ["생선", "밀/곡물"],
+          "diseases": []
+        },
+        "specialFeatures": ["관절 영양 강화", "오메가3 풍부"],
+        "nutrition": { "protein": 25, "fat": 12, "moisture": 10 }
+      }
+    },
+    {
+      "pagination": {
+        "page": 1,
+        "limit": 8,
+        "total": 1,
+        "totalPages": 1
+      },
+      "_id": "15",
+      "price": 48000,
+      "quantity": 73,
+      "seller_id": 1,
+      "buyQuantity": 73,
+      "shippingFees": 0,
+      "quantityInStock": 73,
+      "show": true,
+      "active": true,
+      "name": "웨이트케어 치킨앤보리",
+      "content": "100g당 310kcal의 저칼로리 설계로 평소 급여량을 유지하면서도 자연스럽게 칼로리 섭취를 줄여 건강한 체중 감량을 도와줍니다. L-카르니틴이 체내 지방을 에너지원으로 전환하는 대사 과정을 촉진하여 축적된 체지방을 효과적으로 연소시킵니다.",
+      "mainImages": [
+        {
+          "path": "/images/weightcare_chicken_barley.png",
+          "name": "weightcare_chicken_barley.png"
+        }
+      ],
+      "extra": {
+        "state": ["1회구매", "구독중"],
+        "orderdate": "2026-01-27",
+        "period": "2주 배송",
+        "code": "FNC-WT-01",
+        "discount": "4800",
+        "weight": 1000,
+        "size": ["소형견", "중형견", "대형견"],
+        "lifeStage": ["성견"],
+        "bodyType": ["과체중", "비만"],
+        "activityLevel": ["적음", "보통"],
+        "neutered": "yes",
+        "mainProtein": ["닭고기"],
+        "grainFree": false,
+        "category": ["퍼피", "주니어", "시니어"],
+        "feedstuff": true,
+        "foodType": "건식",
+        "healthBenefits": ["체중 관리"],
+        "kcalPer100g": 310,
+        "ingredients": {
+          "contains": ["닭고기", "보리", "비트펄프"],
+          "avoid": []
+        },
+        "avoidIf": {
+          "allergies": ["닭고기", "밀/곡물"],
+          "diseases": []
+        },
+        "specialFeatures": ["저칼로리"],
+        "nutrition": { "protein": 28, "fat": 8, "moisture": 10 }
+      }
+    },
+    {
+      "pagination": {
+        "page": 1,
+        "limit": 8,
+        "total": 1,
+        "totalPages": 1
+      },
+      "_id": "16",
+      "price": 50000,
+      "quantity": 41,
+      "seller_id": 1,
+      "buyQuantity": 41,
+      "shippingFees": 0,
+      "quantityInStock": 41,
+      "show": true,
+      "active": true,
+      "name": "웨이트케어 칠면조앤고구마",
+      "content": "칠면조는 닭고기보다 지방 함량이 30% 이상 낮으면서도 단백질 함량은 높아 근육량을 유지하면서 체중을 감량하는 데 이상적입니다. 100g당 305kcal로 가장 낮은 칼로리를 자랑하여 심한 비만이나 빠른 체중 감량이 필요한 강아지에게 특히 적합합니다.",
+      "mainImages": [
+        {
+          "path": "/images/weightcare_turkey_sweetpotato.png",
+          "name": "weightcare_turkey_sweetpotato.png"
+        }
+      ],
+      "extra": {
+        "state": ["1회구매", "구독중"],
+        "orderdate": "2026-01-27",
+        "period": "2주 배송",
+        "code": "FNC-WT-02",
+        "discount": "5000",
+        "weight": 1000,
+        "size": ["소형견", "중형견", "대형견"],
+        "lifeStage": ["성견"],
+        "bodyType": ["과체중", "비만"],
+        "activityLevel": ["적음", "보통"],
+        "neutered": "yes",
+        "mainProtein": ["칠면조"],
+        "grainFree": true,
+        "category": ["퍼피", "주니어", "시니어"],
+        "feedstuff": true,
+        "foodType": "건식",
+        "healthBenefits": ["체중 관리"],
+        "kcalPer100g": 305,
+        "ingredients": {
+          "contains": ["칠면조", "고구마"],
+          "avoid": ["밀", "옥수수", "쌀", "곡물 전체"]
+        },
+        "avoidIf": {
+          "allergies": ["칠면조"],
+          "diseases": []
+        },
+        "specialFeatures": ["저칼로리", "그레인프리"],
+        "nutrition": { "protein": 30, "fat": 7, "moisture": 10 }
       }
     }
   ],
