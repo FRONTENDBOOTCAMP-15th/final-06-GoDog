@@ -1,3 +1,4 @@
+import Checkbox from "@/components/common/Checkbox";
 import ProductImage from "@/components/common/ProductImage";
 import QuantityControl from "@/components/common/Quantitycontrol";
 import Image from "next/image";
@@ -6,7 +7,7 @@ export default function OnetimeItemList() {
   return (
     <section className="flex flex-col gap-3.5">
       <div className="flex items-center gap-2 sm:gap-5 border border-[#F9F9FB] rounded-[0.875rem] px-3 py-3 sm:px-7 sm:py-7 bg-white shadow-(--shadow-card)">
-        <input type="checkbox" />
+        <Checkbox label="프라임 어덜트" hideLabel />
         <div className="w-20 h-20 sm:w-24 shrink-0">
           <ProductImage src="" alt="" className="rounded-[0.875rem]" />
         </div>

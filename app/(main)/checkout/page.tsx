@@ -1,5 +1,6 @@
 import Badge from "@/components/common/Badge";
 import Button from "@/components/common/Button";
+import Checkbox from "@/components/common/Checkbox";
 import Input from "@/components/common/Input";
 import ProductImage from "@/components/common/ProductImage";
 import Image from "next/image";
@@ -53,13 +54,9 @@ export default function Checkout() {
                     <Input label="연락처" placeholder="" className="w-full" />
                   </div>
                   <div className="flex flex-col">
-                    <div className="flex items-center gap-2.5">
+                    <div className="flex gap-2.5 items-end">
                       <Input label="배송지 주소" placeholder="" />
-                      <Button
-                        variant="outline"
-                        size="md"
-                        className="mt-7.5 xl:px-7 xl:py-5.5 xl:mt-6.5 whitespace-nowrap h-[60px]"
-                      >
+                      <Button variant="outline" size="md" className="">
                         주소 찾기
                       </Button>
                     </div>
@@ -123,18 +120,15 @@ export default function Checkout() {
                       41,220원
                     </p>
                   </div>
-                  <ul className="flex flex-col gap-3.5 py-1.5">
-                    <li className="flex items-center gap-2.5 text-[0.625rem] text-(--color-text-secondary) font-bold">
-                      <input type="checkbox" />
-                      주문 정보를 확인하였으며 결제에 동의합니다.
+                  <ul className="flex flex-col gap-1.5 py-1.5">
+                    <li>
+                      <Checkbox label="주문 정보를 확인하였으며 결제에 동의합니다." size="sm" />
                     </li>
-                    <li className="flex items-center gap-2.5 text-[0.625rem] text-(--color-text-secondary) font-bold">
-                      <input type="checkbox" />
-                      매월 자동 정기 결제에 동의합니다.
+                    <li>
+                      <Checkbox label="매월 자동 정기 결제에 동의합니다." size="sm" />
                     </li>
-                    <li className="flex items-center gap-2.5 text-[0.625rem] text-(--color-text-secondary) font-bold">
-                      <input type="checkbox" />
-                      개인정보 제 3자 제공에 동의합니다.
+                    <li>
+                      <Checkbox label="개인정보 제 3자 제공에 동의합니다." size="sm" />
                     </li>
                   </ul>
                   <Button>41,220원 결제하기</Button>

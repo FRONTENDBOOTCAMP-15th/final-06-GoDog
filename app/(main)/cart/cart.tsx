@@ -1,5 +1,6 @@
-import OnetimeItemList from "@/app/(main)/cart/_components/onetime-item-list copy";
+import OnetimeItemList from "@/app/(main)/cart/_components/onetime-item-list";
 import Button from "@/components/common/Button";
+import Checkbox from "@/components/common/Checkbox";
 import Image from "next/image";
 
 export default function OnetimeCart() {
@@ -7,9 +8,8 @@ export default function OnetimeCart() {
     <div className="flex flex-col xl:flex-row gap-9 justify-center">
       {/* 장바구니 목록 */}
       <div className="xl:w-2/3">
-        <section className="flex gap-3 bg-white border border-[#F9F9FB] rounded-[0.875rem] px-3 py-3 sm:px-7 sm:py-7 mb-5 shadow-(--shadow-card)">
-          <input type="checkbox" />
-          <h2 className="text-[#1A1A1C] text-[0.75rem] font-black">전체 선택(2/2)</h2>
+        <section className="flex gap-3 items-center bg-white border border-[#F9F9FB] rounded-[0.875rem] p-3 sm:p-7 mb-5 shadow-(--shadow-card)">
+          <Checkbox label="전체 선택(2/2)" className="text-[#1A1A1C] text-[0.75rem] font-black" />
           <button className="ml-auto text-text-tertiary text-[0.625rem] font-bold">
             선택 삭제
           </button>
@@ -50,15 +50,12 @@ export default function OnetimeCart() {
           </section>
 
           {/* 정기 구독 혜택 */}
-          <section className="flex flex-col bg-[#FFF9F2] px-5 py-5 rounded-[0.875rem] gap-3 border border-[#FFF5E6]">
+          <section className="flex flex-col bg-[#FFF9F2] p-5 rounded-[0.875rem] gap-3 border border-[#FFF5E6]">
             <div className="flex items-center gap-2.5">
               <Image src="/images/cart/구독혜택.svg" alt="" width={28} height={28} />
               <h3 className="text-[0.75rem] text-[#1A1A1C] font-black">나만의 정기 구독 혜택</h3>
             </div>
             <ul className="flex flex-col gap-1.5 ml-4">
-              <li className="text-[0.75rem] text-text-tertiary font-bold list-disc ml-2 pl-1">
-                배송비 무료 혜택
-              </li>
               <li className="text-[0.75rem] text-text-tertiary font-bold list-disc ml-2 pl-1">
                 전 상품 10% 자동 상시 할인
               </li>

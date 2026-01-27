@@ -3,10 +3,18 @@
 import OnetimeCart from "@/app/(main)/cart/cart";
 import SubscriptionCart from "@/app/(main)/cart/subscription-cart";
 import Badge from "@/components/common/Badge";
+import Tab from "@/components/common/Tab";
 import { useState } from "react";
 
+type TabType = "oneTime" | "subscription";
+
 export default function Cart() {
-  const [activeTab, setActiveTab] = useState<"oneTime" | "subscription">("oneTime");
+  const [activeTab, setActiveTab] = useState<TabType>("oneTime");
+
+  const tabs: { key: TabType; label: string; count: number }[] = [
+    { key: "oneTime", label: "1회 구매", count: 2 },
+    { key: "subscription", label: "정기구독", count: 1 },
+  ];
 
   return (
     <div className="bg-[#F9F9FB] ">
@@ -21,25 +29,7 @@ export default function Cart() {
 
         {/* 탭 버튼 */}
         <section className="flex justify-center mb-9">
-          <div className="border px-1.5 py-1.5 rounded-[0.875rem] border-border-primary bg-white shadow-(--shadow-card)">
-            <button
-              onClick={() => setActiveTab("oneTime")}
-              className={`pl-10.5 pr-10.5 pt-3.5 pb-3.5 rounded-[0.875rem]  text-[0.75rem] font-black cursor-pointer
-              ${activeTab === "oneTime" && "bg-[#FBA613] text-white shadow-(--shadow-glow)"}
-              ${activeTab !== "oneTime" && "bg-white text-text-tertiary"}`}
-            >
-              1회 구매(2)
-            </button>
-            <button
-              onClick={() => setActiveTab("subscription")}
-              className={`pl-10.5 pr-10.5 pt-3.5 pb-3.5 rounded-[0.875rem]  text-[0.75rem] font-black cursor-pointer
-                ${activeTab === "subscription" && "bg-[#FBA613] text-white shadow-(--shadow-glow)"}
-                ${activeTab !== "subscription" && "bg-white text-text-tertiary"}
-                `}
-            >
-              정기구독(1)
-            </button>
-          </div>
+          <Tab tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
         </section>
         {activeTab === "oneTime" ? <OnetimeCart /> : <SubscriptionCart />}
       </div>

@@ -17,7 +17,7 @@ export default function Mypagelayout({ children }: Readonly<{ children: React.Re
     <>
       {/* {프로필 } */}
       <div className="w-full bg-linear-to-l from-[#FFF9F2] to-[#FFFFFF] h-105.25 relative z-10">
-        <div className="flex flex-col  pt-[129px] items-center relative">
+        <div className="flex flex-col pt-[129px] items-center relative">
           <img
             className="w-[97px] h-[97px] rounded-full ring-4 ring-white shadow-2xl"
             src="/images/프로필.png"
@@ -33,17 +33,21 @@ export default function Mypagelayout({ children }: Readonly<{ children: React.Re
       </div>
 
       {/* {회색 영역} */}
-      <div className="w-full  bg-[#F9F9FB]  ">
-        <div className="flex flex-row justify-center gap-[14px] pb-4 relative z-20 -mt-[50px] max-lg:flex max-lg:flex-wrap max-lg:ml-[20px] max-lg:mr-[20px]">
+      <div className="w-full bg-[#F9F9FB] ">
+        <div className="flex justify-center gap-[14px] pb-4 relative z-20 -mt-[50px] max-lg:flex max-lg:flex-wrap max-lg:ml-[20px] max-lg:mr-[20px]">
           {/* {회원 정보 수정 버튼} */}
 
-          <MyTapButton content="회원 정보" href="profile" icon={<UserIcon className="" />} />
+          <MyTapButton
+            content="회원 정보"
+            href="/mypage/profile"
+            icon={<UserIcon className="" />}
+          />
 
           {/* {정기 구독 플랜 버튼} */}
 
           <MyTapButton
             content="정기 구독"
-            href="subscription"
+            href="/mypage/subscription"
             icon={<SubscriptIcon className="" />}
           />
 
@@ -57,7 +61,11 @@ export default function Mypagelayout({ children }: Readonly<{ children: React.Re
 
           {/* 관심 상품 버튼 */}
 
-          <MyTapButton content="관심 상품" href="wishlist" icon={<HeartIcon className="" />} />
+          <MyTapButton
+            content="관심 상품"
+            href="/mypage/wishlist"
+            icon={<HeartIcon className="" />}
+          />
         </div>
         {/* {개별 프롭스} */}
         {children}

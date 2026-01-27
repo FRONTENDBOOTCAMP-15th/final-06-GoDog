@@ -14,8 +14,8 @@ export default function Review() {
   const [reviewContent, setReviewContent] = useState("");
   const MAX_LEN = 100;
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (file) {
       const previewUrl = URL.createObjectURL(file);
       setPreview(previewUrl);
@@ -24,21 +24,20 @@ export default function Review() {
 
   return (
     <div className="w-full min-w-[360px] bg-[#F9F9F9] lg:bg-transparent">
-      {" "}
       <div className="pt-[70px] pb-[112px] px-[20px] max-w-[1280px] mx-auto lg:px-0 flex flex-col items-center">
         <div className="w-full max-w-[632px]">
           <Link className="flex flex-row gap-[7px] mb-[35px]" href={"/mypage/subscription"}>
             <PrevIcon className="w-[17.5px] h-[17.5px] text-[#909094]" />
-            <p className="text-[#909094] font-inter text-[11.7px] font-black">뒤로가기</p>
+            <p className="text-[#909094] text-[11.7px] font-black">뒤로가기</p>
           </Link>
         </div>
 
         <div className="flex flex-col items-center gap-[14px]">
           <Badge variant="accent">{"MANAGE PLAN"}</Badge>
-          <h1 className="text-[#1A1A1C] text-center font-inter text-[29.5px] font-black ">
+          <h1 className="text-[#1A1A1C] text-center text-[29.5px] font-black ">
             소중한 후기를 들려주세요
           </h1>
-          <p className="text-[#646468] text-center font-inter text-[14.7px] font-medium  pb-[35px] break-keep">
+          <p className="text-[#646468] text-center text-[14.7px] font-medium  pb-[35px] break-keep">
             작성해주신 후기는 다른 견주님들께 큰 도움이 됩니다.
           </p>
         </div>
@@ -48,7 +47,7 @@ export default function Review() {
             <StarComponent />
           </div>
 
-          <div className="w-full max-w-[532px]">
+          <div className="w-full max-w-[532px] mt-8">
             <p className="text-[#1A1A1C] font-inter text-[11.5px] font-black mb-[8px]">리뷰 제목</p>
             <Input className="w-full mb-[35px]" label="" placeholder="제목을 입력해 주세요" />
           </div>
@@ -65,9 +64,7 @@ export default function Review() {
 
           {/* 사진 업로드 영역 */}
           <div className="flex flex-col items-start w-full max-w-[532px] mt-[35px]">
-            <p className="text-[#1A1A1C] font-inter text-[11.5px] font-black  pb-[14px]">
-              사진 첨부
-            </p>
+            <p className="text-[#1A1A1C] text-[11.5px] font-black  pb-[14px]">사진 첨부</p>
             <div className="flex flex-row items-center gap-4">
               <div className="relative w-[84px] h-[84px]">
                 <img
@@ -86,7 +83,7 @@ export default function Review() {
                   onChange={handleImageChange}
                 />
                 <PlusIcon className="text-[#909094] w-[21px] h-[21px]" />
-                <p className="text-[#909094] font-inter text-[12px] font-black">추가</p>
+                <p className="text-[#909094] text-[12px] font-black">추가</p>
               </label>
             </div>
           </div>
@@ -94,14 +91,10 @@ export default function Review() {
           {/* 하단 버튼 영역 */}
           <div className="w-full max-w-[532px] mt-[50px] pb-[20px]">
             <div className="flex flex-col lg:flex-row gap-[14px]">
-              <Button className="w-full lg:flex-1" size="md" variant="primary">
+              <Button className="flex-1" size="md" variant="primary">
                 후기 저장하기
               </Button>
-              <Button
-                className="w-full lg:flex-1 rounded-[14px] border-2 border-black/10 bg-white"
-                size="md"
-                variant="ghost"
-              >
+              <Button className="flex-1" size="md" variant="outline">
                 작성 취소
               </Button>
             </div>

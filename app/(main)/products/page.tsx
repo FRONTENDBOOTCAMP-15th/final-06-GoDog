@@ -1,7 +1,18 @@
+import PaginationWrapper from "@/components/common/PaginationWrapper";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function Products() {
+interface Props {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{
+    page?: string;
+  }>;
+}
+
+export default async function Products({ params, searchParams }: Props) {
+  const { page } = await searchParams;
+  const currentPage = Number(page) || 1;
+
   return (
     <div className="w-full min-w-90 bg-bg-secondary px-4 py-10 sm:px-10 md:px-20 lg:px-89 lg:py-17.5 lg:pb-35">
       <div className="mx-auto flex max-w-300 flex-col items-center gap-8 sm:gap-10 lg:gap-14">
@@ -58,7 +69,7 @@ export default function Products() {
                 key={item}
                 className="flex w-[calc(25%-21px)] min-w-62.5 flex-col overflow-hidden rounded-3xl sm:rounded-[2.1875rem] border border-black/10 bg-white"
               >
-                <Link href="#" className="flex w-full flex-col no-underline">
+                <Link href="/products/1" className="flex w-full flex-col no-underline">
                   <div className="flex aspect-square w-full items-center justify-center bg-white">
                     <Image
                       src="/images/PUP-L-01라지퍼피 치킨앤브라운라이스 2.png"
@@ -88,44 +99,7 @@ export default function Products() {
         </section>
 
         {/* 페이지네이션 */}
-        <ul className="flex w-full items-center justify-center gap-1.75 self-stretch pt-3.5 font-semibold">
-          <li className="flex shrink-0 items-center justify-center">
-            <button
-              type="button"
-              className="inline-flex h-10.5 w-10.5 cursor-not-allowed items-center justify-center rounded-[0.875rem] border border-black/10 bg-[#f2f2f2] p-0 leading-none text-[#646468]"
-              disabled
-            >
-              ‹
-            </button>
-          </li>
-
-          <li className="flex shrink-0 items-center justify-center">
-            <button
-              type="button"
-              className="inline-flex h-10.5 w-10.5 cursor-pointer items-center justify-center rounded-[0.875rem] border border-transparent bg-[#fba613] p-0 font-semibold leading-none text-white shadow-md"
-            >
-              1
-            </button>
-          </li>
-
-          <li className="flex shrink-0 items-center justify-center">
-            <button
-              type="button"
-              className="inline-flex h-10.5 w-10.5 cursor-pointer items-center justify-center rounded-[0.875rem] border border-black/10 bg-white p-0 leading-none text-black"
-            >
-              2
-            </button>
-          </li>
-
-          <li className="flex shrink-0 items-center justify-center">
-            <button
-              type="button"
-              className="inline-flex h-10.5 w-10.5 cursor-pointer items-center justify-center rounded-[0.875rem] border border-black/10 bg-white p-0 leading-none text-black"
-            >
-              ›
-            </button>
-          </li>
-        </ul>
+        <PaginationWrapper currentPage={currentPage} totalPages={5} />
       </div>
     </div>
   );

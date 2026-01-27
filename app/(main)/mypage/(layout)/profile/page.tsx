@@ -15,8 +15,8 @@ import { useState } from "react";
 export default function Profile() {
   const [preview, setPreview] = useState("/images/moomin.png");
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
 
     if (file) {
       const previewUrl = URL.createObjectURL(file);
@@ -100,19 +100,11 @@ export default function Profile() {
 
               <div className=" h-[1px] bg-[rgba(0,0,0,0.06)] mx-auto mb-[28px] " />
               <div className="flex flex-row gap-[14px]">
-                <Button
-                  className=" pr-[21px] pl-[21px] max-w-[270px] w-full "
-                  size="md"
-                  variant="primary"
-                >
+                <Button className="flex-1" size="md" variant="primary">
                   정보 저장하기
                 </Button>
 
-                <Button
-                  className="rounded-[14px] border-2 border-black/10 pr-[21px] pl-[21px] max-w-[270px] w-full text-black font-black text-[12px] font-['Pretendard'] "
-                  size="md"
-                  variant="ghost"
-                >
+                <Button className="flex-1" size="md" variant="outline">
                   취소
                 </Button>
               </div>

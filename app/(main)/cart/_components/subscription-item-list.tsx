@@ -1,4 +1,5 @@
 import Button from "@/components/common/Button";
+import Checkbox from "@/components/common/Checkbox";
 import ProductImage from "@/components/common/ProductImage";
 import QuantityControl from "@/components/common/Quantitycontrol";
 import Image from "next/image";
@@ -7,7 +8,7 @@ export default function SubscriptionItemList() {
   return (
     <section className="flex flex-col gap-3.5">
       <div className="flex items-center gap-2 sm:gap-5 border border-[#F9F9FB] rounded-[0.875rem] px-3 py-3 sm:px-7 sm:py-7 bg-white shadow-(--shadow-card)">
-        <input type="checkbox" />
+        <Checkbox label="프라임 어덜트" hideLabel />
         <div className="w-20 h-20 sm:w-24 shrink-0">
           <ProductImage src="" alt="" className="rounded-[0.875rem]" />
         </div>
@@ -16,16 +17,10 @@ export default function SubscriptionItemList() {
           <p className="text-text-tertiary text-[0.75rem] font-bold">5kg</p>
           <p className="text-[0.625rem] text-(--color-text-primary) font-bold">배송 주기 선택</p>
           <div className="flex felx-col gap-0.5 sm:gap-1.5">
-            <Button
-              variant="outline"
-              className="!text-[0.5rem] !sm:text-xs text-text-tertiary font-bold border rounded-xl border-border-primary !px-1 !py-1 !sm:px-8 !sm:py-1.5"
-            >
+            <Button variant="outline" size="xs">
               격주 배송(2주)
             </Button>
-            <Button
-              variant="secondary"
-              className="!text-[0.5rem] !sm:text-xs text-accent-primary font-bold border rounded-xl border-accent-primary bg-accent-soft !px-1 !py-1 !sm:px-8 !sm:py-1.5"
-            >
+            <Button variant="secondary" size="xs">
               미월 배송(4주)
             </Button>
           </div>

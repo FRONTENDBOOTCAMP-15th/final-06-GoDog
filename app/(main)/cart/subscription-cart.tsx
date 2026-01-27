@@ -1,5 +1,6 @@
 import SubscriptionItemList from "@/app/(main)/cart/_components/subscription-item-list";
 import Button from "@/components/common/Button";
+import Checkbox from "@/components/common/Checkbox";
 import Image from "next/image";
 
 export default function SubscriptionCart() {
@@ -7,9 +8,8 @@ export default function SubscriptionCart() {
     <div className="flex flex-col xl:flex-row gap-9 justify-center">
       {/* 장바구니 목록 */}
       <div className="xl:w-2/3">
-        <section className="flex gap-3 bg-white border border-[#F9F9FB] rounded-[0.875rem] px-3 py-3 sm:px-7 sm:py-7 mb-5 shadow-(--shadow-card)">
-          <input type="checkbox" />
-          <h2 className="text-[#1A1A1C] text-[0.75rem] font-black">전체 선택(2/2)</h2>
+        <section className="flex gap-3 items-center bg-white border border-[#F9F9FB] rounded-[0.875rem] p-3 sm:p-7 mb-5 shadow-(--shadow-card)">
+          <Checkbox label="전체 선택(2/2)" className="text-[#1A1A1C] text-[0.75rem] font-black" />
           <button className="ml-auto text-text-tertiary text-[0.625rem] font-bold">
             선택 삭제
           </button>

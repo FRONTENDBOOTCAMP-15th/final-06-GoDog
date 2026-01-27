@@ -23,8 +23,17 @@ interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "classN
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
   (
-    { label, hideLabel = false, isError = false, isSearch = false, className = "", id, ...props },
-    ref
+    {
+      label,
+      hideLabel = false,
+      isError = false,
+      errorMessage,
+      isSearch = false,
+      className = "",
+      id,
+      ...props
+    },
+    ref,
   ) => {
     const generatedId = useId();
     const inputId = id ?? generatedId;
@@ -49,7 +58,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             id={inputId}
             aria-invalid={isError}
-            className={`w-full h-15 px-5 py-4 bg-[#F9F9FB] shadow-sm rounded-2xl text-md font-bold leading-4 text-[#1A1A1C] placeholder:text-[#9CA3AF] outline-none ring-2 focus:ring-2 transition-shadow ${
+            className={`w-full h-12 px-5 py-4 bg-[#F9F9FB] shadow-sm rounded-2xl text-md font-bold leading-4 text-[#1A1A1C] placeholder:text-[#9CA3AF] outline-none ring-2 focus:ring-2 transition-shadow ${
               isSearch ? "pl-[3.5rem]" : ""
             } ${
               isError
@@ -66,7 +75,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         )}
       </div>
     );
-  }
+  },
 );
 
 Input.displayName = "Input";
