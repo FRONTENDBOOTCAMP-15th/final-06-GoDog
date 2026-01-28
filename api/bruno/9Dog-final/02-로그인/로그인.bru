@@ -12,12 +12,12 @@ post {
 
 body:json {
   {
-    "email": "u1@market.com",
-    "password": "11111111"
+    "email": "ko@market.com",
+    "password": "12345678"
   }
 }
 
-script:pre-request {
+script:post-response {
   // 로그인 성공 후
   if(res.status === 200){
     bru.setEnvVar('accessToken', res.body.item.token.accessToken);
