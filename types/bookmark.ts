@@ -16,9 +16,9 @@ export interface Bookmark {
   _id: number;
   user_id: number;
   user: BookmarkUser;
-  type: "product" | "post"; // 찜한 대상의 타입
+  type: "product"; // 찜한 대상의 타입
   target_id: number; // 해당 상품이나 게시글의 _id
-  is_like: "true" | "false" | boolean; // 데이터상 문자열 "true"로 들어옴
+  is_like?: "true"; // 데이터상 문자열 "true"로 들어옴
   memo?: string;
   extra?: BookmarkExtra;
   createdAt: string;

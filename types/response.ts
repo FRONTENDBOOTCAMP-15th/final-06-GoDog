@@ -1,13 +1,13 @@
-import type { User } from "@/types/sjh/user";
-import type { Review } from "@/types/sjh/review";
-import type { Product } from "@/types/sjh/product";
-import type { Post } from "@/types/sjh/post";
-import type { Order } from "@/types/sjh/order";
-import type { Bookmark } from "@/types/sjh/bookmark";
-import type { Cart } from "@/types/sjh/cart";
-import type { FileInfo } from "@/types/sjh/file";
-import type { CodeGroup } from "@/types/sjh/codes";
-import type { SystemConfig } from "@/types/sjh/config";
+import type { User } from "@/types/user";
+import type { Review } from "@/types/review";
+import type { Product } from "@/types/product";
+import type { Post } from "@/types/post";
+import type { Order } from "@/types/order";
+import type { Bookmark } from "@/types/bookmark";
+import type { Cart } from "@/types/cart";
+import type { FileInfo } from "@/types/file";
+import type { CodeGroup } from "@/types/codes";
+import type { SystemConfig } from "@/types/config";
 
 // 회원 정보 상세 조회 결과 (단일 사용자)
 export interface UserInfoRes {

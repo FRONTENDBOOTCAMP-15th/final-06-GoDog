@@ -1,5 +1,5 @@
 // 유저의 타입을 구분하는 유니온 타입
-export type UserType = "user" | "seller" | "admin";
+export type UserType = "user" | "seller";
 
 // 추가 정보(extra) 인터페이스
 export interface UserExtra {
@@ -19,7 +19,7 @@ export interface User {
   phone?: string;
   address?: string;
   type: UserType;
-  loginType: "email" | "kakao" | "google"; // 예시에 기반한 추론
+  loginType: "email";
   image?: string;
   extra?: UserExtra;
   createdAt: string;

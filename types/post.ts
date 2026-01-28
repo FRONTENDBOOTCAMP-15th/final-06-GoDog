@@ -34,7 +34,7 @@ export interface PostUser {
 // 개별 게시글 인터페이스
 export interface Post {
   _id: number;
-  type: "qna" | "notice" | "community"; // 데이터상 "qna" 확인
+  type: "qna"; // 데이터상 "qna" 확인
   product_id?: number;
   views: number;
   user: PostUser;
