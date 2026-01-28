@@ -6,12 +6,16 @@ meta {
 
 post {
   url: {{url}}/db/init?initData
-  body: none
+  body: multipartForm
   auth: inherit
 }
 
 params:query {
   initData: 
+}
+
+body:multipart-form {
+  initData: @file(/Users/yoonsora/bootcamp/febc15/project-final/final-06-GuDog/api/dbinit/team/data.json)
 }
 
 settings {
