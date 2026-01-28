@@ -45,13 +45,11 @@
   ],
   "product": [
     {
-      "_id": "1",
       "price": 45000,
       "quantity": 127,
       "seller_id": 1,
-      "buyQuantity": 127,
+      "buyQuantity": 12,
       "shippingFees": 3000,
-      "quantityInStock": 127,
       "show": true,
       "active": true,
       "name": "스몰퍼피 치킨앤라이스",
@@ -92,13 +90,11 @@
     },
 
     {
-      "_id": "2",
       "price": 47000,
       "quantity": 89,
       "seller_id": 1,
-      "buyQuantity": 89,
+      "buyQuantity": 8,
       "shippingFees": 0,
-      "quantityInStock": 89,
       "show": true,
       "active": true,
       "name": "미디엄퍼피 치킨앤오트밀",
@@ -142,13 +138,11 @@
     },
 
     {
-      "_id": "3",
       "price": 52000,
       "quantity": 43,
       "seller_id": 1,
-      "buyQuantity": 43,
+      "buyQuantity": 4,
       "shippingFees": 0,
-      "quantityInStock": 43,
       "show": true,
       "active": true,
       "name": "라지퍼피 치킨앤브라운라이스",
@@ -192,13 +186,11 @@
     },
 
     {
-      "_id": "4",
       "price": 55000,
       "quantity": 62,
       "seller_id": 1,
-      "buyQuantity": 62,
+      "buyQuantity": 6,
       "shippingFees": 0,
-      "quantityInStock": 62,
       "show": true,
       "active": true,
       "name": "퍼피 연어앤고구마 그레인프리",
@@ -242,13 +234,11 @@
     },
 
     {
-      "_id": "5",
       "price": 43000,
       "quantity": 156,
       "seller_id": 1,
-      "buyQuantity": 156,
+      "buyQuantity": 15,
       "shippingFees": 0,
-      "quantityInStock": 156,
       "show": true,
       "active": true,
       "name": "스몰어덜트 치킨앤라이스",
@@ -292,13 +282,11 @@
     },
 
     {
-      "_id": "6",
       "price": 44000,
       "quantity": 97,
       "seller_id": 1,
-      "buyQuantity": 97,
+      "buyQuantity": 9,
       "shippingFees": 0,
-      "quantityInStock": 97,
       "show": true,
       "active": true,
       "name": "스몰어덜트 오리앤귀리",
@@ -342,13 +330,11 @@
     },
 
     {
-      "_id": "7",
       "price": 46000,
       "quantity": 78,
       "seller_id": 1,
-      "buyQuantity": 78,
+      "buyQuantity": 7,
       "shippingFees": 0,
-      "quantityInStock": 78,
       "show": true,
       "active": true,
       "name": "미디엄어덜트 치킨앤보리",
@@ -392,13 +378,11 @@
     },
 
     {
-      "_id": "8",
       "price": 50000,
       "quantity": 36,
       "seller_id": 1,
-      "buyQuantity": 36,
+      "buyQuantity": 3,
       "shippingFees": 0,
-      "quantityInStock": 36,
       "show": true,
       "active": true,
       "name": "라지어덜트 치킨앤현미",
@@ -441,13 +425,11 @@
       }
     },
     {
-      "_id": "9",
       "price": 50000,
       "quantity": 36,
       "seller_id": 1,
-      "buyQuantity": 36,
+      "buyQuantity": 3,
       "shippingFees": 0,
-      "quantityInStock": 36,
       "show": true,
       "active": true,
       "name": "라지어덜트 치킨앤현미",
@@ -490,13 +472,11 @@
       }
     },
     {
-      "_id": "10",
       "price": 52000,
       "quantity": 29,
       "seller_id": 1,
-      "buyQuantity": 29,
+      "buyQuantity": 2,
       "shippingFees": 0,
-      "quantityInStock": 29,
       "show": true,
       "active": true,
       "name": "라지어덜트 연어앤감자",
@@ -539,13 +519,11 @@
       }
     },
     {
-      "_id": "11",
       "price": 54000,
       "quantity": 47,
       "seller_id": 1,
-      "buyQuantity": 47,
+      "buyQuantity": 4,
       "shippingFees": 0,
-      "quantityInStock": 47,
       "show": true,
       "active": true,
       "name": "스킨케어 연어앤고구마",
@@ -588,13 +566,11 @@
       }
     },
     {
-      "_id": "12",
       "price": 53000,
       "quantity": 68,
       "seller_id": 1,
-      "buyQuantity": 68,
+      "buyQuantity": 6,
       "shippingFees": 0,
-      "quantityInStock": 68,
       "show": true,
       "active": true,
       "name": "다이제스티브 오리앤귀리",
@@ -637,13 +613,11 @@
       }
     },
     {
-      "_id": "13",
       "price": 55000,
       "quantity": 32,
       "seller_id": 1,
-      "buyQuantity": 32,
+      "buyQuantity": 3,
       "shippingFees": 0,
-      "quantityInStock": 32,
       "show": true,
       "active": true,
       "name": "조인트케어 치킨앤현미",
@@ -686,13 +660,11 @@
       }
     },
     {
-      "_id": "14",
       "price": 56000,
       "quantity": 24,
       "seller_id": 1,
-      "buyQuantity": 24,
+      "buyQuantity": 2,
       "shippingFees": 0,
-      "quantityInStock": 24,
       "show": true,
       "active": true,
       "name": "조인트케어 연어앤감",
@@ -735,13 +707,11 @@
       }
     },
     {
-      "_id": "15",
       "price": 48000,
       "quantity": 73,
       "seller_id": 1,
-      "buyQuantity": 73,
+      "buyQuantity": 7,
       "shippingFees": 0,
-      "quantityInStock": 73,
       "show": true,
       "active": true,
       "name": "웨이트케어 치킨앤보리",
@@ -784,13 +754,11 @@
       }
     },
     {
-      "_id": "16",
       "price": 50000,
       "quantity": 41,
       "seller_id": 1,
-      "buyQuantity": 41,
+      "buyQuantity": 4,
       "shippingFees": 0,
-      "quantityInStock": 41,
       "show": true,
       "active": true,
       "name": "웨이트케어 칠면조앤고구마",
@@ -834,13 +802,11 @@
     },
 
     {
-      "_id": "17",
       "price": 46000,
       "quantity": 82,
       "seller_id": 1,
-      "buyQuantity": 127,
+      "buyQuantity": 12,
       "shippingFees": 0,
-      "quantityInStock": 127,
       "show": true,
       "active": true,
       "name": "스몰시니어 치킨앤현미",
@@ -883,13 +849,11 @@
       }
     },
     {
-      "_id": "18",
       "price": 47000,
       "quantity": 59,
       "seller_id": 1,
-      "buyQuantity": 127,
+      "buyQuantity": 12,
       "shippingFees": 0,
-      "quantityInStock": 127,
       "show": true,
       "active": true,
       "name": "스몰시니어 오리앤귀리",
@@ -929,13 +893,11 @@
       }
     },
     {
-      "_id": "19",
       "price": 52000,
       "quantity": 37,
       "seller_id": 1,
-      "buyQuantity": 127,
+      "buyQuantity": 12,
       "shippingFees": 0,
-      "quantityInStock": 127,
       "show": true,
       "active": true,
       "name": "미디엄시니어 연어앤현미",
@@ -978,13 +940,11 @@
       }
     },
     {
-      "_id": "20",
       "price": 54000,
       "quantity": 22,
       "seller_id": 1,
-      "buyQuantity": 127,
+      "buyQuantity": 12,
       "shippingFees": 0,
-      "quantityInStock": 127,
       "show": true,
       "active": true,
       "name": "라지시니어 치킨앤현미",
@@ -1027,13 +987,11 @@
       }
     },
     {
-      "_id": "21",
       "price": 56000,
       "quantity": 18,
       "seller_id": 1,
-      "buyQuantity": 127,
+      "buyQuantity": 12,
       "shippingFees": 0,
-      "quantityInStock": 127,
       "show": true,
       "active": true,
       "name": "라지시니어 연어앤감자",
@@ -1079,13 +1037,11 @@
       }
     },
     {
-      "_id": "22",
       "price": 58000,
       "quantity": 27,
       "seller_id": 1,
-      "buyQuantity": 127,
+      "buyQuantity": 12,
       "shippingFees": 0,
-      "quantityInStock": 127,
       "show": true,
       "active": true,
       "name": "싱글프로틴 양고기앤고구마",
@@ -1128,13 +1084,11 @@
       }
     },
     {
-      "_id": "23",
       "price": 59000,
       "quantity": 19,
       "seller_id": 1,
-      "buyQuantity": 127,
+      "buyQuantity": 12,
       "shippingFees": 0,
-      "quantityInStock": 127,
       "show": true,
       "active": true,
       "name": "싱글프로틴 연어앤타피오카",
@@ -1177,13 +1131,11 @@
       }
     },
     {
-      "_id": "24",
       "price": 57000,
       "quantity": 31,
       "seller_id": 1,
-      "buyQuantity": 127,
+      "buyQuantity": 12,
       "shippingFees": 0,
-      "quantityInStock": 127,
       "show": true,
       "active": true,
       "name": "싱글프로틴 오리앤감자",
