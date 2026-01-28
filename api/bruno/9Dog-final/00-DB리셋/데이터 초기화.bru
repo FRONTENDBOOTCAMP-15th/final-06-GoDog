@@ -5,13 +5,13 @@ meta {
 }
 
 post {
-  url: {{url}}/db/init?initData
+  url: {{url}}/db/init
   body: multipartForm
   auth: inherit
 }
 
-params:query {
-  initData: 
+body:multipart-form {
+  initData: @file(C:\Users\mhj\bootcamp\febc15\project-final\final-06-gudog\api\dbinit\team\data.json)
 }
 
 body:multipart-form {
