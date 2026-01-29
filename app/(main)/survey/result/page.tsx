@@ -1,18 +1,22 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import Badge from "@/components/common/Badge";
 import Button from "@/components/common/Button";
-import { parseResultCodes, getProductByCode, type ProductData } from "@/lib/recommendProducts";
+import { parseResultCodes, getProductsByCodeList, type ProductData } from "@/lib/recommendProducts";
 import ProductImage from "@/components/common/ProductImage";
 
 function SurveyResultContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // ✅ 상위 제품 코드들 파싱 (기존 code → top 으로 변경)
+  // 상품 데이터 상태
+  const [topProducts, setTopProducts] = useState<ProductData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // 상위 제품 코드들 파싱
   const topCodesParam = searchParams.get("top");
   const topCodes = parseResultCodes(topCodesParam);
 
@@ -22,10 +26,26 @@ function SurveyResultContent() {
   const proteinParam = searchParams.get("protein") || "상관없음";
   const healthParam = searchParams.get("health") || "";
 
-  // ✅ 모든 상위 제품 데이터 조회
-  const topProducts = topCodes
-    ? topCodes.map((code) => getProductByCode(code)).filter((p): p is ProductData => p !== null)
-    : [];
+  // 코드 배열로 필요한 상품만 조회
+  useEffect(() => {
+    async function fetchProducts() {
+      if (!topCodes || topCodes.length === 0) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const products = await getProductsByCodeList(topCodes);
+        setTopProducts(products);
+      } catch (error) {
+        console.error("상품 조회 실패:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchProducts();
+  }, [topCodesParam]);
 
   // 메인 추천 제품은 1순위
   const mainProduct = topProducts[0];
@@ -47,6 +67,18 @@ function SurveyResultContent() {
   const handleViewAll = () => {
     router.push("/products");
   };
+
+  // 로딩 중
+  if (isLoading) {
+    return (
+      <div className="bg-bg-secondary min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-accent-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-text-secondary font-medium">추천 결과를 분석하고 있습니다...</p>
+        </div>
+      </div>
+    );
+  }
 
   // 제품이 없을 경우 에러 페이지
   if (!mainProduct || topProducts.length === 0) {
@@ -106,7 +138,7 @@ function SurveyResultContent() {
               <div className="aspect-square rounded-[3.5rem] overflow-hidden bg-bg-warm relative flex items-center justify-center">
                 {mainProduct.mainImages?.[0] ? (
                   <ProductImage
-                    src={`${mainProduct.mainImages[0].path}/${mainProduct.mainImages[0].name}`}
+                    src={`${mainProduct.mainImages[0].path}`}
                     alt={mainProduct.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
@@ -126,10 +158,6 @@ function SurveyResultContent() {
                 </div>
               </div>
               <div className="p-10 text-center">
-                {/* ✅ extra.code로 변경 */}
-                <p className="text-sm text-text-tertiary font-mono mb-2">
-                  {mainProduct.extra.code}
-                </p>
                 <h3 className="text-3xl font-black text-text-primary mb-3 tracking-tighter">
                   {mainProduct.name}
                 </h3>
@@ -159,7 +187,7 @@ function SurveyResultContent() {
             </div>
           </div>
 
-          {/* 📝 추천 사유 분석 */}
+          {/* 추천 사유 분석 */}
           <div className="lg:col-span-7 space-y-8 animate-in fade-in slide-in-from-right-8 duration-700 delay-100">
             <div className="bg-white rounded-[3.5rem] p-10 md:p-12 border border-border-primary shadow-soft">
               <h4 className="text-xl font-black text-text-primary mb-10 tracking-tight flex items-center">
@@ -176,12 +204,15 @@ function SurveyResultContent() {
                       1
                     </div>
                     <p className="text-sm font-medium text-text-secondary leading-relaxed pt-1">
-                      {mainProduct.content}
+                      <span className="font-black text-text-primary">
+                        {mainProduct.extra.mainProtein.join(", ")} 기반
+                      </span>
+                      의 고품질 단백질이 함유되어 {sizeParam}의 근육 발달과 건강한 체형 유지에
+                      도움을 줍니다.
                     </p>
                   </div>
                 </div>
 
-                {/* ✅ 건강 고민과 매칭되는 추가 추천 이유 자동 생성 */}
                 {mainProduct.extra.healthBenefits.length > 0 && (
                   <div className="p-6 bg-bg-secondary rounded-3xl border border-transparent hover:border-accent-soft transition-colors">
                     <div className="flex items-start gap-4">
@@ -189,17 +220,15 @@ function SurveyResultContent() {
                         2
                       </div>
                       <p className="text-sm font-medium text-text-secondary leading-relaxed pt-1">
-                        {mainProduct.extra.healthBenefits.join(", ")}에 특화된 영양 성분이 포함되어
-                        있어
-                        {healthConcerns.length > 0
-                          ? ` 고민하시는 ${healthConcerns.join(", ")} 문제에 효과적으로 도움을 줄 수 있습니다.`
-                          : ` 반려견의 건강을 종합적으로 지원해줍니다.`}
+                        <span className="font-black text-text-primary">
+                          {mainProduct.extra.healthBenefits.join(", ")}
+                        </span>
+                        에 특화된 영양 설계로 반려견의 건강 고민을 케어해드립니다.
                       </p>
                     </div>
                   </div>
                 )}
 
-                {/* ✅ 체형 및 활동량에 따른 추천 이유 */}
                 <div className="p-6 bg-bg-secondary rounded-3xl border border-transparent hover:border-accent-soft transition-colors">
                   <div className="flex items-start gap-4">
                     <div className="w-8 h-8 bg-accent-primary text-white rounded-xl flex items-center justify-center shrink-0 font-black text-sm">
@@ -217,7 +246,7 @@ function SurveyResultContent() {
               </div>
             </div>
 
-            {/* 📊 영양 정보 */}
+            {/* 영양 정보 */}
             <div className="bg-text-primary rounded-[3.5rem] p-10 md:p-12 text-white shadow-2xl relative overflow-hidden">
               <div className="absolute top-0 right-0 w-64 h-64 bg-accent-primary/20 rounded-full blur-[80px] pointer-events-none"></div>
 
@@ -284,10 +313,7 @@ function SurveyResultContent() {
         {topProducts.length > 1 && (
           <div className="mt-20 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
             <div className="flex items-center justify-between mb-10">
-              <h3 className="text-2xl font-black text-text-primary">
-                다른 추천 제품{" "}
-                <span className="text-accent-primary">(총 {topProducts.length}개)</span>
-              </h3>
+              <h3 className="text-2xl font-black text-text-primary">다른 추천 제품</h3>
               <Button variant="ghost" onClick={handleViewAll}>
                 전체 보기
               </Button>
@@ -303,7 +329,7 @@ function SurveyResultContent() {
                   <div className="aspect-square bg-bg-warm flex items-center justify-center p-4 relative">
                     {product.mainImages?.[0] ? (
                       <ProductImage
-                        src={`${product.mainImages[0].path}/${product.mainImages[0].name}`}
+                        src={`${product.mainImages[0].path}`}
                         alt={product.name}
                         className="w-full h-full object-cover rounded-2xl group-hover:scale-105 transition-transform duration-500"
                       />
@@ -318,7 +344,6 @@ function SurveyResultContent() {
                     </div>
                   </div>
                   <div className="p-6">
-                    <p className="text-xs text-text-tertiary mb-1">{product.extra.code}</p>
                     <h4 className="font-black text-text-primary mb-2 line-clamp-2">
                       {product.name}
                     </h4>
