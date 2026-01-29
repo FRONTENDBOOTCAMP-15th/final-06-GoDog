@@ -32,7 +32,7 @@ const UserStore: StateCreator<UserStoreState> = (set) => ({
 const useUserStore = create<UserStoreState>()(
   persist(UserStore, {
     name: "user",
-    storage: createJSONStorage(() => sessionStorage), // 기본은 localStorage
+    storage: createJSONStorage(() => localStorage), // 기본은 localStorage
   }),
 );
 

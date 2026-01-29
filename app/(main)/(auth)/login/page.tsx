@@ -9,6 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { HTMLInputTypeAttribute, useActionState, useEffect, useState } from "react";
+import { createJSONStorage } from "zustand/middleware";
 
 export default function Login() {
   const [userState, formAction, isPending] = useActionState(login, null);
@@ -31,13 +32,20 @@ export default function Login() {
         sessionStorage.setItem("sessionStorage", userState.item.token.accessToken);
       }
     }
-  }, [userState]);
+  }, [userState, checkedState]);
   const router = useRouter();
   const redirect = useSearchParams().get("redirect");
   const setUser = useUserStore((state) => state.setUser);
 
   useEffect(() => {
-    if (userState?.ok) {
+    if (userState?.ok === 1) {
+      const storageType = checkedState ? localStorage : sessionStorage;
+
+      // zustand persist 설정의 스토리지를 강제 변경
+      useUserStore.persist.setOptions({
+        storage: createJSONStorage(() => storageType),
+      });
+
       setUser({
         _id: userState.item._id,
         email: userState.item.email,
@@ -48,10 +56,11 @@ export default function Login() {
           refreshToken: userState.item.token?.refreshToken || "",
         },
       });
+      console.log(userState.item._id);
       alert(`${userState.item.name}님 로그인이 완료되었습니다.`);
       router.replace(redirect || "/");
     }
-  }, [useState, router, redirect, setUser]);
+  }, [userState, router, redirect, setUser]);
 
   return (
     <>
