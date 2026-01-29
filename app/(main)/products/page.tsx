@@ -106,10 +106,10 @@ export default async function Products({ searchParams }: Props) {
                 key={product._id}
                 className="flex w-[calc(25%-21px)] min-w-62.5 flex-col overflow-hidden rounded-3xl sm:rounded-[2.1875rem] border border-black/10 bg-white"
               >
-                <Link href="/products/${product._id}" className="flex w-full flex-col no-underline">
+                <Link href={`/products/${product._id}`} className="flex w-full flex-col no-underline">
                   <div className="flex aspect-square w-full items-center justify-center bg-white">
                     <Image
-                      src={""}
+                      src={product.mainImages[0]?.path || "/placeholder.png"}
                       alt={product.name}
                       width={280}
                       height={280}

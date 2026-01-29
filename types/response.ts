@@ -60,10 +60,19 @@ export interface ReviewInfoRes {
   item: Review;
 }
 
+// 페이지네이션 정보
+export interface Pagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
 // 상품 목록 조회 결과
 export interface ProductListRes {
   ok: 1;
   item: Product[];
+  pagination: Pagination;
 }
 
 // 상품 상세 조회 결과
