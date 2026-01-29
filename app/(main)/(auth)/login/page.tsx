@@ -5,11 +5,66 @@ import Checkbox from "@/components/common/Checkbox";
 import Input from "@/components/common/Input";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+import { ChangeEvent, FormEvent, useState } from "react";
+
+// 응답 타입 정의
+interface LoginResponse {
+  TOKEN?: string;
+  user_name?: string;
+}
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const router = useRouter();
+  // 상태 (state) 관리
+  const [loginData, setLoginData] = useState({ email: "", password: "" });
+
+  // 입력값 변경 핸들러
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setLoginData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // 로그인 함수
+  const handleSignin = async (e?: FormEvent) => {
+    if (e) e.preventDefault(); // 폼 제출 시 새로고침 방지
+
+    const { email, password } = loginData;
+
+    if (!email || !password) {
+      alert("이메일과 비밀번호를 입력해 주세요");
+      return;
+    }
+
+    try {
+      const response = await fetch("https://fesp-api.koyeb.app/market/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "client-id": "febc15-final06-ecad" },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      });
+
+      const res: LoginResponse = await response.json();
+
+      if (res.TOKEN) {
+        localStorage.setItem("token", res.TOKEN);
+        localStorage.setItem("user_name", res.user_name || "");
+        router.push("/"); // 페이지 이동
+      } else {
+        alert("ID,password를 확인해 주세요");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("로그인 중 오류가 발생했습니다.");
+    }
+  };
+
   return (
     <>
       <div className="bg-bg-secondary min-h-screen flex items-center justify-center py-20 px-4">
@@ -30,8 +85,19 @@ export default function Login() {
           {/* 로그인 폼 카드 */}
           <div className="bg-white rounded-[3rem] p-10 md:p-12 shadow-card border border-border-primary mb-8">
             <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-              <Input label="이메일 주소" placeholder="hello@9dog.co.kr" />
-              <Input label="비밀번호" placeholder="••••••••" type="password" />
+              <Input
+                label="이메일 주소"
+                name="email"
+                placeholder="hello@9dog.co.kr"
+                onChange={handleInputChange}
+              />
+              <Input
+                label="비밀번호"
+                name="password"
+                placeholder="••••••••"
+                type="password"
+                onChange={handleInputChange}
+              />
 
               <div className="flex items-center justify-between pt-2 mb-6">
                 <Checkbox label="로그인 상태 유지" />
@@ -40,7 +106,11 @@ export default function Login() {
                 </button>
               </div>
 
-              <Button variant="primary" className="w-full py-5 text-lg rounded-2xl shadow-glow">
+              <Button
+                variant="primary"
+                className="w-full py-5 text-lg rounded-2xl shadow-glow"
+                onClick={handleSignin}
+              >
                 로그인
               </Button>
             </form>
