@@ -1,69 +1,57 @@
 "use client";
 
+import { login } from "@/app/(main)/(auth)/login/actions/user";
+import useUserStore from "@/app/(main)/(auth)/login/zustand/useStore";
 import Button from "@/components/common/Button";
 import Checkbox from "@/components/common/Checkbox";
 import Input from "@/components/common/Input";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-
-import { ChangeEvent, FormEvent, useState } from "react";
-
-// 응답 타입 정의
-interface LoginResponse {
-  TOKEN?: string;
-  user_name?: string;
-}
+import { useRouter, useSearchParams } from "next/navigation";
+import { HTMLInputTypeAttribute, useActionState, useEffect, useState } from "react";
 
 export default function Login() {
-  const router = useRouter();
-  // 상태 (state) 관리
-  const [loginData, setLoginData] = useState({ email: "", password: "" });
+  const [userState, formAction, isPending] = useActionState(login, null);
+  const [checkedState, setcheckedState] = useState(false);
 
-  // 입력값 변경 핸들러
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setLoginData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setcheckedState(e.target.checked);
   };
 
-  // 로그인 함수
-  const handleSignin = async (e?: FormEvent) => {
-    if (e) e.preventDefault(); // 폼 제출 시 새로고침 방지
+  useEffect(() => {
+    console.log(checkedState);
+  }, [checkedState]);
 
-    const { email, password } = loginData;
-
-    if (!email || !password) {
-      alert("이메일과 비밀번호를 입력해 주세요");
-      return;
-    }
-
-    try {
-      const response = await fetch("https://fesp-api.koyeb.app/market/users/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "client-id": "febc15-final06-ecad" },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        }),
-      });
-
-      const res: LoginResponse = await response.json();
-
-      if (res.TOKEN) {
-        localStorage.setItem("token", res.TOKEN);
-        localStorage.setItem("user_name", res.user_name || "");
-        router.push("/"); // 페이지 이동
-      } else {
-        alert("ID,password를 확인해 주세요");
+  useEffect(() => {
+    if (userState?.ok === 1) {
+      if (checkedState) {
+        localStorage.setItem("sessionStorage", userState.item.token.accessToken);
       }
-    } catch (err) {
-      console.error(err);
-      alert("로그인 중 오류가 발생했습니다.");
+      if (!checkedState) {
+        sessionStorage.setItem("sessionStorage", userState.item.token.accessToken);
+      }
     }
-  };
+  }, [userState]);
+  const router = useRouter();
+  const redirect = useSearchParams().get("redirect");
+  const setUser = useUserStore((state) => state.setUser);
+
+  useEffect(() => {
+    if (userState?.ok) {
+      setUser({
+        _id: userState.item._id,
+        email: userState.item.email,
+        name: userState.item.name,
+        image: userState.item.image,
+        token: {
+          accessToken: userState.item.token?.accessToken || "",
+          refreshToken: userState.item.token?.refreshToken || "",
+        },
+      });
+      alert(`${userState.item.name}님 로그인이 완료되었습니다.`);
+      router.replace(redirect || "/");
+    }
+  }, [useState, router, redirect, setUser]);
 
   return (
     <>
@@ -84,32 +72,22 @@ export default function Login() {
 
           {/* 로그인 폼 카드 */}
           <div className="bg-white rounded-[3rem] p-10 md:p-12 shadow-card border border-border-primary mb-8">
-            <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-              <Input
-                label="이메일 주소"
-                name="email"
-                placeholder="hello@9dog.co.kr"
-                onChange={handleInputChange}
-              />
-              <Input
-                label="비밀번호"
-                name="password"
-                placeholder="••••••••"
-                type="password"
-                onChange={handleInputChange}
-              />
+            <form className="space-y-4" action={formAction}>
+              <Input label="이메일 주소" name="email" placeholder="hello@9dog.co.kr" />
+              <Input label="비밀번호" name="password" placeholder="••••••••" type="password" />
 
               <div className="flex items-center justify-between pt-2 mb-6">
-                <Checkbox label="로그인 상태 유지" />
+                <Checkbox checked={checkedState} onChange={handleChange} label="로그인 상태 유지" />
                 <button className="text-xs font-bold text-text-tertiary hover:text-text-primary transition-colors underline underline-offset-4">
                   비밀번호 찾기
                 </button>
               </div>
 
               <Button
+                disabled={isPending}
+                type="submit"
                 variant="primary"
                 className="w-full py-5 text-lg rounded-2xl shadow-glow"
-                onClick={handleSignin}
               >
                 로그인
               </Button>
