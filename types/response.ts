@@ -4,7 +4,7 @@ import type { Product } from "@/types/product";
 import type { Post } from "@/types/post";
 import type { Order } from "@/types/order";
 import type { Bookmark } from "@/types/bookmark";
-import type { Cart } from "@/types/cart";
+import type { Cart, CartCost } from "@/types/cart";
 import type { FileInfo } from "@/types/file";
 import type { CodeGroup } from "@/types/codes";
 import type { SystemConfig } from "@/types/config";
@@ -112,6 +112,7 @@ export interface BookmarkInfoRes {
 export interface CartListRes {
   ok: 1;
   item: Cart[];
+  cost: CartCost;
 }
 
 // 장바구니 아이템 추가/수정 결과

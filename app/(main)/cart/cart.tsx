@@ -1,22 +1,84 @@
 import OnetimeItemList from "@/app/(main)/cart/_components/onetime-item-list";
 import Button from "@/components/common/Button";
 import Checkbox from "@/components/common/Checkbox";
+import { Cart, CartCost } from "@/types/cart";
+import { ErrorRes } from "@/types/response";
 import Image from "next/image";
+import { useMemo, useState } from "react";
 
-export default function OnetimeCart() {
+interface OnetimeCartProps {
+  items: Cart[];
+  cost?: CartCost;
+  error: ErrorRes | null;
+}
+
+export default function OnetimeCart({ items, cost, error }: OnetimeCartProps) {
+  // 아이템 수량 관리
+  const [quantity, setQuantity] = useState<Record<number, number>>(() => {
+    const initialQuantity: Record<number, number> = {};
+    items.forEach((item) => {
+      initialQuantity[item._id] = item.quantity;
+    });
+    return initialQuantity;
+  });
+
+  // 수량 변경 핸들러
+  const handleQuantityChange = (cartId: number, newQuantity: number) => {
+    setQuantity((prev) => ({
+      ...prev,
+      [cartId]: newQuantity,
+    }));
+  };
+
+  // 실시간 총 금액
+  const total = useMemo(() => {
+    const productsTotal = items.reduce((sum, item) => {
+      const currentQty = quantity[item._id] || item.quantity;
+      return sum + item.product.price * currentQty;
+    }, 0);
+
+    const shippingFees = cost?.shippingFees || 0;
+
+    return {
+      products: productsTotal,
+      shippingFees,
+      total: productsTotal + shippingFees,
+    };
+  }, [items, quantity, cost]);
+
   return (
     <div className="flex flex-col xl:flex-row gap-9 justify-center">
       {/* 장바구니 목록 */}
       <div className="xl:w-2/3">
-        <section className="flex gap-3 items-center bg-white border border-[#F9F9FB] rounded-[0.875rem] p-3 sm:p-7 mb-5 shadow-(--shadow-card)">
-          <Checkbox label="전체 선택(2/2)" className="text-[#1A1A1C] text-[0.75rem] font-black" />
-          <button className="ml-auto text-text-tertiary text-[0.625rem] font-bold">
-            선택 삭제
-          </button>
-        </section>
+        {items.length > 0 ? (
+          <>
+            <section className="flex gap-3 items-center bg-white border border-[#F9F9FB] rounded-[0.875rem] p-3 sm:p-7 mb-5 shadow-(--shadow-card)">
+              <Checkbox
+                label={`전체 선택(0/${items.length})`}
+                className="text-[#1A1A1C] text-[0.75rem] font-black"
+              />
+              <button className="ml-auto text-text-tertiary text-[0.625rem] font-bold">
+                선택 삭제
+              </button>
+            </section>
 
-        {/* 상품 목록 */}
-        <OnetimeItemList />
+            {/* 상품 목록 */}
+            {items.map((cart) => (
+              <OnetimeItemList
+                key={cart._id}
+                cart={cart}
+                parentError={error}
+                onQuantityChange={handleQuantityChange}
+              />
+            ))}
+          </>
+        ) : (
+          <div className="border border-[#F9F9FB] rounded-[0.875rem] px-7 py-7 sm:px-7 sm:py-7 bg-white shadow-(--shadow-card)">
+            <p className="text-[0.75rem] text-[#1A1A1C] font-bold text-center">
+              장바구니에 담긴 상품이 없습니다.
+            </p>
+          </div>
+        )}
       </div>
 
       {/* 결제 상세 요약 */}
@@ -26,20 +88,24 @@ export default function OnetimeCart() {
             <h2 className="text-[1.125rem] text-[#1A1A1C] font-black">결제 상세 요약</h2>
             <div className="flex justify-between">
               <p className="text-[0.75rem] text-text-secondary font-bold">총 상품 금액</p>
-              <p className="text-[0.75rem] text-[#1A1A1C] font-black">59,000원</p>
+              <p className="text-[0.75rem] text-[#1A1A1C] font-black">
+                {total.products.toLocaleString()}원
+              </p>
             </div>
             <div className="flex justify-between">
               <p className="text-[0.75rem] text-text-secondary font-bold">배송비</p>
-              <p className="text-[0.75rem] text-[#1A1A1C] font-black">+0원</p>
+              <p className="text-[0.75rem] text-[#1A1A1C] font-black">
+                +{total.shippingFees.toLocaleString()}원
+              </p>
             </div>
 
             <div className="flex justify-between border-t border-border-primary py-7">
               <h2 className="text-[1rem] text-[#1A1A1C] font-black">총 결제 예정액</h2>
-              <p className="text-2xl text-[#FBA613] font-black">59,000원</p>
+              <p className="text-2xl text-[#FBA613] font-black">{total.total.toLocaleString()}원</p>
             </div>
 
             {/* 구매하기 버튼 */}
-            <Button>2개 상품 구매하기</Button>
+            <Button href="/checkout">{items.length}개 상품 구매하기</Button>
 
             <div className="flex items-center justify-center gap-2">
               <Image src="/images/cart/safe.svg" alt="" width={14} height={14} />
