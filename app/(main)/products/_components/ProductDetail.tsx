@@ -6,9 +6,37 @@ import { useState } from "react";
 import Button from "@/components/common/Button";
 import PaginationWrapper from "@/components/common/PaginationWrapper";
 import PurchaseModal from "@/app/(main)/products/_components/Modal";
+import { Product } from "@/types/product";
+import { Review } from "@/types/review";
+
+function StarRating({ rating, size = 16 }: { rating: number; size?: number }) {
+  return (
+    <div className="flex gap-0.5">
+      {Array.from({ length: 5 }, (_, i) => (
+        // 총 5번 반복, 배열을 돌면서 i에 담기고 '_'은 index(아무개라는 뜻)
+        <svg
+          key={i}
+          width={size}
+          height={size}
+          viewBox="0 0 16 16"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M8 1.61803L9.52786 6.11246L9.6382 6.4463H9.99139H14.7063L10.8531 9.24124L10.5676 9.44856L10.678 9.78237L12.2058 14.2768L8.35261 11.4919L8.06712 11.2845L7.78163 11.4919L3.92845 14.2768L5.45631 9.78237L5.56665 9.44856L5.28116 9.24124L1.42798 6.4463H6.14285H6.50604L6.61638 6.11246L8 1.61803Z"
+            fill={i < rating ? "#FBA613" : "#E0E0E0"}
+            stroke={i < rating ? "#FBA613" : "#E0E0E0"}
+            strokeWidth="0.5"
+          />
+        </svg>
+      ))}
+    </div>
+  );
+}
 
 interface Props {
-  productId: string;
+  product: Product;
+  reviews: Review[];
   currentReviewPage: number;
   currentQnaPage: number;
   reviewTotalPages: number;
@@ -16,7 +44,8 @@ interface Props {
 }
 
 export default function ProductDetail({
-  productId,
+  product,
+  reviews,
   currentReviewPage,
   currentQnaPage,
   reviewTotalPages,
@@ -49,20 +78,20 @@ export default function ProductDetail({
           <div className="image-card w-full max-w-[538px] flex-shrink-0">
             <Image
               className="block w-full rounded-4xl object-cover"
-              src="/images/ADT-S-01  스몰어덜트 치킨앤라이스 2.png"
+              src={product.mainImages[0]?.path || "/placeholder.png"}
               width={538}
               height={552}
-              alt="어덜트 밸런스 치킨 상품 이미지"
+              alt={product.name}
             />
           </div>
 
           <div className="flex w-full flex-col items-start lg:max-w-[34rem]">
             <span className="flex items-center rounded-[0.4375rem] border border-[rgba(251,166,19,0.2)] bg-[#fff5e6] px-[0.65625rem] py-[0.21875rem] text-[0.625rem] font-extrabold uppercase leading-[0.9375rem] tracking-[0.03125rem] text-[#fba613]">
-              ADULT
+              {product.extra?.lifeStage?.[0] || ""}
             </span>
             <div>
               <h1 className="mb-6 text-2xl font-bold sm:mb-12.5 sm:text-[2.625rem]">
-                어덜트 밸런스 치킨
+                {product.name}
               </h1>
             </div>
 
@@ -71,7 +100,9 @@ export default function ProductDetail({
               <dl className="w-full">
                 <div className="flex min-h-[1.5625rem] w-full items-center justify-between self-stretch py-4 sm:py-7">
                   <dt className="font-medium">판매가격</dt>
-                  <dd className="text-xl font-bold sm:text-[1.625rem]">32,000원</dd>
+                  <dd className="text-xl font-bold sm:text-[1.625rem]">
+                    {product.price.toLocaleString()}원
+                  </dd>
                 </div>
 
                 <div className="my-[0.625rem] h-px bg-black/[0.06]" />
@@ -79,12 +110,12 @@ export default function ProductDetail({
                 <div className="mt-[1.3125rem] flex min-h-[1.5625rem] w-full flex-col items-start gap-1 sm:flex-row sm:items-center sm:justify-between">
                   <dt className="text-sm text-[#8b8b8f]">배송정보</dt>
                   <dd className="text-sm text-[#3a3a3c] sm:text-base">
-                    무료배송 [9Dog 정기구독 시]
+                    무료배송 [9Dog 정기구독 시 10% 할인]
                   </dd>
                 </div>
                 <div className="mt-[1.3125rem] flex min-h-[1.5625rem] w-full items-center justify-between self-stretch">
                   <dt className="text-sm text-[#8b8b8f]">상품 정보</dt>
-                  <dd className="text-[#3a3a3c]">2KG</dd>
+                  <dd className="text-[#3a3a3c]">{product.extra?.weight}g</dd>
                 </div>
               </dl>
             </div>
@@ -138,6 +169,63 @@ export default function ProductDetail({
           </div>
         </div>
       </section>
+
+      {/* 메뉴 이동 버튼 */}
+      <nav className="mx-auto flex w-full max-w-[75rem] flex-col items-center border-y border-black/[0.06] bg-white/95 px-2 backdrop-blur-[12px] sm:px-5">
+        <div className="flex w-full max-w-[75rem] items-start justify-center self-stretch px-0 sm:px-5">
+          <button
+            type="button"
+            onClick={() => {
+              setActiveTab("detail");
+              document.getElementById("detail")?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className={`relative flex flex-col items-center justify-center px-3 py-[1.09375rem] text-center text-[0.65rem] leading-[1.09375rem] transition-colors sm:px-[2.625rem] sm:text-[0.76875rem] ${
+              activeTab === "detail"
+                ? "font-black text-[#fba613]"
+                : "font-bold text-[#909094] hover:text-[#fba613]"
+            }`}
+          >
+            상세정보
+            {activeTab === "detail" && (
+              <div className="absolute bottom-0 h-[0.21875rem] w-[5rem] rounded-[624.9375rem] bg-[#fba613] sm:w-[7.9375rem]" />
+            )}
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setActiveTab("review");
+              document.getElementById("review")?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className={`relative flex flex-col items-center justify-center px-3 py-[1.09375rem] text-center text-[0.65rem] leading-[1.09375rem] transition-colors sm:px-[2.625rem] sm:text-[0.76875rem] ${
+              activeTab === "review"
+                ? "font-black text-[#fba613]"
+                : "font-bold text-[#909094] hover:text-[#fba613]"
+            }`}
+          >
+            구매후기(428)
+            {activeTab === "review" && (
+              <div className="absolute bottom-0 h-[0.21875rem] w-[5rem] rounded-[624.9375rem] bg-[#fba613] sm:w-[7.9375rem]" />
+            )}
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setActiveTab("qna");
+              document.getElementById("qna")?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className={`relative flex flex-col items-center justify-center px-3 py-[1.09375rem] text-center text-[0.65rem] leading-[1.09375rem] transition-colors sm:px-[2.625rem] sm:text-[0.76875rem] ${
+              activeTab === "qna"
+                ? "font-black text-[#fba613]"
+                : "font-bold text-[#909094] hover:text-[#fba613]"
+            }`}
+          >
+            Q&A(15)
+            {activeTab === "qna" && (
+              <div className="absolute bottom-0 h-[0.21875rem] w-[5rem] rounded-[624.9375rem] bg-[#fba613] sm:w-[7.9375rem]" />
+            )}
+          </button>
+        </div>
+      </nav>
 
       {/* 상세정보 */}
       <section id="detail" className="w-full">
@@ -204,40 +292,23 @@ export default function ProductDetail({
           </h2>
           <div className="flex items-center">
             <span className="text-xl font-black leading-[2.1875rem] text-[#fba613] sm:text-[1.96875rem]">
-              4.8
+              {reviews.length > 0
+                ? (reviews.reduce((sum, re) => sum + re.rating, 0) / reviews.length).toFixed(1)
+                : "0.0"}
             </span>
             <span className="flex flex-col items-start pl-[10.5px] text-sm font-bold leading-[1.3125rem] text-[#909094]">
               / 5.0
             </span>
-            <svg
-              className="pl-2"
-              width="310"
-              height="18"
-              viewBox="0 0 310 18"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M6.42955 10.7025L3.12741 13.0874L4.42905 9.20866L1.11818 6.81506H5.17159L6.42955 2.93636L7.6875 6.81506H11.7409L8.43004 9.20866L9.73168 13.0874L6.42955 10.7025Z"
-                fill="#FBA613"
+            <div className="pl-2">
+              <StarRating
+                rating={
+                  reviews.length > 0
+                    ? Math.round(reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length)
+                    : 0
+                }
+                size={18}
               />
-              <path
-                d="M22.9295 10.7025L19.6274 13.0874L20.929 9.20866L17.6182 6.81506H21.6716L22.9295 2.93636L24.1875 6.81506H28.2409L24.93 9.20866L26.2317 13.0874L22.9295 10.7025Z"
-                fill="#FBA613"
-              />
-              <path
-                d="M39.4295 10.7025L36.1274 13.0874L37.429 9.20866L34.1182 6.81506H38.1716L39.4295 2.93636L40.6875 6.81506H44.7409L41.43 9.20866L42.7317 13.0874L39.4295 10.7025Z"
-                fill="#FBA613"
-              />
-              <path
-                d="M55.9295 10.7025L52.6274 13.0874L53.929 9.20866L50.6182 6.81506H54.6716L55.9295 2.93636L57.1875 6.81506H61.2409L57.93 9.20866L59.2317 13.0874L55.9295 10.7025Z"
-                fill="#FBA613"
-              />
-              <path
-                d="M72.4295 10.7025L69.1274 13.0874L70.429 9.20866L67.1182 6.81506H71.1716L72.4295 2.93636L73.6875 6.81506H77.7409L74.43 9.20866L75.7317 13.0874L72.4295 10.7025Z"
-                fill="#FBA613"
-              />
-            </svg>
+            </div>
           </div>
         </div>
         <div className="flex items-start gap-[0.4375rem]">
@@ -251,190 +322,79 @@ export default function ProductDetail({
       </section>
 
       <section className="mt-[1.75rem]">
-        <article className="mt-6 rounded-[1.5rem] border border-black/[0.06] bg-white p-4 shadow-[0_2px_12px_0_rgba(0,0,0,0.03)] sm:mt-10 sm:rounded-[2.1875rem] sm:p-7">
-          <div className="flex flex-col items-start gap-4 sm:flex-row sm:gap-6">
-            <div className="h-24 w-24 flex-shrink-0 sm:h-[8.75rem] sm:w-[8.75rem]">
-              <Image
-                src="/images/ADT-S-01  스몰어덜트 치킨앤라이스 2.png"
-                className="block h-full w-full rounded-[1.125rem] object-cover"
-                width={140}
-                height={140}
-                alt="리뷰 상품 이미지"
-              />
-            </div>
+        {reviews.map((review) => (
+          <article
+            key={review._id}
+            className="mt-6 rounded-[1.5rem] border border-black/[0.06] bg-white p-4 shadow-[0_2px_12px_0_rgba(0,0,0,0.03)] sm:mt-10 sm:rounded-[2.1875rem] sm:p-7"
+          >
+            <div className="flex flex-col items-start gap-4 sm:flex-row sm:gap-6">
+              <div className="h-24 w-24 flex-shrink-0 sm:h-[8.75rem] sm:w-[8.75rem]">
+                <Image
+                  src={product.mainImages[0]?.path || "/placeholder.png"}
+                  className="block h-full w-full rounded-[1.125rem] object-cover"
+                  width={140}
+                  height={140}
+                  alt="리뷰 상품 이미지"
+                />
+              </div>
 
-            <div className="w-full flex-1">
-              <div className="flex flex-wrap items-start gap-2 sm:gap-3">
-                <Link href="#" className="flex flex-col gap-1 hover:opacity-80">
-                  <svg
-                    width="310"
-                    height="18"
-                    viewBox="0 0 310 18"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M6.42955 10.7025L3.12741 13.0874L4.42905 9.20866L1.11818 6.81506H5.17159L6.42955 2.93636L7.6875 6.81506H11.7409L8.43004 9.20866L9.73168 13.0874L6.42955 10.7025Z"
-                      fill="#FBA613"
-                    />
-                    <path
-                      d="M22.9295 10.7025L19.6274 13.0874L20.929 9.20866L17.6182 6.81506H21.6716L22.9295 2.93636L24.1875 6.81506H28.2409L24.93 9.20866L26.2317 13.0874L22.9295 10.7025Z"
-                      fill="#FBA613"
-                    />
-                    <path
-                      d="M39.4295 10.7025L36.1274 13.0874L37.429 9.20866L34.1182 6.81506H38.1716L39.4295 2.93636L40.6875 6.81506H44.7409L41.43 9.20866L42.7317 13.0874L39.4295 10.7025Z"
-                      fill="#FBA613"
-                    />
-                    <path
-                      d="M55.9295 10.7025L52.6274 13.0874L53.929 9.20866L50.6182 6.81506H54.6716L55.9295 2.93636L57.1875 6.81506H61.2409L57.93 9.20866L59.2317 13.0874L55.9295 10.7025Z"
-                      fill="#FBA613"
-                    />
-                    <path
-                      d="M72.4295 10.7025L69.1274 13.0874L70.429 9.20866L67.1182 6.81506H71.1716L72.4295 2.93636L73.6875 6.81506H77.7409L74.43 9.20866L75.7317 13.0874L72.4295 10.7025Z"
-                      fill="#FBA613"
-                    />
-                  </svg>
+              <div className="w-full flex-1">
+                <div className="flex flex-wrap items-start gap-2 sm:gap-3">
+                  <Link href="#" className="flex flex-col gap-1 hover:opacity-80">
+                    <StarRating rating={review.rating} />
+                    <p className="text-sm sm:text-base">{review.extra?.title}</p>
+                    <p className="text-xs text-gray-500 sm:text-sm">
+                      {review.user.name} | {review.createdAt}
+                    </p>
+                  </Link>
 
-                  <p className="text-sm sm:text-base">우리 애가 너무 잘 먹어요!</p>
-                  <p className="text-xs text-gray-500 sm:text-sm">견주사랑 | 2024.01.10</p>
-                </Link>
-
-                <div className="ml-auto self-start">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setHelpfulReview1(!helpfulReview1);
-                      setHelpfulCount1(helpfulReview1 ? helpfulCount1 - 1 : helpfulCount1 + 1);
-                    }}
-                    className={`inline-flex items-center rounded-[0.5rem] border px-2 py-1 text-[11px] font-bold transition-colors ${
-                      helpfulReview1
-                        ? "border-[#fba613] bg-[#fff5e6] text-[#fba613]"
-                        : "border-black/[0.06] bg-[#f5f5f7] text-[#646468]"
-                    }`}
-                  >
-                    <svg
-                      width="20"
-                      height="14"
-                      viewBox="0 0 20 14"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
+                  <div className="ml-auto self-start">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setHelpfulReview1(!helpfulReview1);
+                        setHelpfulCount1(helpfulReview1 ? helpfulCount1 - 1 : helpfulCount1 + 1);
+                      }}
+                      className={`inline-flex items-center rounded-[0.5rem] border px-2 py-1 text-[11px] font-bold transition-colors ${
+                        helpfulReview1
+                          ? "border-[#fba613] bg-[#fff5e6] text-[#fba613]"
+                          : "border-black/[0.06] bg-[#f5f5f7] text-[#646468]"
+                      }`}
                     >
-                      <svg clipPath="url(#clip0_131_26598)">
-                        <path
-                          d="M8.16667 5.83317H10.9416C11.251 5.83317 11.5477 5.95609 11.7665 6.17488C11.9853 6.39367 12.1082 6.69042 12.1082 6.99984C12.1082 7.30926 11.9853 7.606 11.7665 7.82479C11.5477 8.04359 11.251 8.1665 10.9416 8.1665H10.1716L10.535 10.0962C10.5661 10.2634 10.5603 10.4354 10.518 10.6002C10.4756 10.7649 10.3978 10.9185 10.2898 11.0499C10.1819 11.1814 10.0465 11.2877 9.8932 11.3614C9.73986 11.435 9.57227 11.4743 9.40217 11.4763H5.50083C5.23666 11.4759 4.98045 11.3858 4.77413 11.2208C4.56781 11.0558 4.4236 10.8257 4.36508 10.5681L3.5 5.90434V2.33317C3.5 2.02375 3.62292 1.72701 3.84171 1.50821C4.0605 1.28942 4.35725 1.1665 4.66667 1.1665H7.58333C7.89275 1.1665 8.1895 1.28942 8.40829 1.50821C8.62708 1.72701 8.75 2.02375 8.75 2.33317V5.83317H8.16667Z"
-                          stroke="#646468"
-                          strokeWidth="1.45833"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
+                      <svg
+                        width="20"
+                        height="14"
+                        viewBox="0 0 20 14"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <svg clipPath="url(#clip0_131_26598)">
+                          <path
+                            d="M8.16667 5.83317H10.9416C11.251 5.83317 11.5477 5.95609 11.7665 6.17488C11.9853 6.39367 12.1082 6.69042 12.1082 6.99984C12.1082 7.30926 11.9853 7.606 11.7665 7.82479C11.5477 8.04359 11.251 8.1665 10.9416 8.1665H10.1716L10.535 10.0962C10.5661 10.2634 10.5603 10.4354 10.518 10.6002C10.4756 10.7649 10.3978 10.9185 10.2898 11.0499C10.1819 11.1814 10.0465 11.2877 9.8932 11.3614C9.73986 11.435 9.57227 11.4743 9.40217 11.4763H5.50083C5.23666 11.4759 4.98045 11.3858 4.77413 11.2208C4.56781 11.0558 4.4236 10.8257 4.36508 10.5681L3.5 5.90434V2.33317C3.5 2.02375 3.62292 1.72701 3.84171 1.50821C4.0605 1.28942 4.35725 1.1665 4.66667 1.1665H7.58333C7.89275 1.1665 8.1895 1.28942 8.40829 1.50821C8.62708 1.72701 8.75 2.02375 8.75 2.33317V5.83317H8.16667Z"
+                            stroke="#646468"
+                            strokeWidth="1.45833"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                        <defs>
+                          <clipPath id="clip0_131_26598">
+                            <rect width="14" height="14" fill="white" />
+                          </clipPath>
+                        </defs>
                       </svg>
-                      <defs>
-                        <clipPath id="clip0_131_26598">
-                          <rect width="14" height="14" fill="white" />
-                        </clipPath>
-                      </defs>
-                    </svg>
-                    도움돼요 {helpfulCount1}
-                  </button>
+                      도움돼요 {helpfulCount1}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="mt-[0.625rem] text-xs font-medium leading-[1.42188rem] text-[#646468] sm:text-sm">
+                  <p>{review.content}</p>
                 </div>
               </div>
-
-              <div className="mt-[0.625rem] text-xs font-medium leading-[1.42188rem] text-[#646468] sm:text-sm">
-                <p>
-                  입맛이 까다로운 편인데 이건 봉지 소리만 들려도 달려와요.성분도 착해서 안심하고
-                  먹입니다.벌써 세번째 구매예요.
-                </p>
-              </div>
             </div>
-          </div>
-        </article>
-
-        <article className="mt-6 rounded-[1.5rem] border border-black/[0.06] bg-white p-4 shadow-[0_2px_12px_0_rgba(0,0,0,0.03)] sm:mt-10 sm:rounded-[2.1875rem] sm:p-7">
-          <div className="flex flex-col items-start gap-4 sm:flex-row sm:gap-6">
-            <div className="w-full flex-1">
-              <div className="flex flex-wrap items-start gap-2 sm:gap-3">
-                <Link href="#" className="flex flex-col gap-1 hover:opacity-80">
-                  <svg
-                    width="310"
-                    height="18"
-                    viewBox="0 0 310 18"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M6.42955 10.7025L3.12741 13.0874L4.42905 9.20866L1.11818 6.81506H5.17159L6.42955 2.93636L7.6875 6.81506H11.7409L8.43004 9.20866L9.73168 13.0874L6.42955 10.7025Z"
-                      fill="#FBA613"
-                    />
-                    <path
-                      d="M22.9295 10.7025L19.6274 13.0874L20.929 9.20866L17.6182 6.81506H21.6716L22.9295 2.93636L24.1875 6.81506H28.2409L24.93 9.20866L26.2317 13.0874L22.9295 10.7025Z"
-                      fill="#FBA613"
-                    />
-                    <path
-                      d="M39.4295 10.7025L36.1274 13.0874L37.429 9.20866L34.1182 6.81506H38.1716L39.4295 2.93636L40.6875 6.81506H44.7409L41.43 9.20866L42.7317 13.0874L39.4295 10.7025Z"
-                      fill="#FBA613"
-                    />
-                    <path
-                      d="M55.9295 10.7025L52.6274 13.0874L53.929 9.20866L50.6182 6.81506H54.6716L55.9295 2.93636L57.1875 6.81506H61.2409L57.93 9.20866L59.2317 13.0874L55.9295 10.7025Z"
-                      fill="#FBA613"
-                    />
-                    <path
-                      d="M72.4295 10.7025L69.1274 13.0874L70.429 9.20866L67.1182 6.81506H71.1716L72.4295 2.93636L73.6875 6.81506H77.7409L74.43 9.20866L75.7317 13.0874L72.4295 10.7025Z"
-                      fill="#FBA613"
-                    />
-                  </svg>
-                  <p className="text-sm sm:text-base">변 상태가 좋아졌어요</p>
-                  <p className="text-xs sm:text-sm">초코맘 | 2024.01.08</p>
-                </Link>
-
-                <div className="ml-auto self-start">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setHelpfulReview2(!helpfulReview2);
-                      setHelpfulCount2(helpfulReview2 ? helpfulCount2 - 1 : helpfulCount2 + 1);
-                    }}
-                    className={`inline-flex items-center rounded-[0.5rem] border px-2 py-1 text-[11px] font-bold transition-colors ${
-                      helpfulReview2
-                        ? "border-[#fba613] bg-[#fff5e6] text-[#fba613]"
-                        : "border-black/[0.06] bg-[#f5f5f7] text-[#646468]"
-                    }`}
-                  >
-                    <svg
-                      width="20"
-                      height="14"
-                      viewBox="0 0 20 14"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <g clip-path="url(#clip0_131_26598)">
-                        <path
-                          d="M8.16667 5.83317H10.9416C11.251 5.83317 11.5477 5.95609 11.7665 6.17488C11.9853 6.39367 12.1082 6.69042 12.1082 6.99984C12.1082 7.30926 11.9853 7.606 11.7665 7.82479C11.5477 8.04359 11.251 8.1665 10.9416 8.1665H10.1716L10.535 10.0962C10.5661 10.2634 10.5603 10.4354 10.518 10.6002C10.4756 10.7649 10.3978 10.9185 10.2898 11.0499C10.1819 11.1814 10.0465 11.2877 9.8932 11.3614C9.73986 11.435 9.57227 11.4743 9.40217 11.4763H5.50083C5.23666 11.4759 4.98045 11.3858 4.77413 11.2208C4.56781 11.0558 4.4236 10.8257 4.36508 10.5681L3.5 5.90434V2.33317C3.5 2.02375 3.62292 1.72701 3.84171 1.50821C4.0605 1.28942 4.35725 1.1665 4.66667 1.1665H7.58333C7.89275 1.1665 8.1895 1.28942 8.40829 1.50821C8.62708 1.72701 8.75 2.02375 8.75 2.33317V5.83317H8.16667Z"
-                          stroke="#646468"
-                          stroke-width="1.45833"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        />
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_131_26598">
-                          <rect width="14" height="14" fill="white" />
-                        </clipPath>
-                      </defs>
-                    </svg>
-                    도움돼요 {helpfulCount2}
-                  </button>
-                </div>
-              </div>
-
-              <div className="mt-[0.625rem] text-xs font-medium leading-[1.42188rem] text-[#646468] sm:text-sm">
-                <p>
-                  장이 예민해서 설사를 자주 했는데 나인독으로 바꾸고 나서 황금변을 봅니다. 다만
-                  가격이 조금 있는 편이라 별 하나 뺐어요.
-                </p>
-              </div>
-            </div>
-          </div>
-        </article>
+          </article>
+        ))}
       </section>
 
       {/* 리뷰 페이지네이션 */}
