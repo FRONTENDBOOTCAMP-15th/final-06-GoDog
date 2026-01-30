@@ -72,7 +72,7 @@ export default async function Products({ params, searchParams }: Props) {
                 <Link href="/products/1" className="flex w-full flex-col no-underline">
                   <div className="flex aspect-square w-full items-center justify-center bg-white">
                     <Image
-                      src="/images/PUP-L-01라지퍼피 치킨앤브라운라이스 2.png"
+                      src="/images/jointcare_chicken_brownrice.png"
                       alt="퍼피 치킨앤브라운라이스"
                       width={280}
                       height={280}
