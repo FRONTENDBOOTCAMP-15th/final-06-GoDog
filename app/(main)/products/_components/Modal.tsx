@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Button from "@/components/common/Button";
 import Tab from "@/components/common/Tab";
+import QuantityControl from "@/components/common/Quantitycontrol";
 
 type PurchaseType = "oneTime" | "subscribe";
 
@@ -144,7 +145,7 @@ export default function PurchaseModal({ isOpen, onClose }: Props) {
         {/* 수량 */}
         <div className="flex justify-between mt-10">
           <p className="font-semibold text-m">수량</p>
-          <button type="button">- 1 +</button>
+          <QuantityControl />
         </div>
 
         <div className="h-px bg-gray-200 mt-10" />
