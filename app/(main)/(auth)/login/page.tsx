@@ -38,7 +38,7 @@ export default function Login() {
 
   useEffect(() => {
     if (userState?.ok === 1) {
-      const storageType = checkedState ? localStorage : sessionStorage;
+      const storageType = !checkedState ? localStorage : sessionStorage;
 
       // zustand persist 설정의 스토리지를 강제 변경
       useUserStore.persist.setOptions({

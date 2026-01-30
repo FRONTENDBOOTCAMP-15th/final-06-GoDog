@@ -1,28 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Package, AlertTriangle, XCircle, Pencil } from "lucide-react";
 import { getProducts } from "@/lib/product";
 import { Product } from "@/types/product";
-import { Pagination as PaginationType } from "@/types/response";
 import StatCard from "@/app/(admin)/admin/_components/StatCard";
 import SearchFilter from "@/app/(admin)/admin/_components/SearchFilter";
 import Pagination from "@/app/(admin)/admin/_components/Pagination";
+import { useQuery } from "@tanstack/react-query";
 
 export default function ProductListPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
-
-  const [products, setProducts] = useState<Product[]>([]);
-  const [pagination, setPagination] = useState<PaginationType | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  const [stats, setStats] = useState({
-    total: 0,
-    lowStock: 0,
-    outOfStock: 0,
-  });
 
   const [searchInput, setSearchInput] = useState(searchParams.get("keyword") || "");
 
@@ -31,50 +21,43 @@ export default function ProductListPage() {
   const page = Number(searchParams.get("page")) || 1;
   const sort = searchParams.get("sort") || '{"createdAt":-1}';
 
-  const fetchProducts = async () => {
-    setLoading(true);
+  // 상품 목록 조회
+  const { data: resProducts, isLoading } = useQuery({
+    queryKey: ["products", keyword, category, page, sort],
+    queryFn: () =>
+      getProducts({
+        keyword: keyword || undefined,
+        custom: category !== "all" ? { "extra.type": category } : undefined,
+        page,
+        limit: 10,
+        sort: JSON.parse(sort),
+        showSoldOut: true,
+      }),
+  });
 
-    const res = await getProducts({
-      keyword: keyword || undefined,
-      custom: category !== "all" ? { "extra.type": category } : undefined,
-      page,
-      limit: 10,
-      sort: JSON.parse(sort),
-      showSoldOut: true,
-    });
+  // 통계 조회
+  const { data: statsData } = useQuery({
+    queryKey: ["productStats"],
+    queryFn: () =>
+      getProducts({
+        limit: 9999,
+        showSoldOut: true,
+      }),
+  });
 
-    if (res.ok) {
-      setProducts(res.item);
-      setPagination(res.pagination);
-    }
+  // 데이터 사용
+  const products = resProducts?.ok === 1 ? resProducts.item : [];
+  const pagination = resProducts?.ok === 1 ? resProducts.pagination : undefined;
 
-    setLoading(false);
-  };
-
-  const fetchStats = async () => {
-    const res = await getProducts({
-      limit: 9999,
-      showSoldOut: true,
-    });
-
-    if (res.ok) {
-      const total = res.pagination.total;
-      const lowStock = res.item.filter(
-        (p: Product) => p.quantity - p.buyQuantity > 0 && p.quantity - p.buyQuantity <= 10,
-      ).length;
-      const outOfStock = res.item.filter((p: Product) => p.quantity - p.buyQuantity === 0).length;
-
-      setStats({ total, lowStock, outOfStock });
-    }
-  };
-
-  useEffect(() => {
-    fetchProducts();
-  }, [keyword, category, page, sort]);
-
-  useEffect(() => {
-    fetchStats();
-  }, []);
+  const stats = statsData?.ok
+    ? {
+        total: statsData.pagination.total,
+        lowStock: statsData.item.filter(
+          (p: Product) => p.quantity - p.buyQuantity > 0 && p.quantity - p.buyQuantity <= 100,
+        ).length,
+        outOfStock: statsData.item.filter((p: Product) => p.quantity - p.buyQuantity === 0).length,
+      }
+    : { total: 0, lowStock: 0, outOfStock: 0 };
 
   const updateParams = (updates: Record<string, string>) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -157,7 +140,7 @@ export default function ProductListPage() {
           textColor="text-gray-900"
         />
         <StatCard
-          label="재고 10개 이하"
+          label="재고 100개 이하"
           value={stats.lowStock}
           icon={<AlertTriangle className="w-6 h-6 text-orange-600" />}
           bgColor="bg-orange-100"
@@ -218,7 +201,7 @@ export default function ProductListPage() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {loading ? (
+              {isLoading ? (
                 <tr>
                   <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
                     로딩 중...

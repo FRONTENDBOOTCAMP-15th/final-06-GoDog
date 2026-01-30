@@ -32,7 +32,10 @@ interface GetOrdersOptions {
  * // 특정 기간 주문 조회
  * getOrders({ custom: { createdAt: { $gte: "2024.04", $lt: "2024.05" } } });
  */
-export async function getOrders(options?: GetOrdersOptions): Promise<OrderListRes | ErrorRes> {
+export async function getOrders(
+  token: string, // 토큰값 필수
+  options?: GetOrdersOptions,
+): Promise<OrderListRes | ErrorRes> {
   try {
     const params = new URLSearchParams();
 
@@ -52,11 +55,14 @@ export async function getOrders(options?: GetOrdersOptions): Promise<OrderListRe
       ? `${API_URL}/seller/orders?${queryString}`
       : `${API_URL}/seller/orders`;
 
-    const res = await fetch(url, {
-      headers: {
-        "Client-Id": CLIENT_ID,
-      },
-    });
+    const headers: HeadersInit = {
+      "Client-Id": CLIENT_ID,
+    };
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    const res = await fetch(url, { headers });
 
     return res.json();
   } catch (error) {

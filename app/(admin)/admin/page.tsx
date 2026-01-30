@@ -112,12 +112,11 @@ export default function AdminDashboardPage() {
     setLoading(true);
 
     if (!token) {
-      // return alert("재로그인이 필요합니다");
+      return alert("재로그인이 필요합니다");
     }
 
     // 1. 주문 통계 (총 판매금액 + 총 주문건수)
-    // const statsRes = await getOrderStatistics(token, { start: "2026.01.01" });
-    const statsRes = await getOrderStatistics({ start: "2026.01.01" });
+    const statsRes = await getOrderStatistics(token, { start: "2026.01.01" });
     let totalSales = 0;
     let totalOrders = 0;
 
@@ -127,7 +126,7 @@ export default function AdminDashboardPage() {
     }
 
     // 2. 최근 주문 (별도로 5건만 조회)
-    const ordersRes = await getOrders({ limit: 5 });
+    const ordersRes = await getOrders(token, { limit: 5 });
     let recentOrders: Order[] = [];
 
     if (ordersRes.ok) {
@@ -154,7 +153,7 @@ export default function AdminDashboardPage() {
     let lowStockList: Product[] = [];
 
     if (productsRes.ok) {
-      lowStockList = productsRes.item.filter((p: Product) => p.quantity - p.buyQuantity <= 10);
+      lowStockList = productsRes.item.filter((p: Product) => p.quantity - p.buyQuantity <= 100);
       lowStockCount = lowStockList.length;
     }
 
@@ -357,10 +356,10 @@ export default function AdminDashboardPage() {
       <div className="bg-white rounded-lg shadow">
         <div className="p-6 border-b border-gray-200 flex items-center justify-between">
           <h2 className="text-lg font-semibold text-gray-900">최근 주문</h2>
-          <button className="text-sm text-blue-600 hover:text-blue-800 inline-flex items-center">
+          {/* <button className="text-sm text-blue-600 hover:text-blue-800 inline-flex items-center">
             전체보기
             <ArrowRight className="w-4 h-4 ml-1" />
-          </button>
+          </button> */}
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -384,15 +383,12 @@ export default function AdminDashboardPage() {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   주문일시
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  작업
-                </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {recentOrders.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
+                  <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
                     주문 내역이 없습니다.
                   </td>
                 </tr>
@@ -417,12 +413,6 @@ export default function AdminDashboardPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {order.createdAt}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
-                      <button className="text-blue-600 hover:text-blue-800 inline-flex items-center">
-                        <Eye className="w-4 h-4 mr-1" />
-                        상세
-                      </button>
                     </td>
                   </tr>
                 ))
