@@ -29,6 +29,7 @@ export default function ProductListPage() {
   const keyword = searchParams.get("keyword") || "";
   const category = searchParams.get("category") || "all";
   const page = Number(searchParams.get("page")) || 1;
+  const sort = searchParams.get("sort") || '{"createdAt":-1}';
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -38,7 +39,7 @@ export default function ProductListPage() {
       custom: category !== "all" ? { "extra.type": category } : undefined,
       page,
       limit: 10,
-      sort: { createdAt: -1 },
+      sort: JSON.parse(sort),
       showSoldOut: true,
     });
 
@@ -69,7 +70,7 @@ export default function ProductListPage() {
 
   useEffect(() => {
     fetchProducts();
-  }, [keyword, category, page]);
+  }, [keyword, category, page, sort]);
 
   useEffect(() => {
     fetchStats();
@@ -107,6 +108,10 @@ export default function ProductListPage() {
     updateParams({ page: String(newPage) });
   };
 
+  const handleSortChange = (value: string) => {
+    updateParams({ sort: value, page: "1" });
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("ko-KR");
   };
@@ -115,6 +120,19 @@ export default function ProductListPage() {
     { value: "all", label: "전체 카테고리" },
     { value: "사료", label: "사료" },
     { value: "간식", label: "간식" },
+  ];
+
+  // 정렬 옵션
+  const sortOptions = [
+    { value: '{"createdAt":-1}', label: "최신순" },
+    { value: '{"name":1}', label: "상품명 오름차순" },
+    { value: '{"name":-1}', label: "상품명 내림차순" },
+    { value: '{"extra.code":1}', label: "코드명 오름차순" },
+    { value: '{"extra.code":-1}', label: "코드명 내림차순" },
+    { value: '{"quantity":1}', label: "재고 적은순" },
+    { value: '{"quantity":-1}', label: "재고 많은순" },
+    { value: '{"price":1}', label: "가격 높은순" },
+    { value: '{"price":-1}', label: "가격 낮은순" },
   ];
 
   return (
@@ -166,6 +184,9 @@ export default function ProductListPage() {
           filterValue={category}
           onFilterChange={handleCategoryChange}
           filterOptions={filterOptions}
+          sortValue={sort}
+          onSortChange={handleSortChange}
+          sortOptions={sortOptions}
         />
 
         {/* 테이블 */}
@@ -231,8 +252,16 @@ export default function ProductListPage() {
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-900">
                         <div className="flex justify-center items-center">
-                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-600">
-                            {item.extra?.category || "미분류"}
+                          <span
+                            className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                              item.extra?.type === "사료"
+                                ? "bg-blue-100 text-blue-600"
+                                : item.extra?.type === "간식"
+                                  ? "bg-purple-100 text-purple-600"
+                                  : "bg-gray-100 text-gray-600"
+                            }`}
+                          >
+                            {item.extra?.type || "미분류"}
                           </span>
                         </div>
                       </td>

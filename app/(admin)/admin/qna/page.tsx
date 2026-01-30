@@ -56,6 +56,7 @@ export default function QnAListPage() {
   const keyword = searchParams.get("keyword") || "";
   const status = searchParams.get("status") || "all";
   const page = Number(searchParams.get("page")) || 1;
+  const sort = searchParams.get("sort") || '{"createdAt":-1}';
 
   // QnA 목록 조회
   const fetchQnAs = async () => {
@@ -76,7 +77,7 @@ export default function QnAListPage() {
       page,
       custom,
       limit: 10,
-      sort: { createdAt: -1 },
+      sort: JSON.parse(sort),
     });
 
     console.log(res);
@@ -107,7 +108,7 @@ export default function QnAListPage() {
 
   useEffect(() => {
     fetchQnAs();
-  }, [keyword, status, page]);
+  }, [keyword, status, page, sort]);
 
   useEffect(() => {
     fetchStats();
@@ -149,6 +150,11 @@ export default function QnAListPage() {
     updateParams({ page: String(newPage) });
   };
 
+  // 조회 순서 핸들러
+  const handleSortChange = (value: string) => {
+    updateParams({ sort: value, page: "1" });
+  };
+
   // 날짜 포맷
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("ko-KR");
@@ -159,6 +165,13 @@ export default function QnAListPage() {
     { value: "all", label: "전체 상태" },
     { value: "answered", label: "답변 완료" },
     { value: "pending", label: "답변 대기" },
+  ];
+
+  // 정렬 옵션
+  const sortOptions = [
+    { value: '{"createdAt":-1}', label: "최신순" },
+    { value: '{"title":1}', label: "질문명 오름차순" },
+    { value: '{"title":-1}', label: "질문명 내림차순" },
   ];
 
   return (
@@ -210,7 +223,9 @@ export default function QnAListPage() {
           filterValue={status}
           onFilterChange={handleStatusChange}
           filterOptions={filterOptions}
-          showFilterButton={false}
+          sortValue={sort}
+          onSortChange={handleSortChange}
+          sortOptions={sortOptions}
         />
 
         {/* 테이블 */}
@@ -228,10 +243,10 @@ export default function QnAListPage() {
                   작성자
                 </th>
                 <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  작성일
+                  상태
                 </th>
                 <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  상태
+                  작성일
                 </th>
                 <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                   작업
@@ -266,11 +281,11 @@ export default function QnAListPage() {
                     <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-700">
                       {item.user?.name || "익명"}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
-                      {formatDate(item.createdAt)}
-                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-center">
                       <StatusBadge status={(item.repliesCount ?? 0) > 0} />
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
+                      {formatDate(item.createdAt)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-center text-sm">
                       <button className="text-blue-600 hover:text-blue-800 inline-flex items-center">
@@ -291,7 +306,7 @@ export default function QnAListPage() {
           totalPages={pagination?.totalPages || 1}
           totalCount={pagination?.total || 0}
           onPageChange={handlePageChange}
-          label="상품 문의"
+          label="개 문의"
         />
       </div>
     </>

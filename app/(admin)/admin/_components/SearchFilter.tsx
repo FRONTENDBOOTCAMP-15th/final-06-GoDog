@@ -1,8 +1,13 @@
 "use client";
 
-import { Search, ChevronDown, Filter } from "lucide-react";
+import { Search, ChevronDown, Filter, ArrowUpDown } from "lucide-react";
 
 interface FilterOption {
+  value: string;
+  label: string;
+}
+
+interface SortOption {
   value: string;
   label: string;
 }
@@ -16,7 +21,9 @@ interface SearchFilterProps {
   filterValue: string;
   onFilterChange: (value: string) => void;
   filterOptions: FilterOption[];
-  showFilterButton?: boolean;
+  sortValue: string;
+  onSortChange: (value: string) => void;
+  sortOptions: SortOption[];
 }
 
 export default function SearchFilter({
@@ -28,7 +35,9 @@ export default function SearchFilter({
   filterValue,
   onFilterChange,
   filterOptions,
-  showFilterButton = true,
+  sortValue,
+  onSortChange,
+  sortOptions,
 }: SearchFilterProps) {
   return (
     <div className="p-6 border-b border-gray-200">
@@ -73,13 +82,22 @@ export default function SearchFilter({
           <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
         </div>
 
-        {/* 필터 버튼 */}
-        {showFilterButton && (
-          <button className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-            <Filter className="w-5 h-5 mr-2 text-gray-600" />
-            <span className="text-gray-700">필터</span>
-          </button>
-        )}
+        {/* 순서 셀렉트 */}
+        <div className="relative">
+          <ArrowUpDown className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+          <select
+            value={sortValue}
+            onChange={(e) => onSortChange(e.target.value)}
+            className="appearance-none w-full pl-9 pr-10 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            {sortOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+          <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+        </div>
       </div>
     </div>
   );

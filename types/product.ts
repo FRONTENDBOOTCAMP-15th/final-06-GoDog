@@ -23,6 +23,7 @@ export interface ProductNutrition {
 
 // 상품 추가 정보 (상세 속성)
 export interface ProductExtra {
+  type?: "사료" | "간식";
   state?: string[];
   orderdate?: string;
   period?: string;
