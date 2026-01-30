@@ -26,7 +26,7 @@ const Header: React.FC = () => {
     { name: "정기구독", href: "/survey" },
     {
       name: "상품보기",
-      href: "/products",
+      href: "/products?type=사료",
       subMenu: [
         { name: "사료", href: "/products?type=사료" },
         { name: "간식", href: "/products?type=간식" },
@@ -104,12 +104,7 @@ const Header: React.FC = () => {
           <div className="flex items-center space-x-4 md:space-x-16 w-full">
             {/* 로고 */}
             <Link href="/" className="flex items-center">
-              <Image
-                src="/images/logo.png"
-                alt="9Dog"
-                width={120}
-                height={40}
-              />
+              <Image src="/images/logo.png" alt="9Dog" width={120} height={40} />
             </Link>
 
             {/* 네비게이션 메뉴 (데스크탑) */}
@@ -125,8 +120,7 @@ const Header: React.FC = () => {
                     <Link
                       href={item.href}
                       className={`text-sm font-black tracking-tight transition-all relative py-2 ${
-                        pathname === item.href ||
-                        pathname?.startsWith(item.href.split("?")[0])
+                        pathname === item.href || pathname?.startsWith(item.href.split("?")[0])
                           ? "text-accent-primary"
                           : "text-text-secondary hover:text-text-primary"
                       }`}
@@ -167,16 +161,8 @@ const Header: React.FC = () => {
           {/* 우측 액션 버튼 */}
           <div className="flex items-center space-x-3 md:space-x-6">
             {/* 모바일 장바구니 */}
-            <Link
-              href="/cart"
-              className="lg:hidden p-2 text-text-primary relative"
-            >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+            <Link href="/cart" className="lg:hidden p-2 text-text-primary relative">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -194,12 +180,7 @@ const Header: React.FC = () => {
               onClick={() => setIsMobileMenuOpen(true)}
               className="lg:hidden p-2 text-text-primary focus:outline-none"
             >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -215,9 +196,7 @@ const Header: React.FC = () => {
       {/* 모바일 메뉴 오버레이 */}
       <div
         className={`fixed inset-0 z-[1000] bg-black/60 backdrop-blur-sm transition-opacity duration-300 lg:hidden ${
-          isMobileMenuOpen
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
+          isMobileMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
         onClick={closeMobileMenu}
       />
@@ -238,12 +217,7 @@ const Header: React.FC = () => {
             onClick={closeMobileMenu}
             className="p-2 text-text-tertiary hover:text-text-primary transition-colors"
           >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -375,9 +349,7 @@ const Header: React.FC = () => {
                 onClick={closeMobileMenu}
                 className="text-xl font-black text-text-tertiary flex items-center justify-between w-full group"
               >
-                <span className="group-hover:text-text-primary transition-colors">
-                  Admin Page
-                </span>
+                <span className="group-hover:text-text-primary transition-colors">Admin Page</span>
                 <svg
                   className="w-4 h-4 opacity-50"
                   fill="none"

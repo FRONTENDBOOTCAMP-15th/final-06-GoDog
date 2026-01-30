@@ -43,7 +43,7 @@ async function getReviews(productId: string): Promise<ReviewListRes | ErrorRes> 
 // QnA
 async function getQna(productId: string): Promise<PostListRes | ErrorRes> {
   try {
-    const res = await fetch(`${API_URL}/posts?type=qna&custom={"product_id":${productId}}`, {
+    const res = await fetch(`${API_URL}/posts?type=community&custom={"product_id":${productId}}`, {
       headers: { "Client-Id": CLIENT_ID },
       cache: "no-store",
     });
@@ -82,10 +82,13 @@ export default async function ProductPage({ params, searchParams }: Props) {
     <ProductDetail
       product={product}
       reviews={reviews.slice((currentReviewPage - 1) * REVIEW_RER_PAGE)}
+      qna={qna.slice((currentQnaPage - 1) * QNA_PER_PAGE)}
       currentReviewPage={currentReviewPage}
       currentQnaPage={currentQnaPage}
       reviewTotalPages={reviewTotalPages}
       qnaTotalPages={qnaTotalPages}
+      reviewCount={reviews.length}
+      qnaCount={qna.length}
     />
   );
 }
