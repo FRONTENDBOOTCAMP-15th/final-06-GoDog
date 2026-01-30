@@ -4,11 +4,10 @@ import { ReactNode } from "react";
 import "pretendard/dist/web/variable/pretendardvariable.css";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
-
   return (
     <html lang="ko">
       <body className="flex min-h-screen bg-gray-100">
-        <AdminLayoutClient children={children}/>
+        <AdminLayoutClient>children</AdminLayoutClient>
       </body>
     </html>
   );
