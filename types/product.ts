@@ -1,3 +1,4 @@
+import { create } from "zustand";
 // 상품 이미지 정보
 export interface ProductImage {
   path: string;
@@ -63,4 +64,15 @@ export interface Product {
   extra?: ProductExtra;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface Item {
+  createdAt: string;
+  extra: {
+    type: string;
+  };
+  memo: string;
+  user_id: number;
+  _id: number;
+  product: Product;
 }

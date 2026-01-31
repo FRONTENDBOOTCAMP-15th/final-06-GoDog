@@ -14,33 +14,22 @@ import { createJSONStorage } from "zustand/middleware";
 export default function Login() {
   const [userState, formAction, isPending] = useActionState(login, null);
   const [checkedState, setcheckedState] = useState(false);
+  const router = useRouter();
+  const setUser = useUserStore((state) => state.setUser);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setcheckedState(e.target.checked);
   };
 
   useEffect(() => {
-    console.log(checkedState);
-  }, [checkedState]);
-
-  useEffect(() => {
-    if (userState?.ok === 1) {
-      if (checkedState) {
-        localStorage.setItem("sessionStorage", userState.item.token.accessToken);
-      }
-      if (!checkedState) {
-        sessionStorage.setItem("sessionStorage", userState.item.token.accessToken);
-      }
-    }
-  }, [userState, checkedState]);
-  const router = useRouter();
-  const setUser = useUserStore((state) => state.setUser);
-
-  useEffect(() => {
-    if (userState?.ok === 1) {
+    if (userState?.ok === 1 && userState.item) {
+      const token = userState.item.token?.accessToken;
       const storageType = checkedState ? localStorage : sessionStorage;
 
-      // zustand persist 설정의 스토리지를 강제 변경
+      const cookieExpires = checkedState ? `max-age=${60 * 60 * 24 * 7}` : "";
+
+      document.cookie = `accessToken=${token}; path=/; ${cookieExpires}; SameSite=Lax;`;
+
       useUserStore.persist.setOptions({
         storage: createJSONStorage(() => storageType),
       });
@@ -51,15 +40,15 @@ export default function Login() {
         name: userState.item.name,
         image: userState.item.image,
         token: {
-          accessToken: userState.item.token?.accessToken || "",
+          accessToken: token || "",
           refreshToken: userState.item.token?.refreshToken || "",
         },
       });
-      console.log(userState.item._id);
+
       alert(`${userState.item.name}님 로그인이 완료되었습니다.`);
-      redirect("/");
+      router.push("/");
     }
-  }, [userState, router, redirect, setUser]);
+  }, [userState, checkedState, setUser, router]);
 
   return (
     <>
