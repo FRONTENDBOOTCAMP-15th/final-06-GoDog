@@ -19,7 +19,11 @@ export async function getProduct(productId: string): Promise<ProductInfoRes | Er
       headers: { "Client-Id": CLIENT_ID },
       cache: "no-store",
     });
-    return res.json();
+    const data = await res.json();
+    if (data.ok === 1 && data.item) {
+      return { ok: 1, item: data.item };
+    }
+    return { ok: 0, message: "상품을 찾을 수 없습니다." };
   } catch (error) {
     console.error(error);
     return { ok: 0, message: "상품 정보를 불러오는데 실패했습니다." };
@@ -43,7 +47,7 @@ async function getReviews(productId: string): Promise<ReviewListRes | ErrorRes> 
 // QnA
 async function getQna(productId: string): Promise<PostListRes | ErrorRes> {
   try {
-    const res = await fetch(`${API_URL}/posts?type=community&custom={"product_id":${productId}}`, {
+    const res = await fetch(`${API_URL}/posts?type=qna&custom={"product_id":${productId}}`, {
       headers: { "Client-Id": CLIENT_ID },
       cache: "no-store",
     });
@@ -78,6 +82,7 @@ export default async function ProductPage({ params, searchParams }: Props) {
   const qnaData = await getQna(productId);
   const qna = qnaData.ok === 1 ? qnaData.item : [];
   const qnaTotalPages = Math.max(1, Math.ceil(qna.length / QNA_PER_PAGE));
+
   return (
     <ProductDetail
       product={product}
