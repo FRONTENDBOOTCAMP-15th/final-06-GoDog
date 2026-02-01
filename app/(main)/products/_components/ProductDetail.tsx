@@ -486,36 +486,29 @@ export default function ProductDetail({
                   {item.user.name} | {item.createdAt.slice(0, 10)}
                 </p>
                 <span
-                  className={`hidden text-lg leading-none text-[#909094] transition-transform sm:block ${openQnaId === item._id ? "rotate-180" : ""}`}
+                  className={`hidden text-lg leading-none text-[#909094] transition-transform origin-center sm:block ${openQnaId === item._id ? "rotate-180" : ""}`}
                 >
                   <svg
-                    width="32"
+                    width="18"
                     height="18"
-                    viewBox="0 0 32 18"
+                    viewBox="0 0 18 18"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                   >
-                    <svg clipPath="url(#clip0_131_26700)">
-                      <path
-                        d="M27.8529 6.5625L22.7487 11.6667L17.6445 6.5625"
-                        stroke="#909094"
-                        strokeWidth="2.1875"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    <defs>
-                      <clipPath id="clip0_131_26700">
-                        <rect width="17.5" height="17.5" fill="white" transform="translate(14)" />
-                      </clipPath>
-                    </defs>
+                    <path
+                      d="M13.8529 6.5625L8.7487 11.6667L3.6445 6.5625"
+                      stroke="#909094"
+                      strokeWidth="2.1875"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
                   </svg>
                 </span>
               </button>
 
               {/* 아코디언 답변 */}
               <div
-                className={`overflow-hidden bg-gray-200 transition-all duration-300 ${openQnaId === item._id ? "max-h-96 px-7 py-7" : "max-h-0 px-0 py-0"}`}
+                className={`overflow-hidden bg-gray-200 ${openQnaId === item._id ? "max-h-96 px-7 py-7" : "max-h-0 px-0 py-0"}`}
               >
                 <p className="text-sm text-[#646468]">{item.content}</p>
                 {item.replies && item.replies.length > 0 && (
