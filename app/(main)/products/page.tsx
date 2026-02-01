@@ -25,17 +25,13 @@ export async function getProducts(
   try {
     let url = `${API_URL}/products?page=${page}&limit=${limit}`;
 
-    const custom: Record<string, string> = {};
+    const custom = {
+      ...(lifeStage && { "extra.lifeStage": lifeStage }),
+      ...(category && { "extra.category": category }),
+      ...(type && { "extra.type": type }),
+    };
+    // lifeStage가 true면 extra.lifeStage: 퍼피를 스프레드로 펼침
 
-    if (lifeStage) {
-      custom["extra.lifeStage"] = lifeStage;
-    }
-    if (category) {
-      custom["extra.category"] = category;
-    }
-    if (type) {
-      custom["extra.type"] = type;
-    }
     if (Object.keys(custom).length > 0) {
       url += `&custom=${JSON.stringify(custom)}`;
     }
