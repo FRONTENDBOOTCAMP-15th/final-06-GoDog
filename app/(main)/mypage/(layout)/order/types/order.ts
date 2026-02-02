@@ -20,6 +20,7 @@ export interface OrderProduct {
 }
 
 export interface Order {
+  orderId: number;
   _id: number;
   user_id: number;
   products: OrderProduct[];
@@ -49,8 +50,27 @@ export interface OrderListRes {
   };
 }
 
-// UI 렌더링을 위해 Flatten(평탄화)된 상품 타입
 export interface FlattenedOrderProduct extends OrderProduct {
   orderId: number;
-  displayDate: string; // 시간 제외 날짜
+  displayDate: string;
+}
+
+export interface OrderHistory {
+  actor: number;
+  updated: {
+    state: string;
+    memo: string;
+  };
+  createdAt: string;
+}
+
+export interface OrderDetailItem extends Order {
+  history: OrderHistory[];
+  memo?: string;
+  nextdeliverydate?: string;
+}
+
+export interface OrderDetailRes {
+  ok: number;
+  item: OrderDetailItem;
 }

@@ -1,6 +1,8 @@
-// "use client";
+"use client";
+
 import { InputHTMLAttributes } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface MyItemListProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "className"> {
   title: string;
@@ -15,6 +17,7 @@ interface MyItemListProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "c
   className?: string;
   orderId?: string;
   subscriptionId?: string;
+  productid?: number;
 }
 
 export default function MyItemList({
@@ -30,13 +33,16 @@ export default function MyItemList({
   className = "",
   orderId = "1",
   subscriptionId = "1",
+  productid,
 }: MyItemListProps) {
+  console.log(productid, "프로덕트아이디");
+  const router = useRouter();
   const getHref = () => {
     if (content === "리뷰 작성") {
-      return `/mypage/order/${orderId}/review`;
+      router.push(`/mypage/order/${orderId}/review?productid=${productid}`);
     }
     if (content === "상세 보기") {
-      return `/mypage/subscription/${subscriptionId}`;
+      router.push(`/mypage/subscription/${subscriptionId}`);
     }
     return "#";
   };
@@ -72,13 +78,13 @@ export default function MyItemList({
       </div>
       <hr className="w-[calc(100%-58px)] h-px mx-auto border-0 bg-[rgba(0,0,0,0.06)] " />
 
-      <Link
+      <button
         className="flex justify-center gap-[12px] items-center px-[29px] py-[20px]"
-        href={getHref()}
+        onClick={getHref}
       >
         <span className="text-[#FBA613] text-center text-[11px] font-black">{content}</span>
         <span>{mark}</span>
-      </Link>
+      </button>
     </div>
   );
 }

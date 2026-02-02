@@ -49,8 +49,8 @@ export default async function Subscription({ searchParams }: Props) {
           {orders.length > 0 ? (
             orders.map((item, index) => (
               <MyItemList
-                key={index}
-                // orderId={String(item.orderId)}
+                key={`${item.orderId}-${index}`}
+                subscriptionId={String(item._id)}
                 title={item.products[0].name}
                 image={
                   <div className="rounded-3xl overflow-hidden w-[211px] h-[211px] relative">

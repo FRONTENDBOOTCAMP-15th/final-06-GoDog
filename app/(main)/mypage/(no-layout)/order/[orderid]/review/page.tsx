@@ -1,24 +1,83 @@
 "use client";
 
 import Contentdetail from "@/app/(main)/mypage/_components/Contentdetail";
+import { useParams } from "next/navigation";
 import { PlusIcon, PrevIcon } from "@/app/(main)/mypage/_components/Icons";
 import StarComponent from "@/app/(main)/mypage/_components/StarComponent";
 import Badge from "@/components/common/Badge";
 import Button from "@/components/common/Button";
 import Input from "@/components/common/Input";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import {
+  uploadFile,
+  createReview,
+} from "@/app/(main)/mypage/(no-layout)/order/[orderid]/review/postreview";
 
 export default function Review() {
+  const router = useRouter();
+  const params = useParams();
+  const searchParams = useSearchParams();
+  console.log(params);
+  const order_id = Number(params.orderid);
+  // const product_id = searchParams.get("productid");
+  const product_id = Number(searchParams.get("productid"));
+  console.log(product_id, "마늘");
+
   const [preview, setPreview] = useState("/images/moomin.png");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [reviewContent, setReviewContent] = useState("");
+  const [title, setTitle] = useState("");
+  const [rating, setRating] = useState(5); // 기본 별점 5점
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const MAX_LEN = 100;
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setSelectedFile(file);
       const previewUrl = URL.createObjectURL(file);
       setPreview(previewUrl);
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (rating === 0) return alert("만족도를 선택해 주세요.");
+    if (!reviewContent.trim()) return alert("후기 내용을 입력해 주세요.");
+
+    console.log(order_id, "조기");
+    console.log(product_id, "요기");
+
+    if (!order_id || !product_id) return alert("주문 정보를 확인할 수 없습니다.");
+
+    try {
+      setIsSubmitting(true);
+      let attachedImage = null;
+
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append("attach", selectedFile);
+        attachedImage = await uploadFile(formData);
+      }
+
+      await createReview({
+        order_id: order_id,
+        product_id: product_id,
+        rating: rating,
+        content: reviewContent,
+        extra: {
+          title: title,
+          image: attachedImage,
+        },
+      });
+
+      alert("소중한 후기가 등록되었습니다!");
+      router.push("/mypage/order");
+    } catch (error) {
+      alert("리뷰 등록 중 오류가 발생했습니다.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -44,12 +103,18 @@ export default function Review() {
 
         <div className="bg-white w-full max-w-[632px] rounded-[35px] flex flex-col items-center p-[20px] lg:p-[40px] shadow-sm">
           <div className="pb-[10px]">
-            <StarComponent />
+            <StarComponent rating={rating} setRating={setRating} />
           </div>
 
           <div className="w-full max-w-[532px] mt-8">
             <p className="text-[#1A1A1C] font-inter text-[11.5px] font-black mb-[8px]">리뷰 제목</p>
-            <Input className="w-full mb-[35px]" label="" placeholder="제목을 입력해 주세요" />
+            <Input
+              className="w-full mb-[35px]"
+              label=""
+              placeholder="제목을 입력해 주세요"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
           </div>
 
           <Contentdetail
@@ -91,10 +156,16 @@ export default function Review() {
           {/* 하단 버튼 영역 */}
           <div className="w-full max-w-[532px] mt-[50px] pb-[20px]">
             <div className="flex flex-col lg:flex-row gap-[14px]">
-              <Button className="flex-1" size="md" variant="primary">
-                후기 저장하기
+              <Button
+                className="flex-1"
+                size="md"
+                variant="primary"
+                onClick={handleSubmit}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "저장 중..." : "후기 저장하기"}
               </Button>
-              <Button className="flex-1" size="md" variant="outline">
+              <Button className="flex-1" size="md" variant="outline" onClick={() => router.back()}>
                 작성 취소
               </Button>
             </div>

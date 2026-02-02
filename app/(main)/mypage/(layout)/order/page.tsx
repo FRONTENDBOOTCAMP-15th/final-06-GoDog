@@ -31,7 +31,7 @@ export default async function Orders({ searchParams }: Props) {
       displayDate: order.createdAt.split(" ")[0],
     })),
   );
-
+  console.log(flattenedItems);
   return (
     <div className="w-full min-w-[360px] pb-[70px]">
       <div className="mt-[108px]">
@@ -49,6 +49,7 @@ export default async function Orders({ searchParams }: Props) {
             flattenedItems.map((item: FlattenedOrderProduct, index: number) => (
               <MyItemList
                 key={`${item.orderId}-${item._id}-${index}`}
+                productid={item._id}
                 orderId={String(item.orderId)}
                 title={item.name}
                 image={
