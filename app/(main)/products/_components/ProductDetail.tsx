@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Button from "@/components/common/Button";
 import PaginationWrapper from "@/components/common/PaginationWrapper";
 import PurchaseModal from "@/app/(main)/products/_components/Modal";
@@ -45,6 +46,7 @@ interface Props {
   currentQnaPage: number;
   reviewTotalPages: number;
   qnaTotalPages: number;
+  reviewFilter: string;
 }
 
 export default function ProductDetail({
@@ -57,15 +59,34 @@ export default function ProductDetail({
   currentQnaPage,
   reviewTotalPages,
   qnaTotalPages,
+  reviewFilter,
 }: Props) {
+  // 최신순, 사진후기만 필터링
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const handleReviewFilter = (filter: "latest" | "photo") => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("reviewFilter", filter);
+    params.set("reviewPage", "1");
+    router.push(`?${params.toString()}`, { scroll: false });
+  };
+
   const [isLiked, setIsLiked] = useState(false);
   const [activeTab, setActiveTab] = useState<"detail" | "review" | "qna">("detail");
   const [isDetailExpanded, setIsDetailExpanded] = useState(false);
   const [openQnaId, setOpenQnaId] = useState<number | null>(null);
-  const [helpfulReview1, setHelpfulReview1] = useState(false);
-  const [helpfulCount1, setHelpfulCount1] = useState(0);
-  const [helpfulReview2, setHelpfulReview2] = useState(false);
-  const [helpfulCount2, setHelpfulCount2] = useState(0);
+  // 도움돼요를 누른 리뷰 ID 목록
+  const [helpfulList, setHelpfulList] = useState<number[]>([]);
+
+  const toggleHelpful = (reviewId: number) => {
+    if (helpfulList.includes(reviewId)) {
+      // 이미 누른 도움돼요 이면 목록에서 제거
+      setHelpfulList(helpfulList.filter((id) => id !== reviewId));
+    } else {
+      // 처음 누른 도움돼요 이면 목록에 추가
+      setHelpfulList([...helpfulList, reviewId]);
+    }
+  };
 
   // 모달
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -319,10 +340,18 @@ export default function ProductDetail({
           </div>
         </div>
         <div className="flex items-start gap-[0.4375rem]">
-          <Button variant="outline" size="sm">
+          <Button
+            variant={reviewFilter === "latest" ? "primary" : "outline"}
+            size="sm"
+            onClick={() => handleReviewFilter("latest")}
+          >
             최신순
           </Button>
-          <Button variant="secondary" size="sm">
+          <Button
+            variant={reviewFilter === "photo" ? "primary" : "secondary"}
+            size="sm"
+            onClick={() => handleReviewFilter("photo")}
+          >
             사진후기만
           </Button>
         </div>
@@ -358,12 +387,9 @@ export default function ProductDetail({
                   <div className="ml-auto self-start">
                     <button
                       type="button"
-                      onClick={() => {
-                        setHelpfulReview1(!helpfulReview1);
-                        setHelpfulCount1(helpfulReview1 ? helpfulCount1 - 1 : helpfulCount1 + 1);
-                      }}
+                      onClick={() => toggleHelpful(review._id)}
                       className={`inline-flex items-center rounded-[0.5rem] border px-2 py-1 text-[11px] font-bold transition-colors ${
-                        helpfulReview1
+                        helpfulList.includes(review._id)
                           ? "border-[#fba613] bg-[#fff5e6] text-[#fba613]"
                           : "border-black/[0.06] bg-[#f5f5f7] text-[#646468]"
                       }`}
@@ -390,7 +416,7 @@ export default function ProductDetail({
                           </clipPath>
                         </defs>
                       </svg>
-                      도움돼요 {helpfulCount1}
+                      도움돼요 {helpfulList.includes(review._id) ? 1 : 0}
                     </button>
                   </div>
                 </div>
@@ -463,21 +489,14 @@ export default function ProductDetail({
                 type="button"
                 className="flex w-full flex-col gap-2 border-0 bg-transparent py-4 text-left text-inherit sm:grid sm:grid-cols-[auto_1fr_auto_auto] sm:items-center sm:gap-[18px] sm:py-[26px]"
               >
-                <span className="inline-flex h-7 w-fit items-center justify-center whitespace-nowrap  px-3">
-                  <svg
-                    width="60"
-                    height="24"
-                    viewBox="0 0 60 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <rect x="0.5" y="0.5" width="59" height="23" rx="6.5" fill="#F0FDF4" />
-                    <rect x="0.5" y="0.5" width="59" height="23" rx="6.5" stroke="#DCFCE7" />
-                    <path
-                      d="M18.873 7.47266V9.35742H20.0352V10.5098H18.873V12.2773H17.4668V7.47266H18.873ZM16.0605 8V9.11328H13.4629V10.9688C15.0254 10.959 15.875 10.915 16.8125 10.7051L16.959 11.8184C15.875 12.0527 14.8496 12.1016 12.8281 12.1016H12.0566V8H16.0605ZM14.3223 12.6875V13.4297H17.4668V12.6875H18.873V16.3398H12.9258V12.6875H14.3223ZM14.3223 15.2266H17.4668V14.5332H14.3223V15.2266ZM28.4648 7.48242V14.084H27.0684V11.9746H25.5645V12.707H21.2383V8.06836H22.6543V9.36719H24.1777V8.06836H25.5645V8.9375H27.0684V7.48242H28.4648ZM28.6504 15.168V16.291H22.4492V13.4199H23.875V15.168H28.6504ZM22.6543 11.6133H24.1777V10.4316H22.6543V11.6133ZM25.5645 10.8516H27.0684V10.0605H25.5645V10.8516ZM32.7051 7.82422C34.0137 7.82422 34.9609 8.57617 34.9707 9.66992C34.9609 10.5195 34.3506 11.1836 33.4277 11.4082V12.0039C34.082 11.9648 34.7363 11.9014 35.3516 11.8184L35.459 12.8242C33.6328 13.1562 31.6113 13.1953 30.127 13.1953L29.9902 12.0918C30.5908 12.0918 31.2842 12.0869 32.0117 12.0625V11.418C31.0693 11.1982 30.4395 10.5293 30.4395 9.66992C30.4395 8.57617 31.3867 7.82422 32.7051 7.82422ZM32.7051 8.87891C32.1387 8.88867 31.7383 9.14258 31.748 9.66992C31.7383 10.1582 32.1387 10.4316 32.7051 10.4316C33.2715 10.4316 33.6523 10.1582 33.6523 9.66992C33.6523 9.14258 33.2715 8.88867 32.7051 8.87891ZM37.2363 7.48242V10.2363H38.3203V11.3984H37.2363V14.3184H35.8301V7.48242H37.2363ZM37.5391 15.1582V16.2812H31.1328V13.7129H32.5488V15.1582H37.5391ZM47.3555 14.3281V15.4707H39.1621V14.3281H41.1934V13.0586H40.0801V9.97266H45.0508V9.15234H40.0703V8.0293H46.4375V11.0859H41.4863V11.9258H46.6426V13.0586H45.4316V14.3281H47.3555ZM42.5605 14.3281H44.0449V13.0586H42.5605V14.3281Z"
-                      fill="#16A34A"
-                    />
-                  </svg>
+                <span
+                  className={`inline-flex h-7 w-fit items-center justify-center whitespace-nowrap rounded-[6.5px] border px-3 text-xs font-bold ${
+                    item.replies && item.replies.length > 0
+                      ? "border-[#F0FDF4] bg-[#DCFCE7] text-[#16A34A]"
+                      : "border-[#E4E4E7] bg-[#F0F0F3] text-[#646468]"
+                  }`}
+                >
+                  {item.replies && item.replies.length > 0 ? "답변완료" : "답변대기"}
                 </span>
                 <p className="m-0 text-sm font-extrabold tracking-[-0.01em] sm:text-lg">
                   {item.title}
