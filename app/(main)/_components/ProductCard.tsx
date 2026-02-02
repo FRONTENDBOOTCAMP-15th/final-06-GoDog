@@ -1,3 +1,4 @@
+import Badge from "@/components/common/Badge";
 import Button from "@/components/common/Button";
 import ProductImage from "@/components/common/ProductImage";
 
@@ -21,16 +22,21 @@ export default function ProductCard({
   return (
     <div className="bg-white rounded-[49px] shadow-[0px_4px_24px_-4px_rgba(0,0,0,0.04),0px_0px_0px_1px_rgba(0,0,0,0.02)] overflow-hidden">
       {/* 이미지 영역 */}
-      <ProductImage src={image} alt={title} />
+      <div className="relative">
+        <ProductImage src={image} alt={title} />
+        <Badge className="absolute top-8 right-8" variant="accent">
+          {tag}
+        </Badge>
+      </div>
 
       {/* 콘텐츠 영역 */}
       <div className="p-[42px] flex flex-col gap-[21px]">
         {/* 타이틀 + kcal */}
-        <div className="flex justify-between items-center">
+        <div className="flex gap-4 flex-wrap items-center">
           <h3 className="text-[24.5px] font-black text-[#1A1A1C] tracking-[-1.3px] leading-8">
             {title}
           </h3>
-          <span className="text-xs font-extrabold text-accent-primary">{kcal}</span>
+          <span className="ml-auto text-xs font-extrabold text-accent-primary">{kcal}</span>
         </div>
 
         {/* 설명 */}

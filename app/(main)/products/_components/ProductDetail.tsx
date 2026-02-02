@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Button from "@/components/common/Button";
 import PaginationWrapper from "@/components/common/PaginationWrapper";
@@ -10,27 +10,20 @@ import PurchaseModal from "@/app/(main)/products/_components/Modal";
 import { Product } from "@/types/product";
 import { Review } from "@/types/review";
 import { Post } from "@/types/post";
+import useUserStore from "@/app/(main)/(auth)/login/zustand/useStore";
+import { addBookmark, getBookmarks, removeBookmark } from "@/lib/bookmar";
 
 function StarRating({ rating, size = 16 }: { rating: number; size?: number }) {
   return (
     <div className="flex gap-0.5">
       {Array.from({ length: 5 }, (_, i) => (
-        // 총 5번 반복, 배열을 돌면서 i에 담기고 '_'은 index(아무개라는 뜻)
-        <svg
+        <Image
           key={i}
+          src={i < rating ? "/images/fullStar.svg" : "/images/emptyStar.svg"}
           width={size}
           height={size}
-          viewBox="0 0 16 16"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M8 1.61803L9.52786 6.11246L9.6382 6.4463H9.99139H14.7063L10.8531 9.24124L10.5676 9.44856L10.678 9.78237L12.2058 14.2768L8.35261 11.4919L8.06712 11.2845L7.78163 11.4919L3.92845 14.2768L5.45631 9.78237L5.56665 9.44856L5.28116 9.24124L1.42798 6.4463H6.14285H6.50604L6.61638 6.11246L8 1.61803Z"
-            fill={i < rating ? "#FBA613" : "#E0E0E0"}
-            stroke={i < rating ? "#FBA613" : "#E0E0E0"}
-            strokeWidth="0.5"
-          />
-        </svg>
+          alt={i < rating ? "fullstar" : "emptystar"}
+        />
       ))}
     </div>
   );
@@ -38,6 +31,7 @@ function StarRating({ rating, size = 16 }: { rating: number; size?: number }) {
 
 interface Props {
   product: Product;
+  productId: number;
   reviews: Review[];
   qna: Post[];
   reviewCount: number;
@@ -51,6 +45,7 @@ interface Props {
 
 export default function ProductDetail({
   product,
+  productId,
   reviews,
   qna,
   reviewCount,
@@ -72,6 +67,60 @@ export default function ProductDetail({
   };
 
   const [isLiked, setIsLiked] = useState(false);
+  const [bookmarkId, setBookmarkId] = useState<number | null>(null);
+  const user = useUserStore((state) => state.user);
+
+  // 페이지 로드 시 이 상품이 북마크되어 있는지 확인
+  useEffect(() => {
+    const checkBookmark = async () => {
+      if (!user?.token?.accessToken) return;
+      const data = await getBookmarks(user.token.accessToken);
+      if (data.ok === 1) {
+        const found = data.item.find((b) => b.product?._id === productId);
+        if (found) {
+          setIsLiked(true);
+          setBookmarkId(found._id);
+        }
+      }
+    };
+    checkBookmark();
+  }, [user, productId]);
+
+  // 하트 클릭
+  const handleToggleBookmark = async () => {
+    console.log("하트 클릭", { user, productId, isLiked, bookmarkId });
+    if (!user?.token?.accessToken) {
+      alert("로그인이 필요합니다.");
+      router.push("/login");
+      return;
+    }
+    if (isLiked && bookmarkId) {
+      const res = await removeBookmark(user.token.accessToken, bookmarkId);
+      if (res.ok === 1) {
+        setIsLiked(false);
+        setBookmarkId(null);
+      }
+    } else {
+      const res = await addBookmark(user.token.accessToken, productId);
+      console.log("addBookmark 응답:", res);
+      if (res.ok === 1) {
+        setIsLiked(true);
+        setBookmarkId(res.item._id);
+      } else {
+        const bookmarks = await getBookmarks(user.token.accessToken);
+        console.log("getBookmarks 응답:", JSON.stringify(bookmarks));
+        if (bookmarks.ok === 1) {
+          const existing = bookmarks.item.find((b) => b.product?._id === productId);
+          console.log("기존 북마크 찾기:", existing, "productId:", productId);
+          if (existing) {
+            setIsLiked(true);
+            setBookmarkId(existing._id);
+          }
+        }
+      }
+    }
+  };
+
   const [activeTab, setActiveTab] = useState<"detail" | "review" | "qna">("detail");
   const [isDetailExpanded, setIsDetailExpanded] = useState(false);
   const [openQnaId, setOpenQnaId] = useState<number | null>(null);
@@ -106,7 +155,7 @@ export default function ProductDetail({
           <div className="image-card w-full max-w-[538px] flex-shrink-0">
             <Image
               className="block w-full rounded-4xl object-cover"
-              src={product.mainImages[0]?.path || "/placeholder.png"}
+              src={product.mainImages[0]?.path || "images/product-404.jpg"}
               width={538}
               height={552}
               alt={product.name}
@@ -163,8 +212,9 @@ export default function ProductDetail({
               >
                 구매하기
               </button>
+
               {/* 관심상품 버튼 */}
-              <button type="button" className="cursor-pointer" onClick={() => setIsLiked(!isLiked)}>
+              <button type="button" className="cursor-pointer" onClick={handleToggleBookmark}>
                 <svg
                   width="81"
                   height="53"
@@ -366,7 +416,7 @@ export default function ProductDetail({
             <div className="flex flex-col items-start gap-4 sm:flex-row sm:gap-6">
               <div className="h-24 w-24 flex-shrink-0 sm:h-[8.75rem] sm:w-[8.75rem]">
                 <Image
-                  src={product.mainImages[0]?.path || "/placeholder.png"}
+                  src={product.mainImages[0]?.path || "images/product-404.jpg"}
                   className="block h-full w-full rounded-[1.125rem] object-cover"
                   width={140}
                   height={140}
@@ -505,7 +555,7 @@ export default function ProductDetail({
                   {item.user.name} | {item.createdAt.slice(0, 10)}
                 </p>
                 <span
-                  className={`hidden text-lg leading-none text-[#909094] transition-transform origin-center sm:block ${openQnaId === item._id ? "rotate-180" : ""}`}
+                  className={`hidden text-lg leading-none text-[#909094] origin-center sm:block ${openQnaId === item._id ? "rotate-180" : ""}`}
                 >
                   <svg
                     width="18"

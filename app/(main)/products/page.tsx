@@ -1,10 +1,7 @@
 import PaginationWrapper from "@/components/common/PaginationWrapper";
 import Image from "next/image";
 import Link from "next/link";
-import type { ProductListRes, ErrorRes } from "@/types/response";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
-const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || "";
+import { getProducts } from "@/lib/product";
 
 interface Props {
   searchParams: Promise<{
@@ -15,55 +12,28 @@ interface Props {
   }>;
 }
 
-export async function getProducts(
-  page: number = 1,
-  limit: number = 8,
-  lifeStage?: string,
-  category?: string,
-  type?: string,
-): Promise<ProductListRes | ErrorRes> {
-  try {
-    let url = `${API_URL}/products?page=${page}&limit=${limit}`;
-
-    const custom = {
-      ...(lifeStage && { "extra.lifeStage": lifeStage }),
-      ...(category && { "extra.category": category }),
-      ...(type && { "extra.type": type }),
-    };
-    // lifeStage가 true면 extra.lifeStage: 퍼피를 스프레드로 펼침
-
-    if (Object.keys(custom).length > 0) {
-      url += `&custom=${JSON.stringify(custom)}`;
-    }
-
-    const res = await fetch(url, {
-      headers: {
-        "Client-Id": CLIENT_ID,
-      },
-      cache: "no-store",
-    });
-    return res.json();
-  } catch (error) {
-    console.error(error);
-    return {
-      ok: 0,
-      message: "일시적인 네트워크 문제로 게시물 목록 조회에 실패했습니다.",
-    };
-  }
-}
-
+// 상품 목록 페이지
 export default async function Products({ searchParams }: Props) {
   const { page, lifeStage, category, type } = await searchParams;
   const currentPage = Number(page) || 1;
+  const custom = {
+    ...(lifeStage && { "extra.lifeStage": lifeStage }),
+    ...(category && { "extra.category": category }),
+    ...(type && { "extra.type": type }),
+  };
 
-  const data = await getProducts(currentPage, 8, lifeStage, category, type);
+  const resProducts = await getProducts({
+    custom,
+    page: currentPage,
+    limit: 10,
+  });
 
-  if (data.ok === 0) {
-    return <div>{data.message}</div>;
+  if (resProducts.ok === 0) {
+    return <div>{resProducts.message}</div>;
   }
 
-  const products = data.item;
-  const totalPages = data.pagination.totalPages;
+  const products = resProducts.item;
+  const totalPages = resProducts.pagination.totalPages;
 
   return (
     <div className="w-full min-w-90 bg-bg-secondary px-4 py-10 sm:px-10 md:px-20 lg:px-89 lg:py-17.5 lg:pb-35">

@@ -4,26 +4,22 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Badge from "@/components/common/Badge";
 import Button from "@/components/common/Button";
-import { recommendProducts, createResultUrl, type SurveyFormData } from "@/lib/recommendProducts";
+import {
+  recommendProducts,
+  createResultUrl,
+  type ExtendedSurveyFormData,
+} from "@/lib/recommendProducts";
 import CheckButton from "@/components/common/CheckButton";
 import ChoiceButton from "@/components/common/ChoiceButton";
 import InfoBox from "@/components/common/InfoBox";
 
-// ✅ 총 4단계로 재구성
+// 설문조사 4단계
 const TOTAL_STEPS = 4;
-
-// ✅ 기존 SurveyFormData에 새 필드 확장
-type ExtendedSurveyFormData = SurveyFormData & {
-  neutered: string;
-  activityLevel: string;
-  currentFeedIssues: string[];
-  diagnosedDiseases: string[];
-  foodType: string;
-};
 
 export default function SurveyPage() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<ExtendedSurveyFormData>({
     size: "",
     age: "",
@@ -39,21 +35,30 @@ export default function SurveyPage() {
     foodType: "",
   });
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (currentStep < TOTAL_STEPS) {
       setCurrentStep(currentStep + 1);
       window.scrollTo(0, 0);
     } else {
-      const results = recommendProducts(formData);
+      setIsSubmitting(true);
 
-      if (!results || results.length === 0) {
-        alert("조건에 맞는 제품을 찾지 못했습니다. 조건을 변경해 주세요.");
-        return;
+      try {
+        const results = await recommendProducts(formData);
+
+        if (!results || results.length === 0) {
+          alert("조건에 맞는 제품을 찾지 못했습니다. 조건을 변경해 주세요.");
+          setIsSubmitting(false);
+          return;
+        }
+
+        const resultUrl = createResultUrl(results, formData);
+        console.log("전체 설문 결과:", formData);
+        router.push(resultUrl);
+      } catch (error) {
+        console.error("추천 처리 중 오류:", error);
+        alert("추천 처리 중 오류가 발생했습니다. 다시 시도해 주세요.");
+        setIsSubmitting(false);
       }
-      const resultUrl = createResultUrl(results, formData);
-
-      console.log("전체 설문 결과:", formData);
-      router.push(resultUrl);
     }
   };
 
@@ -103,14 +108,13 @@ export default function SurveyPage() {
 
   const progress = (currentStep / TOTAL_STEPS) * 100;
 
-  // ✅ 각 단계별 유효성 검사 로직 업데이트
+  // 각 단계별 유효성 검사 로직
   const isNextDisabled =
+    isSubmitting ||
     (currentStep === 1 && (!formData.size || !formData.age || !formData.neutered)) ||
     (currentStep === 2 && (!formData.activityLevel || !formData.bodyType)) ||
     (currentStep === 3 &&
       (formData.allergies.length === 0 || formData.healthConcerns.length === 0)) ||
-      // formData.diagnosedDiseases.length === 0
-    // (currentStep === 4 && (!formData.protein || !formData.grainPreference || !formData.foodType));
     (currentStep === 4 && (!formData.protein || !formData.grainPreference));
 
   const stepTitles: Record<number, string> = {
@@ -145,7 +149,7 @@ export default function SurveyPage() {
         </div>
 
         <div className="bg-white rounded-[3.5rem] p-10 md:p-16 shadow-card border border-border-primary animate-in fade-in slide-in-from-bottom-4 duration-500">
-          {/* 🟢 STEP 1: 기본 정보 */}
+          {/* STEP 1: 기본 정보 */}
           {currentStep === 1 && (
             <div className="space-y-16">
               <SurveySection
@@ -206,7 +210,7 @@ export default function SurveyPage() {
             </div>
           )}
 
-          {/* 🟢 STEP 2: 생활 패턴 */}
+          {/* STEP 2: 생활 패턴 */}
           {currentStep === 2 && (
             <div className="space-y-16">
               <SurveySection
@@ -253,7 +257,7 @@ export default function SurveyPage() {
             </div>
           )}
 
-          {/* 🟢 STEP 3: 건강 상태 */}
+          {/* STEP 3: 건강 상태 */}
           {currentStep === 3 && (
             <div className="space-y-16">
               <SurveySection
@@ -283,7 +287,7 @@ export default function SurveyPage() {
                   ))}
                 </div>
                 <p className="mt-4 text-sm text-text-tertiary">
-                  🔸 “기타 알러지 있음”을 선택하면 저자극성 사료를 우선 추천해드려요.
+                  🔸 &quot;기타 알러지 있음&quot;을 선택하면 저자극성 사료를 우선 추천해드려요.
                 </p>
               </SurveySection>
 
@@ -309,38 +313,10 @@ export default function SurveyPage() {
                   ))}
                 </div>
               </SurveySection>
-
-              {/* 사료 추천시 주의 */}
-              {/* <SurveySection
-                number={8}
-                title="현재 진단받은 질병이 있나요?"
-                subtitle="복수 선택 가능"
-              >
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {[
-                    "없음",
-                    "신장 질환",
-                    "심장 질환",
-                    "췌장·간 질환",
-                    "당뇨",
-                    "기타 질환 있음 (상세 불필요)",
-                  ].map((val) => (
-                    <CheckButton
-                      key={val}
-                      selected={formData.diagnosedDiseases.includes(val)}
-                      onClick={() => toggleArrayField("diagnosedDiseases", val)}
-                      label={val}
-                    />
-                  ))}
-                </div>
-                <p className="mt-4 text-sm text-text-tertiary">
-                  🔸 질환이 있다면 일반 사료 대신 수의사와 상담 후 처방식을 권장드릴 수 있어요.
-                </p>
-              </SurveySection> */}
             </div>
           )}
 
-          {/* 🟢 STEP 4: 선호도 */}
+          {/* STEP 4: 선호도 */}
           {currentStep === 4 && (
             <div className="space-y-16">
               <SurveySection number={8} title="선호하는 단백질 원재료가 있나요?">
@@ -369,21 +345,6 @@ export default function SurveyPage() {
                 </div>
               </SurveySection>
 
-              {/* 습식 사료 아직 없음 */}
-              {/* <SurveySection number={11} title="사료 형태 선호">
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  {["상관없음", "건식 사료", "습식 사료", "건식 + 습식 혼합"].map((val) => (
-                    <ChoiceButton
-                      key={val}
-                      selected={formData.foodType === val}
-                      onClick={() => updateField("foodType", val)}
-                      label={val}
-                      size="sm"
-                    />
-                  ))}
-                </div>
-              </SurveySection> */}
-
               <InfoBox>
                 작성하신 모든 정보를 바탕으로 아이에게 가장 적합한 사료를 정확하게 추천해 드릴게요!
                 <br />
@@ -394,7 +355,7 @@ export default function SurveyPage() {
 
           {/* 네비게이션 */}
           <div className="mt-16 pt-10 border-t border-border-primary flex items-center justify-between">
-            <Button onClick={handlePrev} variant="ghost" size="lg" leftIcon>
+            <Button onClick={handlePrev} variant="ghost" size="lg" leftIcon disabled={isSubmitting}>
               {currentStep === 1 ? "취소하기" : "이전으로"}
             </Button>
             <Button
@@ -404,7 +365,16 @@ export default function SurveyPage() {
               disabled={isNextDisabled}
               rightIcon={currentStep !== TOTAL_STEPS}
             >
-              {currentStep === TOTAL_STEPS ? "추천 결과 보기" : "다음 단계로"}
+              {isSubmitting ? (
+                <span className="flex items-center gap-2">
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  분석 중...
+                </span>
+              ) : currentStep === TOTAL_STEPS ? (
+                "추천 결과 보기"
+              ) : (
+                "다음 단계로"
+              )}
             </Button>
           </div>
         </div>

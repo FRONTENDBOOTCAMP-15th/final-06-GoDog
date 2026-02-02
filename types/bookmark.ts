@@ -21,6 +21,15 @@ export interface Bookmark {
   is_like?: "true"; // 데이터상 문자열 "true"로 들어옴
   memo?: string;
   extra?: BookmarkExtra;
+  product?: {
+    _id: number;
+    name: string;
+    price: number;
+    quantity: number;
+    buyQuantity: number;
+    mainImages: { path: string; name: string }[];
+    extra?: Record<string, unknown>;
+  };
   createdAt: string;
   updatedAt: string;
 }

@@ -3,9 +3,20 @@ import FeatureItem from "@/app/(main)/_components/FeatureItem";
 import HeroSwiper from "@/app/(main)/_components/HeroSwiper";
 import ProductCard from "@/app/(main)/_components/ProductCard";
 import SectionTitle from "@/app/(main)/_components/SectionTitle";
+import { getProducts } from "@/lib/product";
 import Image from "next/image";
 
-export default function Home() {
+export default async function Home() {
+  const bestProductsRes = await getProducts({ sort: { rating: -1 }, limit: 3 });
+
+  if (!bestProductsRes.ok) {
+    return <div>{bestProductsRes.message}</div>;
+  }
+
+  console.log("Home");
+  const bestProducts = bestProductsRes.item;
+  console.log(bestProducts);
+
   return (
     <>
       <div className="w-full">
@@ -86,30 +97,24 @@ export default function Home() {
             descriptionWidth="w-full"
           />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
-            <ProductCard
-              image="/images/product-puppy.png"
-              title="고메 그로스2"
-              kcal="1,200 kcal"
-              description="성장기 퍼피를 위한 최적의 칼슘과 DHA 배합으로 튼튼한 골격을 형성합니다."
-              tag="PUPPY"
-              href="/products/puppy-growth"
-            />
-            <ProductCard
-              image=""
-              title="고메 그로스2"
-              kcal="1,200 kcal"
-              description="성장기 퍼피를 위한 최적의 칼슘과 DHA 배합으로 튼튼한 골격을 형성합니다."
-              tag="PUPPY"
-              href="/products/puppy-growth"
-            />
-            <ProductCard
-              image="/images/product-puppy.png"
-              title="고메 그로스2"
-              kcal="1,200 kcal"
-              description="성장기 퍼피를 위한 최적의 칼슘과 DHA 배합으로 튼튼한 골격을 형성합니다."
-              tag="PUPPY"
-              href="/products/puppy-growth"
-            />
+            {bestProducts.map((product) => {
+              const totalKcal =
+                product.extra?.kcalPer100g && product.extra?.weight
+                  ? Math.round((product.extra.kcalPer100g * product.extra.weight) / 100)
+                  : null;
+
+              return (
+                <ProductCard
+                  key={product._id}
+                  image={`${product.mainImages[0]?.path}`}
+                  title={product.name}
+                  kcal={totalKcal ? `${totalKcal.toLocaleString()} kcal` : ""}
+                  description={product.content}
+                  tag={product.extra?.category?.[0] ?? ""}
+                  href={`/products/${product._id}`}
+                />
+              );
+            })}
           </div>
         </div>
       </section>
