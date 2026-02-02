@@ -22,10 +22,13 @@ export default function Login() {
   };
 
   useEffect(() => {
-    if (userState?.ok === 1 && userState.item) {
-      const token = userState.item.token?.accessToken;
-      const storageType = checkedState ? localStorage : sessionStorage;
+    console.log(checkedState);
+  }, [checkedState]);
 
+  useEffect(() => {
+    if (userState?.ok === 1) {
+      const storageType = !checkedState ? localStorage : sessionStorage;
+      const token = userState.item.token?.accessToken;
       const cookieExpires = checkedState ? `max-age=${60 * 60 * 24 * 7}` : "";
 
       document.cookie = `accessToken=${token}; path=/; ${cookieExpires}; SameSite=Lax;`;
@@ -44,11 +47,12 @@ export default function Login() {
           refreshToken: userState.item.token?.refreshToken || "",
         },
       });
-
+      console.log(userState.item._id);
+      console.log("setUser 후:", useUserStore.getState());
       alert(`${userState.item.name}님 로그인이 완료되었습니다.`);
       router.push("/");
     }
-  }, [userState, checkedState, setUser, router]);
+  }, [userState, router, redirect, setUser, checkedState]);
 
   return (
     <>
