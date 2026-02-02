@@ -59,6 +59,7 @@ export default function Review() {
         const formData = new FormData();
         formData.append("attach", selectedFile);
         attachedImage = await uploadFile(formData);
+        console.log("업로드된 이미지 정보:", attachedImage);
       }
 
       await createReview({

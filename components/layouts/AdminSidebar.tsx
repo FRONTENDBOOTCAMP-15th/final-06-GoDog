@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import Profile from "@/app/(admin)/admin/_components/Profile";
-import useUserStore from "@/app/(main)/(auth)/login/zustand/useStore";
+import useUserStore from "@/zustand/useStore";
 
 interface SidebarProps {
   isOpen: boolean;

@@ -1,7 +1,7 @@
 "use client";
 
-import { login } from "@/app/(main)/(auth)/login/actions/user";
-import useUserStore from "@/app/(main)/(auth)/login/zustand/useStore";
+import { login } from "@/actions/user";
+import useUserStore from "@/zustand/useStore";
 import Button from "@/components/common/Button";
 import Checkbox from "@/components/common/Checkbox";
 import Input from "@/components/common/Input";

@@ -1,4 +1,6 @@
-import { getOrderlist } from "@/app/(main)/mypage/(layout)/order/getOrderlist"; // 기존 주문 조회 함수 재사용
+"use client";
+
+import { getOrderlist } from "@/app/(main)/mypage/(layout)/order/getOrderlist";
 import { Product404 } from "@/app/(main)/mypage/_components/DogFoodImage";
 import { RigthMark } from "@/app/(main)/mypage/_components/Mark";
 import MyItemList from "@/app/(main)/mypage/_components/MyItemListA";
@@ -9,31 +11,32 @@ import {
   OrderListRes,
   FlattenedOrderProduct,
 } from "@/app/(main)/mypage/(layout)/order/types/order";
+import useUserStore from "@/zustand/useStore";
+import { useSearchParams } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { getOrders } from "@/lib/order";
+import { useEffect } from "react";
 
-interface Props {
-  searchParams: Promise<{ page?: string }>;
-}
+export default function Subscription() {
+  const token = useUserStore.getState().user?.token?.accessToken || "";
+  const searchParams = useSearchParams();
+  const page = Number(searchParams.get("page")) || 1;
+  const { data: resSublist, isLoading } = useQuery({
+    queryKey: [page],
+    queryFn: () =>
+      getOrders(token, {
+        page,
+        limit: 4,
+      }),
+  });
+  console.log(resSublist);
+  useEffect(() => {
+    if (resSublist) console.log(resSublist);
+  }, [resSublist]);
 
-export default async function Subscription({ searchParams }: Props) {
-  const { page } = await searchParams;
-  const currentPage = Number(page) || 1;
+  const orderlist = resSublist?.ok === 1 ? resSublist.item : [];
+  const pagination = resSublist?.ok === 1 ? resSublist.pagination : undefined;
 
-  const response: OrderListRes = await getOrderlist(currentPage);
-  const orders: Order[] = response?.ok === 1 ? response.item : [];
-
-  const subscriptionItems: FlattenedOrderProduct[] = orders.flatMap((order) =>
-    order.products
-      .filter((product) => product.extra?.period)
-      .map((product) => ({
-        ...product,
-        orderId: order._id,
-        displayDate: order.createdAt.split(" ")[0],
-      })),
-  );
-
-  const totalPages = response?.pagination?.totalPages || 1;
-  console.log(subscriptionItems);
-  console.log(orders);
   return (
     <div className="w-full min-w-[360px] pb-[70px]">
       <div className="mt-[108px]">
@@ -46,10 +49,10 @@ export default async function Subscription({ searchParams }: Props) {
 
       <div className="max-w-[1280px] mx-auto pt-[57px] pb-[110px] px-[20px] lg:px-0">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-[20px] lg:gap-7 justify-items-center">
-          {orders.length > 0 ? (
-            orders.map((item, index) => (
+          {resSublist?.ok && resSublist.item.length > 0 ? (
+            resSublist.item.map((item, index: number) => (
               <MyItemList
-                key={`${item.orderId}-${index}`}
+                key={item._id}
                 subscriptionId={String(item._id)}
                 title={item.products[0].name}
                 image={
@@ -68,7 +71,7 @@ export default async function Subscription({ searchParams }: Props) {
                   </div>
                 }
                 content="상세 보기"
-                date={item.createdAt}
+                date={item.createdAt.split(" ")[0]}
                 period={item.period}
                 quantity={item.products[0].quantity}
                 price={`${item.products[0].price.toLocaleString()}원`}
@@ -82,7 +85,7 @@ export default async function Subscription({ searchParams }: Props) {
           )}
         </div>
       </div>
-      <PaginationWrapper currentPage={currentPage} totalPages={totalPages} />
+      <PaginationWrapper currentPage={page} totalPages={pagination?.totalPages || 1} />
     </div>
   );
 }

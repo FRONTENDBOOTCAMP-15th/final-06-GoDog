@@ -259,3 +259,14 @@ export const INITIAL_PRODUCT_FORM: ProductFormState = {
     nutriMoisture: "",
   },
 };
+
+export interface Item {
+  createdAt: string;
+  extra: {
+    type: string;
+  };
+  memo: string;
+  user_id: number;
+  _id: number;
+  product: Product;
+}

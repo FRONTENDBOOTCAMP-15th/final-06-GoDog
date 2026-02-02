@@ -1,6 +1,6 @@
 "use server";
 
-import { UserInfoRes } from "./../../../../../types/response";
+import { UserInfoRes } from "../types/response";
 import { cookies } from "next/headers";
 import { User } from "@/types/user";
 
