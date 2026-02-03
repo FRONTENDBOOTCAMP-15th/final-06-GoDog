@@ -26,7 +26,7 @@ export default function EditImage({ profileImageUrl, onImageChange }: ProfileIma
 
   return (
     <>
-      <image
+      <Image
         src={preview}
         alt="프로필 이미지"
         className="w-[97px] h-[97px] rounded-full ring-2 ring-white shadow-2xl"

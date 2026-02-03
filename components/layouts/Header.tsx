@@ -3,12 +3,30 @@
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
+import useUserStore from "@/app/(main)/(auth)/login/zustand/useStore";
+import { usePathname, useRouter } from "next/navigation";
 
 const Header: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   const pathname = usePathname();
+  const router = useRouter();
+  const { user, resetUser } = useUserStore(); // login zustand 스토어에서 가져옴
+
+  const isLoggedIn = !!user?.token?.accessToken;
+  const handleLogout = (e: React.MouseEvent) => {
+    // 세션 스토리지를 비우고 상태를 null로 초기화
+    e.preventDefault();
+    resetUser();
+    sessionStorage.removeItem("user");
+    sessionStorage.removeItem("sessionStorage");
+    localStorage.removeItem("user");
+    localStorage.removeItem("sessionStorage");
+
+    alert("로그아웃 되었습니다.");
+    router.push("/");
+  };
 
   // 모바일 메뉴 열릴 때 스크롤 방지
   useEffect(() => {
@@ -66,16 +84,30 @@ const Header: React.FC = () => {
             >
               My Account
             </Link>
-            <Link
-              href="/login"
-              className={`text-[10px] font-black uppercase tracking-widest transition-colors ${
-                pathname === "/login"
-                  ? "text-accent-primary"
-                  : "text-text-tertiary hover:text-text-primary"
-              }`}
-            >
-              Login
-            </Link>
+            <nav>
+              {isLoggedIn ? (
+                /* 토큰이 있을 때 Logout 표시, 클릭 시 상태 리셋 후 메인 이동 */
+                <Link
+                  href="/"
+                  onClick={handleLogout}
+                  className="text-[10px] font-black uppercase tracking-widest transition-colors text-text-tertiary hover:text-text-primary"
+                >
+                  Logout
+                </Link>
+              ) : (
+                /* 토큰이 없을 때 Login 표시 */
+                <Link
+                  href="/login"
+                  className={`text-[10px] font-black uppercase tracking-widest transition-colors ${
+                    pathname === "/login"
+                      ? "text-accent-primary"
+                      : "text-text-tertiary hover:text-text-primary"
+                  }`}
+                >
+                  Login
+                </Link>
+              )}
+            </nav>
             <Link
               href="/signup"
               className={`text-[10px] font-black uppercase tracking-widest transition-colors ${
@@ -104,12 +136,7 @@ const Header: React.FC = () => {
           <div className="flex items-center space-x-4 md:space-x-16 w-full">
             {/* 로고 */}
             <Link href="/" className="flex items-center">
-              <Image
-                src="/images/logo.png"
-                alt="9Dog"
-                width={120}
-                height={40}
-              />
+              <Image src="/images/logo.png" alt="9Dog" width={120} height={40} />
             </Link>
 
             {/* 네비게이션 메뉴 (데스크탑) */}
@@ -125,8 +152,7 @@ const Header: React.FC = () => {
                     <Link
                       href={item.href}
                       className={`text-sm font-black tracking-tight transition-all relative py-2 ${
-                        pathname === item.href ||
-                        pathname?.startsWith(item.href.split("?")[0])
+                        pathname === item.href || pathname?.startsWith(item.href.split("?")[0])
                           ? "text-accent-primary"
                           : "text-text-secondary hover:text-text-primary"
                       }`}
@@ -167,16 +193,8 @@ const Header: React.FC = () => {
           {/* 우측 액션 버튼 */}
           <div className="flex items-center space-x-3 md:space-x-6">
             {/* 모바일 장바구니 */}
-            <Link
-              href="/cart"
-              className="lg:hidden p-2 text-text-primary relative"
-            >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+            <Link href="/cart" className="lg:hidden p-2 text-text-primary relative">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -194,12 +212,7 @@ const Header: React.FC = () => {
               onClick={() => setIsMobileMenuOpen(true)}
               className="lg:hidden p-2 text-text-primary focus:outline-none"
             >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -215,9 +228,7 @@ const Header: React.FC = () => {
       {/* 모바일 메뉴 오버레이 */}
       <div
         className={`fixed inset-0 z-[1000] bg-black/60 backdrop-blur-sm transition-opacity duration-300 lg:hidden ${
-          isMobileMenuOpen
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
+          isMobileMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
         onClick={closeMobileMenu}
       />
@@ -238,12 +249,7 @@ const Header: React.FC = () => {
             onClick={closeMobileMenu}
             className="p-2 text-text-tertiary hover:text-text-primary transition-colors"
           >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -375,9 +381,7 @@ const Header: React.FC = () => {
                 onClick={closeMobileMenu}
                 className="text-xl font-black text-text-tertiary flex items-center justify-between w-full group"
               >
-                <span className="group-hover:text-text-primary transition-colors">
-                  Admin Page
-                </span>
+                <span className="group-hover:text-text-primary transition-colors">Admin Page</span>
                 <svg
                   className="w-4 h-4 opacity-50"
                   fill="none"

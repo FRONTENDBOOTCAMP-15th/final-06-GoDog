@@ -7,7 +7,13 @@ export default function StarComponent() {
   const [isActive, setIsActive] = useState(false);
   const [score, setScore] = useState(0);
   const array = [1, 2, 3, 4, 5];
-  const lables = { 1: "별로에요", 2: "그저 그래요", 3: "보통이에요", 4: "좋아요!", 5: "최고에요!" };
+  const lables: Record<number, string> = {
+    1: "별로에요",
+    2: "그저 그래요",
+    3: "보통이에요",
+    4: "좋아요!",
+    5: "최고에요!",
+  };
 
   return (
     <>

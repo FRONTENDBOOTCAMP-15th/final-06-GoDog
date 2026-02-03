@@ -24,5 +24,6 @@ export interface User {
   extra?: UserExtra;
   createdAt: string;
   updatedAt: string;
+  token: { accessToken: string; refreshToken: string };
   refreshToken?: string;
 }

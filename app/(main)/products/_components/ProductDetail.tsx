@@ -49,7 +49,7 @@ export default function ProductDetail({
           <div className="image-card w-full max-w-[538px] flex-shrink-0">
             <Image
               className="block w-full rounded-4xl object-cover"
-              src="/images/ADT-S-01  스몰어덜트 치킨앤라이스 2.png"
+              src="/images/jointcare_chicken_brownrice.png"
               width={538}
               height={552}
               alt="어덜트 밸런스 치킨 상품 이미지"
@@ -255,7 +255,7 @@ export default function ProductDetail({
           <div className="flex flex-col items-start gap-4 sm:flex-row sm:gap-6">
             <div className="h-24 w-24 flex-shrink-0 sm:h-[8.75rem] sm:w-[8.75rem]">
               <Image
-                src="/images/ADT-S-01  스몰어덜트 치킨앤라이스 2.png"
+                src="/images/jointcare_chicken_brownrice.png"
                 className="block h-full w-full rounded-[1.125rem] object-cover"
                 width={140}
                 height={140}
