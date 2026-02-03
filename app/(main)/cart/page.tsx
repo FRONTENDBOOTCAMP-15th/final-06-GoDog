@@ -16,26 +16,53 @@ export default function Cart() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<ErrorRes | null>(null);
 
-  // 장바구니 데이터
+  // 장바구니 데이터 로드
   useEffect(() => {
-    async function loadCart() {
-      try {
-        setIsLoading(true);
-        const data = await getCartItems();
-
-        if (data.ok === 0) {
-          setError(data);
-        } else {
-          setCartData(data);
-        }
-      } catch {
-        setError({ ok: 0, message: "장바구니를 불러오는데 실패했습니다." });
-      } finally {
-        setIsLoading(false);
-      }
-    }
     loadCart();
   }, []);
+
+  // 장바구니 로드
+  const loadCart = async () => {
+    try {
+      setIsLoading(true);
+      const data = await getCartItems();
+
+      if (data.ok === 0) {
+        setError(data);
+      } else {
+        setCartData(data);
+      }
+    } catch {
+      setError({ ok: 0, message: "장바구니 목록을 불러오는데 실패했습니다. 다시 시도해 주세요." });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // 한건 삭제 성공 핸들러
+  const handleDeleteSuccess = (deleteId: number) => {
+    if (!cartData) return;
+
+    setCartData({
+      ...cartData,
+      item: cartData.item.filter((item) => item._id !== deleteId),
+    });
+  };
+
+  // 여러건 삭제 성공 핸들러
+  const handleDeleteMultiple = (deleteIds: number[]) => {
+    if (!cartData) return;
+
+    setCartData({
+      ...cartData,
+      item: cartData.item.filter((item) => !deleteIds.includes(item._id)),
+    });
+  };
+
+  // 수량 변경 후 재조회
+  const handleQuantityUpdate = async () => {
+    await loadCart();
+  };
 
   if (isLoading) {
     return (
@@ -87,9 +114,21 @@ export default function Cart() {
           <Tab tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
         </section>
         {activeTab === "oneTime" ? (
-          <OnetimeCart items={onetimeItems} cost={cartData.cost} error={error} />
+          <OnetimeCart
+            items={onetimeItems}
+            error={error}
+            onDeleteSuccess={handleDeleteSuccess}
+            onDeleteMutiple={handleDeleteMultiple}
+            onQuantityUpdate={handleQuantityUpdate}
+          />
         ) : (
-          <SubscriptionCart items={subscriptionItems} cost={cartData.cost} error={error} />
+          <SubscriptionCart
+            items={subscriptionItems}
+            error={error}
+            onDeleteSuccess={handleDeleteSuccess}
+            onDeleteMutiple={handleDeleteMultiple}
+            onQuantityUpdate={handleQuantityUpdate}
+          />
         )}
       </div>
     </div>

@@ -1,4 +1,5 @@
 import SubscriptionItemList from "@/app/(main)/cart/_components/subscription-item-list";
+import { deleteCartItems } from "@/app/(main)/cart/action/cart";
 import Button from "@/components/common/Button";
 import Checkbox from "@/components/common/Checkbox";
 import { Cart, CartCost } from "@/types/cart";
@@ -8,11 +9,19 @@ import { useMemo, useState } from "react";
 
 interface SubscriptionCartProps {
   items: Cart[];
-  cost: CartCost;
   error: ErrorRes | null;
+  onDeleteSuccess?: (deleteId: number) => void;
+  onDeleteMutiple?: (deleteIds: number[]) => void;
+  onQuantityUpdate?: () => void;
 }
 
-export default function SubscriptionCart({ items, cost, error }: SubscriptionCartProps) {
+export default function SubscriptionCart({
+  items,
+  error,
+  onDeleteSuccess,
+  onDeleteMutiple,
+  onQuantityUpdate,
+}: SubscriptionCartProps) {
   // 아이템 수량 관리
   const [quantity, setQuantity] = useState<Record<number, number>>(() => {
     const initialQuantity: Record<number, number> = {};
@@ -22,6 +31,12 @@ export default function SubscriptionCart({ items, cost, error }: SubscriptionCar
     return initialQuantity;
   });
 
+  // 체크박스 선택된 상품 ID
+  const [selectIds, setSelectIds] = useState<number[]>([]);
+
+  // 여러 건 삭제
+  const [isDeleting, setIsDeleting] = useState(false);
+
   // 수량 변경 핸들러
   const handleQuantityChange = (cartId: number, newQuantity: number) => {
     setQuantity((prev) => ({
@@ -30,14 +45,22 @@ export default function SubscriptionCart({ items, cost, error }: SubscriptionCar
     }));
   };
 
+  // 수량 업데이트 완료 핸들러
+  const handleQuantityUpdateComplete = () => {
+    onQuantityUpdate?.();
+  };
+
   // 실시간 총 금액
   const total = useMemo(() => {
     const productsTotal = items.reduce((sum, item) => {
+      const isSoldOut = item.product.quantity === item.product.buyQuantity;
+      if (isSoldOut) return sum;
+
       const currentQty = quantity[item._id] || item.quantity;
       return sum + item.product.price * currentQty;
     }, 0);
 
-    const shippingFees = cost?.shippingFees || 0;
+    const shippingFees = 0;
     const discount = productsTotal * 0.1 || 0;
 
     return {
@@ -46,7 +69,69 @@ export default function SubscriptionCart({ items, cost, error }: SubscriptionCar
       discount,
       total: productsTotal + shippingFees - discount,
     };
-  }, [items, quantity, cost]);
+  }, [items, quantity]);
+
+  // 품절 상품 개수
+  const soldOutCount = useMemo(() => {
+    return items.filter((item) => item.product.quantity === item.product.buyQuantity).length;
+  }, [items]);
+
+  // 구매 가능한 상품 개수
+  const availableCount = items.length - soldOutCount;
+
+  // 개별 선택/해제 핸들러
+  const handleSelect = (id: number) => {
+    setSelectIds((prev) =>
+      prev.includes(id) ? prev.filter((itemId) => itemId !== id) : [...prev, id]
+    );
+  };
+
+  // 전체 선택/해제 핸들러
+  const handleSelectAll = () => {
+    if (selectIds.length === items.length) {
+      setSelectIds([]);
+    } else {
+      setSelectIds(items.map((item) => item._id));
+    }
+  };
+
+  // 한건 삭제 핸들러
+  const handleDeleteSucces = (deleteId: number) => {
+    setSelectIds((prev) => prev.filter((id) => id !== deleteId));
+    onDeleteSuccess?.(deleteId);
+  };
+
+  // 여러 건 삭제 핸들러
+  const handleDeleteMultiple = async () => {
+    if (selectIds.length === 0) {
+      alert("삭제할 상품을 선택해주세요.");
+      return;
+    }
+
+    if (!confirm(`선택한 ${selectIds.length}개 상품을 삭제하시겠습니까?`)) {
+      return;
+    }
+
+    setIsDeleting(true);
+    try {
+      const formData = new FormData();
+      formData.append("cartIds", JSON.stringify(selectIds));
+
+      const result = await deleteCartItems(null, formData);
+
+      if (result === null) {
+        onDeleteMutiple?.(selectIds);
+
+        setSelectIds([]);
+      } else {
+        alert(result.message);
+      }
+    } catch {
+      alert("삭제에 실패했습니다. 다시 시도해 주세요.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return (
     <div className="flex flex-col xl:flex-row gap-9 justify-center">
@@ -56,10 +141,16 @@ export default function SubscriptionCart({ items, cost, error }: SubscriptionCar
           <>
             <section className="flex gap-3 items-center bg-white border border-[#F9F9FB] rounded-[0.875rem] p-3 sm:p-7 mb-5 shadow-(--shadow-card)">
               <Checkbox
-                label={`전체 선택(0/${items.length})`}
+                label={`전체 선택(${selectIds.length}/${items.length})`}
+                checked={selectIds.length === items.length}
+                onChange={handleSelectAll}
                 className="text-[#1A1A1C] text-[0.75rem] font-black"
               />
-              <button className="ml-auto text-text-tertiary text-[0.625rem] font-bold">
+              <button
+                onClick={handleDeleteMultiple}
+                disabled={selectIds.length === 0 || isDeleting}
+                className="ml-auto text-text-tertiary text-[0.625rem] font-bold"
+              >
                 선택 삭제
               </button>
             </section>
@@ -70,7 +161,11 @@ export default function SubscriptionCart({ items, cost, error }: SubscriptionCar
                 key={cart._id}
                 cart={cart}
                 parentError={error}
+                isSelect={selectIds.includes(cart._id)}
+                onSelect={() => handleSelect(cart._id)}
                 onQuantityChange={handleQuantityChange}
+                onDeleteSuccess={() => handleDeleteSucces(cart._id)}
+                onQuantityUpdateComplete={handleQuantityUpdateComplete}
               />
             ))}
           </>
@@ -113,7 +208,11 @@ export default function SubscriptionCart({ items, cost, error }: SubscriptionCar
             </div>
 
             {/* 구매하기 버튼 */}
-            <Button href="/checkout">{items.length}개 상품 구매하기</Button>
+            <Button href="/checkout" disabled={availableCount === 0}>
+              {availableCount > 0
+                ? `${availableCount}개 상품 구매하기`
+                : "구매 가능한 상품이 없습니다."}
+            </Button>
 
             <div className="flex items-center justify-center gap-2">
               <Image src="/images/cart/safe.svg" alt="" width={14} height={14} />

@@ -112,7 +112,6 @@ export interface BookmarkInfoRes {
 export interface CartListRes {
   ok: 1;
   item: Cart[];
-  cost: CartCost;
 }
 
 // 장바구니 아이템 추가/수정 결과
