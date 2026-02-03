@@ -12,6 +12,12 @@ import { Review } from "@/types/review";
 import { Post } from "@/types/post";
 import useUserStore from "@/app/(main)/(auth)/login/zustand/useStore";
 import { addBookmark, getBookmarks, removeBookmark } from "@/lib/bookmar";
+import {
+  getReplyBookmarks,
+  addReplyBookmark,
+  removeReplyBookmark,
+  updateReplyLikeCount,
+} from "@/lib/product";
 
 function StarRating({ rating, size = 16 }: { rating: number; size?: number }) {
   return (
@@ -88,7 +94,6 @@ export default function ProductDetail({
 
   // 하트 클릭
   const handleToggleBookmark = async () => {
-    console.log("하트 클릭", { user, productId, isLiked, bookmarkId });
     if (!user?.token?.accessToken) {
       alert("로그인이 필요합니다.");
       router.push("/login");
@@ -102,16 +107,13 @@ export default function ProductDetail({
       }
     } else {
       const res = await addBookmark(user.token.accessToken, productId);
-      console.log("addBookmark 응답:", res);
       if (res.ok === 1) {
         setIsLiked(true);
         setBookmarkId(res.item._id);
       } else {
         const bookmarks = await getBookmarks(user.token.accessToken);
-        console.log("getBookmarks 응답:", JSON.stringify(bookmarks));
         if (bookmarks.ok === 1) {
           const existing = bookmarks.item.find((b) => b.product?._id === productId);
-          console.log("기존 북마크 찾기:", existing, "productId:", productId);
           if (existing) {
             setIsLiked(true);
             setBookmarkId(existing._id);
@@ -124,16 +126,73 @@ export default function ProductDetail({
   const [activeTab, setActiveTab] = useState<"detail" | "review" | "qna">("detail");
   const [isDetailExpanded, setIsDetailExpanded] = useState(false);
   const [openQnaId, setOpenQnaId] = useState<number | null>(null);
-  // 도움돼요를 누른 리뷰 ID 목록
-  const [helpfulList, setHelpfulList] = useState<number[]>([]);
+  // 도움돼요를 누른 리뷰 ID → 북마크 ID 매핑
+  const [helpfulMap, setHelpfulMap] = useState<Record<number, number>>({});
+  const [helpfulLoading, setHelpfulLoading] = useState<number | null>(null);
+  // 리뷰별 도움돼요 카운트 (리뷰 ID → 카운트)
+  const [helpfulCounts, setHelpfulCounts] = useState<Record<number, number>>({});
 
-  const toggleHelpful = (reviewId: number) => {
-    if (helpfulList.includes(reviewId)) {
-      // 이미 누른 도움돼요 이면 목록에서 제거
-      setHelpfulList(helpfulList.filter((id) => id !== reviewId));
-    } else {
-      // 처음 누른 도움돼요 이면 목록에 추가
-      setHelpfulList([...helpfulList, reviewId]);
+  // 페이지 로드 시 내가 누른 도움돼요 목록 조회 + 리뷰별 기본 카운트 세팅
+  useEffect(() => {
+    // 리뷰의 extra.likeCount 기본값 세팅
+    const counts: Record<number, number> = {};
+    reviews.forEach((r) => {
+      counts[r._id] = Number(r.extra?.likeCount) || 0;
+    });
+    setHelpfulCounts(counts);
+
+    const fetchHelpful = async () => {
+      if (!user?.token?.accessToken) return;
+      const data = await getReplyBookmarks(user.token.accessToken);
+      if (data.ok === 1) {
+        const map: Record<number, number> = {};
+        data.item.forEach((b) => {
+          map[b.target_id] = b._id;
+        });
+        setHelpfulMap(map);
+      }
+    };
+    fetchHelpful();
+  }, [user, reviews]);
+
+  const toggleHelpful = async (reviewId: number) => {
+    if (!user?.token?.accessToken) {
+      alert("로그인이 필요합니다.");
+      router.push("/login");
+      return;
+    }
+    if (helpfulLoading !== null) return;
+    setHelpfulLoading(reviewId);
+
+    const review = reviews.find((r) => r._id === reviewId);
+    const reviewContent = review?.content || "";
+
+    try {
+      if (helpfulMap[reviewId]) {
+        // 이미 누른 도움돼요 → 해제
+        const res = await removeReplyBookmark(user.token.accessToken, helpfulMap[reviewId]);
+        if (res.ok === 1) {
+          const newCount = Math.max(0, (helpfulCounts[reviewId] || 0) - 1);
+          setHelpfulMap((prev) => {
+            const next = { ...prev };
+            delete next[reviewId];
+            return next;
+          });
+          setHelpfulCounts((prev) => ({ ...prev, [reviewId]: newCount }));
+          await updateReplyLikeCount(user.token.accessToken, reviewId, newCount, reviewContent);
+        }
+      } else {
+        // 처음 누른 도움돼요 → 등록
+        const res = await addReplyBookmark(user.token.accessToken, reviewId);
+        if (res.ok === 1) {
+          const newCount = (helpfulCounts[reviewId] || 0) + 1;
+          setHelpfulMap((prev) => ({ ...prev, [reviewId]: res.item._id }));
+          setHelpfulCounts((prev) => ({ ...prev, [reviewId]: newCount }));
+          await updateReplyLikeCount(user.token.accessToken, reviewId, newCount, reviewContent);
+        }
+      }
+    } finally {
+      setHelpfulLoading(null);
     }
   };
 
@@ -251,57 +310,30 @@ export default function ProductDetail({
       {/* 메뉴 이동 버튼 */}
       <nav className="mx-auto flex w-full max-w-[75rem] flex-col items-center border-y border-black/[0.06] bg-white/95 px-2 backdrop-blur-[12px] sm:px-5">
         <div className="flex w-full max-w-[75rem] items-start justify-center self-stretch px-0 sm:px-5">
-          <button
-            type="button"
-            onClick={() => {
-              setActiveTab("detail");
-              document.getElementById("detail")?.scrollIntoView({ behavior: "smooth" });
-            }}
-            className={`relative flex flex-col items-center justify-center px-3 py-[1.09375rem] text-center text-[0.65rem] leading-[1.09375rem] transition-colors sm:px-[2.625rem] sm:text-[0.76875rem] ${
-              activeTab === "detail"
-                ? "font-black text-[#fba613]"
-                : "font-bold text-[#909094] hover:text-[#fba613]"
-            }`}
-          >
-            상세정보
-            {activeTab === "detail" && (
-              <div className="absolute bottom-0 h-[0.21875rem] w-[5rem] rounded-[624.9375rem] bg-[#fba613] sm:w-[7.9375rem]" />
-            )}
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setActiveTab("review");
-              document.getElementById("review")?.scrollIntoView({ behavior: "smooth" });
-            }}
-            className={`relative flex flex-col items-center justify-center px-3 py-[1.09375rem] text-center text-[0.65rem] leading-[1.09375rem] transition-colors sm:px-[2.625rem] sm:text-[0.76875rem] ${
-              activeTab === "review"
-                ? "font-black text-[#fba613]"
-                : "font-bold text-[#909094] hover:text-[#fba613]"
-            }`}
-          >
-            리뷰 ({reviewCount})
-            {activeTab === "review" && (
-              <div className="absolute bottom-0 h-[0.21875rem] w-[5rem] rounded-[624.9375rem] bg-[#fba613] sm:w-[7.9375rem]" />
-            )}
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setActiveTab("qna");
-              document.getElementById("qna")?.scrollIntoView({ behavior: "smooth" });
-            }}
-            className={`relative flex flex-col items-center justify-center px-3 py-[1.09375rem] text-center text-[0.65rem] leading-[1.09375rem] transition-colors sm:px-[2.625rem] sm:text-[0.76875rem] ${
-              activeTab === "qna"
-                ? "font-black text-[#fba613]"
-                : "font-bold text-[#909094] hover:text-[#fba613]"
-            }`}
-          >
-            Q&A ({qnaCount})
-            {activeTab === "qna" && (
-              <div className="absolute bottom-0 h-[0.21875rem] w-[5rem] rounded-[624.9375rem] bg-[#fba613] sm:w-[7.9375rem]" />
-            )}
-          </button>
+          {[
+            { key: "detail" as const, value: "상세정보" },
+            { key: "review" as const, value: `리뷰 (${reviewCount})` },
+            { key: "qna" as const, value: `Q&A (${qnaCount})` },
+          ].map((tab) => (
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => {
+                setActiveTab(tab.key);
+                document.getElementById(tab.key)?.scrollIntoView({ behavior: "smooth" });
+              }}
+              className={`relative flex flex-col items-center justify-center px-3 py-[1.09375rem] text-center text-[0.65rem] leading-[1.09375rem] transition-colors sm:px-[2.625rem] sm:text-[0.76875rem] ${
+                activeTab === tab.key
+                  ? "font-black text-[#fba613]"
+                  : "font-bold text-[#909094] hover:text-[#fba613]"
+              }`}
+            >
+              {tab.value}
+              {activeTab === tab.key && (
+                <div className="absolute bottom-0 h-[0.21875rem] w-[5rem] rounded-[624.9375rem] bg-[#fba613] sm:w-[7.9375rem]" />
+              )}
+            </button>
+          ))}
         </div>
       </nav>
 
@@ -438,11 +470,12 @@ export default function ProductDetail({
                     <button
                       type="button"
                       onClick={() => toggleHelpful(review._id)}
+                      disabled={helpfulLoading === review._id}
                       className={`inline-flex items-center rounded-[0.5rem] border px-2 py-1 text-[11px] font-bold transition-colors ${
-                        helpfulList.includes(review._id)
+                        helpfulMap[review._id]
                           ? "border-[#fba613] bg-[#fff5e6] text-[#fba613]"
                           : "border-black/[0.06] bg-[#f5f5f7] text-[#646468]"
-                      }`}
+                      } ${helpfulLoading === review._id ? "opacity-50 cursor-not-allowed" : ""}`}
                     >
                       <svg
                         width="20"
@@ -454,7 +487,7 @@ export default function ProductDetail({
                         <svg clipPath="url(#clip0_131_26598)">
                           <path
                             d="M8.16667 5.83317H10.9416C11.251 5.83317 11.5477 5.95609 11.7665 6.17488C11.9853 6.39367 12.1082 6.69042 12.1082 6.99984C12.1082 7.30926 11.9853 7.606 11.7665 7.82479C11.5477 8.04359 11.251 8.1665 10.9416 8.1665H10.1716L10.535 10.0962C10.5661 10.2634 10.5603 10.4354 10.518 10.6002C10.4756 10.7649 10.3978 10.9185 10.2898 11.0499C10.1819 11.1814 10.0465 11.2877 9.8932 11.3614C9.73986 11.435 9.57227 11.4743 9.40217 11.4763H5.50083C5.23666 11.4759 4.98045 11.3858 4.77413 11.2208C4.56781 11.0558 4.4236 10.8257 4.36508 10.5681L3.5 5.90434V2.33317C3.5 2.02375 3.62292 1.72701 3.84171 1.50821C4.0605 1.28942 4.35725 1.1665 4.66667 1.1665H7.58333C7.89275 1.1665 8.1895 1.28942 8.40829 1.50821C8.62708 1.72701 8.75 2.02375 8.75 2.33317V5.83317H8.16667Z"
-                            stroke="#646468"
+                            stroke={helpfulMap[review._id] ? "#fba613" : "#646468"}
                             strokeWidth="1.45833"
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -466,7 +499,7 @@ export default function ProductDetail({
                           </clipPath>
                         </defs>
                       </svg>
-                      도움돼요 {helpfulList.includes(review._id) ? 1 : 0}
+                      도움돼요 {helpfulCounts[review._id] || 0}
                     </button>
                   </div>
                 </div>

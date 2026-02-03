@@ -20,8 +20,8 @@ export default async function ProductPage({ params, searchParams }: Props) {
   const currentQnaPage = Number(qnaPage) || 1;
   const currentReviewFilter = reviewFilter === "photo" ? "photo" : "latest";
 
-  // 임시 값 (나중에 API 연결)
-  const REVIEW_RER_PAGE = 5;
+  // 리뷰,qna 목록 갯수
+  const REVIEW_PER_PAGE = 5;
   const QNA_PER_PAGE = 3;
 
   const data = await getProduct(Number(productId));
@@ -42,7 +42,7 @@ export default async function ProductPage({ params, searchParams }: Props) {
     filteredReviews = filteredReviews.filter((review) => review.product?.image);
   }
 
-  const reviewTotalPages = Math.max(1, Math.ceil(filteredReviews.length / REVIEW_RER_PAGE));
+  const reviewTotalPages = Math.max(1, Math.ceil(filteredReviews.length / REVIEW_PER_PAGE));
 
   // qna 목록
   const qnaData = await getPosts({
@@ -58,10 +58,10 @@ export default async function ProductPage({ params, searchParams }: Props) {
       product={product}
       productId={Number(productId)}
       reviews={filteredReviews.slice(
-        (currentReviewPage - 1) * REVIEW_RER_PAGE,
-        currentReviewPage * REVIEW_RER_PAGE,
+        (currentReviewPage - 1) * REVIEW_PER_PAGE,
+        currentReviewPage * REVIEW_PER_PAGE,
       )}
-      qna={qna.slice((currentQnaPage - 1) * QNA_PER_PAGE)}
+      qna={qna.slice((currentQnaPage - 1) * QNA_PER_PAGE, currentQnaPage * QNA_PER_PAGE)}
       currentReviewPage={currentReviewPage}
       currentQnaPage={currentQnaPage}
       reviewTotalPages={reviewTotalPages}

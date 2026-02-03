@@ -1,4 +1,11 @@
-import { ErrorRes, ProductListRes, ProductInfoRes, ReviewListRes } from "@/types/response";
+import {
+  ErrorRes,
+  ProductListRes,
+  ProductInfoRes,
+  ReviewListRes,
+  BookmarkListRes,
+  BookmarkInfoRes,
+} from "@/types/response";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || "";
@@ -105,18 +112,13 @@ export async function getProductsByCodes(codes: string[]) {
     const params = new URLSearchParams();
     params.set("custom", customQuery);
 
-    console.log("요청 URL:", `${API_URL}/products?${params.toString()}`);
-
     const response = await fetch(`${API_URL}/products?${params.toString()}`, {
       headers: {
         "Client-Id": CLIENT_ID,
       },
     });
 
-    console.log("응답 상태:", response.status);
-
     const data = await response.json();
-    console.log("응답 데이터:", data);
 
     if (!response.ok) {
       console.error("API 에러:", data);
@@ -147,6 +149,123 @@ export async function getProduct(productId: number): Promise<ProductInfoRes | Er
   } catch (error) {
     console.error(error);
     return { ok: 0, message: "상품 정보를 불러오는데 실패했습니다." };
+  }
+}
+
+/**
+ * 리뷰 도움돼요 북마크 목록 조회
+ * @param {string} token - 로그인 토큰
+ * @returns {Promise<BookmarkListRes | ErrorRes>} - 북마크 목록 응답 객체
+ */
+export async function getReplyBookmarks(token: string): Promise<BookmarkListRes | ErrorRes> {
+  try {
+    const res = await fetch(`${API_URL}/bookmarks/post`, {
+      headers: {
+        "Client-Id": CLIENT_ID,
+        Authorization: `Bearer ${token}`,
+      },
+      cache: "no-store",
+    });
+    return res.json();
+  } catch (error) {
+    console.error(error);
+    return { ok: 0, message: "도움돼요 목록 조회에 실패했습니다." };
+  }
+}
+
+/**
+ * 리뷰 도움돼요 등록
+ * @param {string} token - 로그인 토큰
+ * @param {number} replyId - 리뷰(댓글) id
+ * @returns {Promise<BookmarkInfoRes | ErrorRes>} - 북마크 등록 응답 객체
+ */
+export async function addReplyBookmark(
+  token: string,
+  replyId: number,
+): Promise<BookmarkInfoRes | ErrorRes> {
+  try {
+    const res = await fetch(`${API_URL}/bookmarks/post`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Client-Id": CLIENT_ID,
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        target_id: replyId,
+        type: "post",
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      console.error("도움돼요 등록 실패:", res.status, JSON.stringify(data, null, 2));
+      return { ok: 0, message: data.message || "도움돼요 등록에 실패했습니다." };
+    }
+    return data;
+  } catch (error) {
+    console.error(error);
+    return { ok: 0, message: "도움돼요 등록에 실패했습니다." };
+  }
+}
+
+/**
+ * 리뷰 도움돼요 해제
+ * @param {string} token - 로그인 토큰
+ * @param {number} bookmarkId - 북마크 id
+ * @returns {Promise<{ ok: 1 } | ErrorRes>} - 삭제 응답 객체
+ */
+export async function removeReplyBookmark(
+  token: string,
+  bookmarkId: number,
+): Promise<{ ok: 1 } | ErrorRes> {
+  try {
+    const res = await fetch(`${API_URL}/bookmarks/${bookmarkId}`, {
+      method: "DELETE",
+      headers: {
+        "Client-Id": CLIENT_ID,
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res.json();
+  } catch (error) {
+    console.error(error);
+    return { ok: 0, message: "도움돼요 해제에 실패했습니다." };
+  }
+}
+
+/**
+ * 리뷰의 extra.likeCount 업데이트
+ * @param {string} token - 로그인 토큰
+ * @param {number} replyId - 리뷰(댓글) id
+ * @param {number} likeCount - 새로운 likeCount 값
+ */
+export async function updateReplyLikeCount(
+  token: string,
+  replyId: number,
+  likeCount: number,
+  content: string,
+): Promise<{ ok: 1 } | ErrorRes> {
+  try {
+    const res = await fetch(`${API_URL}/replies/${replyId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "Client-Id": CLIENT_ID,
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        content,
+        extra: { likeCount },
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      console.error("likeCount 업데이트 실패:", res.status, data);
+    }
+    return data;
+  } catch (error) {
+    console.error(error);
+    return { ok: 0, message: "likeCount 업데이트에 실패했습니다." };
   }
 }
 
