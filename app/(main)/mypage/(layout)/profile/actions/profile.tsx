@@ -8,12 +8,30 @@ import { CameraIcon } from "@/app/(main)/mypage/_components/Icons";
 import { updateUser } from "@/lib/user";
 import { uploadFile } from "@/app/(main)/mypage/(no-layout)/order/[orderid]/review/postreview";
 import { UserInfoRes } from "@/types/response";
+import Image from "next/image";
 
-// declare global {
-//   interface Window {
-//     daum: any;
-//   }
-// }
+/** 다음 주소 API로부터 전달받는 데이터 타입 정의 */
+interface DaumPostcodeData {
+  zonecode: string;
+  roadAddress: string;
+  jibunAddress: string;
+  bname: string;
+  buildingName: string;
+  apartment: string;
+  autoRoadAddress?: string;
+  autoJibunAddress?: string;
+}
+
+/** window 객체 타입 확장 */
+declare global {
+  interface Window {
+    daum: {
+      Postcode: new (options: { oncomplete: (data: DaumPostcodeData) => void }) => {
+        open: () => void;
+      };
+    };
+  }
+}
 
 export default function ProfileClient({
   token,
@@ -41,20 +59,40 @@ export default function ProfileClient({
     script.async = true;
     document.body.appendChild(script);
   }, []);
+  const handleAddressSearch = () => {
+    if (!window.daum) return;
 
-  //  주소 검색 핸들러
-  // const handleAddressSearch = () => {
-  //   if (!window.daum) return;
-  //   new window.daum.Postcode({
-  //     oncomplete: (data: any) => {
-  //       setAddressInfo((prev) => ({
-  //         ...prev,
-  //         zipcode: data.zonecode,
-  //         address: data.address,
-  //       }));
-  //     },
-  //   }).open();
-  // };
+    new window.daum.Postcode({
+      oncomplete: (data: DaumPostcodeData) => {
+        // 도로명 주소 변수
+        const roadAddr = data.roadAddress;
+        // 참고 항목 변수
+        let extraRoadAddr = "";
+
+        // 법정동명이 있을 경우 추가 (법정리는 제외)
+        if (data.bname !== "" && /[동|로|가]$/g.test(data.bname)) {
+          extraRoadAddr += data.bname;
+        }
+
+        // 건물명이 있고, 공동주택일 경우 추가
+        if (data.buildingName !== "" && data.apartment === "Y") {
+          extraRoadAddr += extraRoadAddr !== "" ? `, ${data.buildingName}` : data.buildingName;
+        }
+
+        // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열 구성
+        if (extraRoadAddr !== "") {
+          extraRoadAddr = ` (${extraRoadAddr})`;
+        }
+
+        // 상태 업데이트: 우편번호와 조합된 도로명 주소
+        setAddressInfo((prev) => ({
+          ...prev,
+          zipcode: data.zonecode,
+          address: roadAddr + extraRoadAddr,
+        }));
+      },
+    }).open();
+  };
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -115,8 +153,10 @@ export default function ProfileClient({
           {/* 프로필 이미지 */}
           <div className="flex flex-col items-center mb-10">
             <div className="relative">
-              <img
-                className="w-[97px] h-[97px] rounded-full object-cover ring-2 ring-gray-100"
+              <Image
+                width={97}
+                height={97}
+                className="w-[97px] h-[97px] rounded-full object-cover  ring-2 ring-gray-100"
                 src={
                   preview
                     ? preview.startsWith("http")
@@ -143,6 +183,7 @@ export default function ProfileClient({
 
           <Input label="이메일 주소" value={user.email} readOnly className="mb-6 opacity-60" />
 
+          {/* 우편번호 및 주소 찾기 버튼 */}
           <div className="flex flex-row gap-2 items-end mb-4">
             <Input
               label="배송 주소"
@@ -151,11 +192,12 @@ export default function ProfileClient({
               readOnly
               className="w-32"
             />
-            {/* <Button type="button" variant="primary" size="xs" onClick={handleAddressSearch}>
+            <Button type="button" variant="primary" size="md" onClick={handleAddressSearch}>
               주소 찾기
-            </Button> */}
+            </Button>
           </div>
 
+          {/* 기본 주소 (도로명 + 참고항목) */}
           <Input
             label=""
             placeholder="기본 주소"
@@ -163,6 +205,8 @@ export default function ProfileClient({
             readOnly
             className="mb-2"
           />
+
+          {/* 상세 주소 (직접 입력 가능) */}
           <Input
             label=""
             placeholder="상세 주소를 입력하세요"
