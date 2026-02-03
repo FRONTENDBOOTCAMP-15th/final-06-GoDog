@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import useUserStore from "@/app/(main)/(auth)/login/zustand/useStore";
 import WishlistComponent from "@/app/(main)/mypage/_components/wishlist";
-import { getBookmarks } from "@/lib/bookmar";
+import { getBookmarks } from "@/lib/bookmark";
 import { Bookmark } from "@/types/bookmark";
 
 export default function Wishlist() {
