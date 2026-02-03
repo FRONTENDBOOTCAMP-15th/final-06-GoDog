@@ -23,10 +23,10 @@ export default function StarComponent({ rating, setRating }: StarComponentProps)
     <div className="flex flex-col items-center gap-[36px]">
       <p
         className={`font-inter text-[12px] font-black pt-[36px] ${
-          rating === 0 ? "text-[#9CA3AF]" : "text-[#FBA613]"
+          rating === 0 ? "text-[#9CA3AF]" : "text-[#9CA3AF]"
         }`}
       >
-        {rating === 0 ? "만족도를 선택해 주세요" : ""}
+        {rating === 0 ? "만족도를 선택해 주세요" : "만족도를 선택해 주세요"}
       </p>
 
       <div className="flex flex-row gap-2">

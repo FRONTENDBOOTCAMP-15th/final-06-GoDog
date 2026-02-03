@@ -1,6 +1,6 @@
 import { Product, ProductImage, ProductExtra } from "@/types/product";
 import Link from "next/link";
-import { HeartIcon } from "@/app/(main)/mypage/_components/Icons";
+import { TrashIcon } from "@/app/(main)/mypage/_components/Icons";
 import Image from "next/image";
 
 export default function WishlistComponent({ Product }: { Product: Product }) {
@@ -19,7 +19,7 @@ export default function WishlistComponent({ Product }: { Product: Product }) {
         <div className="flex justify-between items-center mt-[27px] px-[29px] pb-[14.5px]">
           <div className="text-[#1A1A1C] text-[18px] font-black">{Product.name}</div>
           <button>
-            <HeartIcon className="text-[#FBA613]" />
+            <TrashIcon className="text-[#909094]" />
           </button>
         </div>
 

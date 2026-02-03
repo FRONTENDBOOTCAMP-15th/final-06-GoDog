@@ -21,6 +21,7 @@ export default function Subscription() {
   const token = useUserStore.getState().user?.token?.accessToken || "";
   const searchParams = useSearchParams();
   const page = Number(searchParams.get("page")) || 1;
+
   const { data: resSublist, isLoading } = useQuery({
     queryKey: [page],
     queryFn: () =>

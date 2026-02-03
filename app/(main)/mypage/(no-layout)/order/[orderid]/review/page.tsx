@@ -25,7 +25,7 @@ export default function Review() {
   const product_id = Number(searchParams.get("productid"));
   console.log(product_id, "마늘");
 
-  const [preview, setPreview] = useState("/images/moomin.png");
+  const [preview, setPreview] = useState("/images/galary.png");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [reviewContent, setReviewContent] = useState("");
   const [title, setTitle] = useState("");

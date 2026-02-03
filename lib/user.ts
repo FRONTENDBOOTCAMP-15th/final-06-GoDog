@@ -97,3 +97,61 @@ export async function getUser(_id: number): Promise<UserInfoRes | ErrorRes> {
     return { ok: 0, message: "일시적인 네트워크 문제로 회원 정보 조회에 실패했습니다." };
   }
 }
+
+// ... 기존 interface들
+
+interface UpdateUserOptions {
+  name?: string;
+  phone?: string;
+  extra?: {
+    address?: {
+      id: number;
+      name: string;
+      value: string;
+    }[];
+    [key: string]: unknown; // 다른 추가 필드 대응을 위한 인덱스 시그니처
+  };
+}
+
+/**
+ * 회원 정보 수정
+ * @param {number | string} _id - 수정할 회원 id
+ * @param {UpdateUserOptions} data - 수정할 회원 정보
+ * @returns {Promise<UserInfoRes | ErrorRes>} - 수정된 회원 정보 응답 객체
+ * @example
+ * // 이름과 전화번호 수정
+ * updateUser(4, { name: "길드래곤", phone: "01099998888" });
+ *
+ * // 주소 정보(extra) 수정
+ * updateUser(4, {
+ * extra: {
+ * address: [
+ * { id: 1, name: "회사", value: "서울시 강남구 삼성동 111" },
+ * { id: 2, name: "학교", value: "서울시 강남구 역삼동 222" }
+ * ]
+ * }
+ * });
+ */
+export async function updateUser(
+  _id: number | string,
+  data: UpdateUserOptions,
+): Promise<UserInfoRes | ErrorRes> {
+  try {
+    const res = await fetch(`${API_URL}/users/${_id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "Client-Id": CLIENT_ID,
+      },
+      body: JSON.stringify(data),
+    });
+
+    return res.json();
+  } catch (error) {
+    console.error(error);
+    return {
+      ok: 0,
+      message: "일시적인 네트워크 문제로 회원 정보 수정에 실패했습니다.",
+    };
+  }
+}
