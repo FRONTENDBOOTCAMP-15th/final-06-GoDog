@@ -52,7 +52,6 @@ export default function ProfileClient({
     detailAddress: user.extra?.detailaddress || "",
   });
 
-  //  다음 주소 API 스크립트 로드
   useEffect(() => {
     const script = document.createElement("script");
     script.src = "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
@@ -64,27 +63,22 @@ export default function ProfileClient({
 
     new window.daum.Postcode({
       oncomplete: (data: DaumPostcodeData) => {
-        // 도로명 주소 변수
         const roadAddr = data.roadAddress;
-        // 참고 항목 변수
+
         let extraRoadAddr = "";
 
-        // 법정동명이 있을 경우 추가 (법정리는 제외)
         if (data.bname !== "" && /[동|로|가]$/g.test(data.bname)) {
           extraRoadAddr += data.bname;
         }
 
-        // 건물명이 있고, 공동주택일 경우 추가
         if (data.buildingName !== "" && data.apartment === "Y") {
           extraRoadAddr += extraRoadAddr !== "" ? `, ${data.buildingName}` : data.buildingName;
         }
 
-        // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열 구성
         if (extraRoadAddr !== "") {
           extraRoadAddr = ` (${extraRoadAddr})`;
         }
 
-        // 상태 업데이트: 우편번호와 조합된 도로명 주소
         setAddressInfo((prev) => ({
           ...prev,
           zipcode: data.zonecode,
@@ -150,7 +144,6 @@ export default function ProfileClient({
 
       <form className="w-full max-w-[672px] mt-10" onSubmit={handleSubmit}>
         <div className="mb-[161px] pr-[55px] pl-[57px] pt-[56px] pb-[70px] rounded-[49px] border border-black/[0.06] bg-[#FFF] shadow-sm">
-          {/* 프로필 이미지 */}
           <div className="flex flex-col items-center mb-10">
             <div className="relative">
               <Image
@@ -183,7 +176,6 @@ export default function ProfileClient({
 
           <Input label="이메일 주소" value={user.email} readOnly className="mb-6 opacity-60" />
 
-          {/* 우편번호 및 주소 찾기 버튼 */}
           <div className="flex flex-row gap-2 items-end mb-4">
             <Input
               label="배송 주소"
@@ -197,7 +189,6 @@ export default function ProfileClient({
             </Button>
           </div>
 
-          {/* 기본 주소 (도로명 + 참고항목) */}
           <Input
             label=""
             placeholder="기본 주소"
@@ -206,7 +197,6 @@ export default function ProfileClient({
             className="mb-2"
           />
 
-          {/* 상세 주소 (직접 입력 가능) */}
           <Input
             label=""
             placeholder="상세 주소를 입력하세요"

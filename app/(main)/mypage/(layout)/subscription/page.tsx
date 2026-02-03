@@ -12,22 +12,21 @@ import { getOrders } from "@/lib/order";
 import { useEffect } from "react";
 
 export default function Subscription() {
-  // 1. 스토어에서 유저 정보를 가져옵니다.
   const user = useUserStore((state) => state.user);
   const token = user?.token?.accessToken || "";
-  const userName = user?.name || "회원"; // 이름이 없을 경우를 대비한 기본값
+  const userName = user?.name || "회원";
 
   const searchParams = useSearchParams();
   const page = Number(searchParams.get("page")) || 1;
 
   const { data: resSublist, isLoading } = useQuery({
-    queryKey: ["subscriptions", page], // 쿼리 키를 좀 더 명확하게 지정
+    queryKey: ["subscriptions", page],
     queryFn: () =>
       getOrders(token, {
         page,
         limit: 4,
       }),
-    enabled: !!token, // 토큰이 있을 때만 실행
+    enabled: !!token,
   });
 
   return (
@@ -58,7 +57,7 @@ export default function Subscription() {
                       <Image
                         src={item.products[0].image?.path}
                         alt={item.products[0].name}
-                        fill // fill 속성을 사용하는 것이 Next.js 이미지 최적화에 유리합니다.
+                        fill
                         className="object-cover"
                       />
                     ) : (

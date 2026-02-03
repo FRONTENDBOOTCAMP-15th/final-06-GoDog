@@ -1,6 +1,6 @@
 "use client";
 
-import { getOrderlist } from "./getOrderlist";
+// import { getOrderlist } from "./getOrderlist";
 import { Product404 } from "@/app/(main)/mypage/_components/DogFoodImage";
 import { Pencil } from "@/app/(main)/mypage/_components/Mark";
 import MyItemList from "@/app/(main)/mypage/_components/MyItemListA";
@@ -22,7 +22,7 @@ import { useEffect } from "react";
 export default function Orders() {
   const user = useUserStore((state) => state.user);
 
-  const userName = user?.name || "회원"; // 유저 이름 연결
+  const userName = user?.name || "회원";
 
   const token = useUserStore.getState().user?.token?.accessToken || "";
   const searchParams = useSearchParams();
@@ -57,7 +57,6 @@ export default function Orders() {
 
       <div className="max-w-[1280px] mx-auto pt-[57px] pb-[100px] px-[20px] lg:px-0">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-[20px] lg:gap-7 justify-items-center">
-          {/* 데이터 유무에 따른 조건부 렌더링 추가 */}
           {resOrderlist?.ok && resOrderlist.item.length > 0 ? (
             resOrderlist.item.map((item, index: number) => (
               <MyItemList
@@ -89,7 +88,6 @@ export default function Orders() {
               />
             ))
           ) : (
-            /* 데이터가 없을 때 표시할 메시지 */
             <div className="col-span-full py-20 text-center">
               <p className="text-[#909094] text-[18px] font-medium">
                 현재 이용 중인 주문 내역이 없습니다.
