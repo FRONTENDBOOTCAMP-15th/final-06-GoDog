@@ -59,35 +59,39 @@ export default function Orders() {
       <div className="max-w-[1280px] mx-auto pt-[57px] pb-[100px] px-[20px] lg:px-0">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-[20px] lg:gap-7 justify-items-center">
           {resOrderlist?.ok && resOrderlist.item.length > 0 ? (
-            resOrderlist.item.map((item, index: number) => (
-              <MyItemList
-                key={item._id}
-                productid={item.products[0]._id}
-                orderId={String(item._id)}
-                title={item.products[0].name}
-                image={
-                  <div className="rounded-3xl overflow-hidden w-[211px] h-[211px] relative">
-                    {item.products[0].image?.path ? (
-                      <Image
-                        src={item.products[0].image?.path}
-                        alt={item.products[0].name}
-                        width={211}
-                        height={211}
-                        className="object-cover"
-                      />
-                    ) : (
-                      <Product404 />
-                    )}
-                  </div>
-                }
-                content="리뷰 작성"
-                date={item.createdAt.split(" ")[0]}
-                period={item.period || "1회 구매"}
-                quantity={item.products[0].quantity}
-                price={`${item.products[0].price.toLocaleString()}원`}
-                mark={<Pencil />}
-              />
-            ))
+            resOrderlist.item.map((item, index: number) => {
+              const hasReview = !!item.products[0].review_id;
+              return (
+                <MyItemList
+                  key={item._id}
+                  productid={item.products[0]._id}
+                  orderId={String(item._id)}
+                  title={item.products[0].name}
+                  image={
+                    <div className="rounded-3xl overflow-hidden w-[211px] h-[211px] relative">
+                      {item.products[0].image?.path ? (
+                        <Image
+                          src={item.products[0].image?.path}
+                          alt={item.products[0].name}
+                          width={211}
+                          height={211}
+                          className="object-cover"
+                        />
+                      ) : (
+                        <Product404 />
+                      )}
+                    </div>
+                  }
+                  content={hasReview ? "리뷰 작성 완료" : "리뷰 작성"}
+                  date={item.createdAt.split(" ")[0]}
+                  period={item.period || "1회 구매"}
+                  quantity={item.products[0].quantity}
+                  price={`${item.products[0].price.toLocaleString()}원`}
+                  mark={hasReview ? null : <Pencil />}
+                  isReviewed={hasReview}
+                />
+              );
+            })
           ) : (
             <div className="col-span-full py-20 text-center">
               <p className="text-[#909094] text-[18px] font-medium">

@@ -10,7 +10,7 @@ interface MyItemListProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "c
   image: React.ReactElement;
   href?: string;
   price: string;
-  mark: React.ReactElement;
+  mark?: React.ReactElement | null;
   period?: string;
   date?: string;
   quantity?: number; // 수량 타입 추가
@@ -18,6 +18,7 @@ interface MyItemListProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "c
   orderId?: string;
   subscriptionId?: string;
   productid?: number;
+  isReviewed?: boolean; // 리뷰 완료 여부 추가
 }
 
 export default function MyItemList({
@@ -34,10 +35,14 @@ export default function MyItemList({
   orderId = "1",
   subscriptionId = "1",
   productid,
+  isReviewed = false,
 }: MyItemListProps) {
   console.log(productid, "프로덕트아이디");
   const router = useRouter();
+
   const getHref = () => {
+    if (isReviewed) return;
+
     if (content === "리뷰 작성") {
       router.push(`/mypage/order/${orderId}/review?productid=${productid}`);
     }
@@ -82,7 +87,13 @@ export default function MyItemList({
         className="w-full flex justify-center gap-[12px] items-center px-[29px] py-[20px]"
         onClick={getHref}
       >
-        <div className="text-[#FBA613]  text-center text-[11px] font-black">{content}</div>
+        <div
+          className={`text-center text-[11px] font-black ${
+            isReviewed ? "text-[#909094]" : "text-[#FBA613]"
+          }`}
+        >
+          {isReviewed ? "리뷰 등록 완료" : content}
+        </div>{" "}
         <span className="flex items-center">{mark}</span>
       </button>
     </div>
