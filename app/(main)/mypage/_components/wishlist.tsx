@@ -1,21 +1,24 @@
-import { Product, ProductImage, ProductExtra } from "@/types/product";
+"use client";
+
+import { Product } from "@/types/product";
 import Link from "next/link";
 import { TrashIcon } from "@/app/(main)/mypage/_components/Icons";
 import Image from "next/image";
 
 export default function WishlistComponent({ Product }: { Product: Product }) {
-  console.log(Product, "프로덕트");
-
   return (
     <>
       <div className="rounded-[42px] border border-[rgba(0,0,0,0.06)] bg-[#FFFFFF] shadow-[0_2px_12px_0_rgba(0,0,0,0.03)]">
-        <Image
-          src={Product.mainImages[0].path}
-          className="mt-[30px] ml-[30px] mr-[30px] w-[211px] h-[211px] w-fully"
-          alt="상품 이미지"
-          width={211}
-          height={211}
-        />
+        <div className="mt-[30px] ml-[30px] mr-[30px] w-[211px] h-[211px] rounded-[24px] overflow-hidden relative">
+          <Image
+            src={Product.mainImages[0].path}
+            className="object-cover"
+            alt="상품 이미지"
+            width={211}
+            height={211}
+          />
+        </div>
+
         <div className="flex justify-between items-center mt-[27px] px-[29px] pb-[14.5px]">
           <div className="text-[#1A1A1C] text-[18px] font-black">{Product.name}</div>
           <button>

@@ -79,11 +79,11 @@ export default function MyItemList({
       <hr className="w-[calc(100%-58px)] h-px mx-auto border-0 bg-[rgba(0,0,0,0.06)] " />
 
       <button
-        className="flex justify-center gap-[12px] items-center px-[29px] py-[20px]"
+        className="w-full flex justify-center gap-[12px] items-center px-[29px] py-[20px]"
         onClick={getHref}
       >
-        <span className="text-[#FBA613] text-center text-[11px] font-black">{content}</span>
-        <span>{mark}</span>
+        <div className="text-[#FBA613]  text-center text-[11px] font-black">{content}</div>
+        <span className="flex items-center">{mark}</span>
       </button>
     </div>
   );

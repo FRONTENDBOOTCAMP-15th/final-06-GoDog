@@ -1,4 +1,7 @@
+"use server";
+
 import { ErrorRes, UserInfoRes, UserListRes } from "@/types/response";
+import { cookies } from "next/headers";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || "";
@@ -137,11 +140,14 @@ export async function updateUser(
   data: UpdateUserOptions,
 ): Promise<UserInfoRes | ErrorRes> {
   try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("accessToken")?.value;
     const res = await fetch(`${API_URL}/users/${_id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
         "Client-Id": CLIENT_ID,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(data),
     });

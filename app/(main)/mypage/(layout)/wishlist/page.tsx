@@ -4,9 +4,11 @@ import { getWishlist } from "@/app/(main)/mypage/(layout)/wishlist/getWishlist";
 import { Product404 } from "@/app/(main)/mypage/_components/DogFoodImage";
 import WishlistComponent from "@/app/(main)/mypage/_components/wishlist";
 import PaginationWrapper from "@/components/common/PaginationWrapper";
+import { getUser } from "@/lib/user";
 import { Item } from "@/types/product";
 import { BookmarkListRes, ResDate } from "@/types/response";
 import { Metadata } from "next";
+import { cookies } from "next/headers";
 
 export async function generateWishlist({
   params,
@@ -22,37 +24,29 @@ interface Props {
   searchParams: Promise<{ page?: string }>;
 }
 
-// 임시 데이터
-const wishlistItems = [
-  {
-    id: 1,
-    title: "나인독 정밀 사료A",
-    href: "/products/1",
-    price: "45,800원",
-  },
-  {
-    id: 2,
-    title: "나인독 정밀 사료A",
-    href: "/products/1",
-    price: "45,800원",
-  },
-  {
-    id: 3,
-    title: "나인독 정밀 사료A",
-    href: "/products/1",
-    price: "45,800원",
-  },
-  {
-    id: 4,
-    title: "나인독 정밀 사료A",
-    href: "/products/1",
-    price: "45,800원",
-  },
-];
-
 export default async function Wishlist({ searchParams }: Props) {
   const { page } = await searchParams;
   const currentPage = Number(page) || 1;
+
+  const cookieStore = await cookies();
+  const token = cookieStore.get("accessToken")?.value;
+  let userName = "회원";
+
+  if (token) {
+    try {
+      const payloadBase64 = token.split(".")[1];
+      const decodedPayload = Buffer.from(payloadBase64, "base64").toString("utf-8");
+      const payload = JSON.parse(decodedPayload);
+      const userId = payload._id || payload.id;
+
+      const userRes = await getUser(userId);
+      if (userRes && "item" in userRes) {
+        userName = userRes.item.name;
+      }
+    } catch (error) {
+      console.error("유저 정보를 불러오는 데 실패했습니다.", error);
+    }
+  }
 
   const response = await getWishlist();
   console.log(response);
@@ -66,7 +60,7 @@ export default async function Wishlist({ searchParams }: Props) {
     <div className="w-full min-w-[360px] pb-[70px]">
       <div className="mt-[108px]">
         <p className="text-[#1A1A1C] text-center text-[26.3px] not-italic font-[900]">
-          김구독님이 저장한
+          {userName}님이 저장한
         </p>
         <div className="flex flex-row justify-center">
           <p className="text-[#FBA613] text-center text-[26.3px] not-italic font-[900]">

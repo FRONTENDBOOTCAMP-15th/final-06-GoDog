@@ -20,6 +20,10 @@ import { Item } from "@/types/product";
 import { useEffect } from "react";
 
 export default function Orders() {
+  const user = useUserStore((state) => state.user);
+
+  const userName = user?.name || "회원"; // 유저 이름 연결
+
   const token = useUserStore.getState().user?.token?.accessToken || "";
   const searchParams = useSearchParams();
   const page = Number(searchParams.get("page")) || 1;
@@ -39,12 +43,12 @@ export default function Orders() {
   const orderlist = resOrderlist?.ok === 1 ? resOrderlist.item : [];
   const pagination = resOrderlist?.ok === 1 ? resOrderlist.pagination : undefined;
 
-
-
   return (
     <div className="w-full min-w-[360px] pb-[70px]">
       <div className="mt-[108px]">
-        <p className="text-[#1A1A1C] text-center text-[26.3px] font-[900]">김구독님이 이용 중인</p>
+        <p className="text-[#1A1A1C] text-center text-[26.3px] font-[900]">
+          {userName}님이 이용 중인
+        </p>
         <div className="flex flex-row justify-center">
           <p className="text-[#FBA613] text-center text-[26.3px] font-[900]">주문 내역</p>
           <p className="text-[#1A1A1C] text-center text-[26.3px] font-[900]">입니다</p>

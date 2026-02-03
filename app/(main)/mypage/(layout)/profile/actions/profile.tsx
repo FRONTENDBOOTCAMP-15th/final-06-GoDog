@@ -81,15 +81,11 @@ export default function ProfileClient({
 
     const updateData = {
       image: preview,
+      address: addressInfo.address,
       extra: {
         ...user.extra,
-        address: [
-          {
-            id: Number(addressInfo.zipcode),
-            name: "기본배송지",
-            value: `${addressInfo.address} (상세) ${addressInfo.detailAddress}`,
-          },
-        ],
+        zipcode: addressInfo.zipcode,
+        detailaddress: addressInfo.detailAddress,
       },
     };
 
