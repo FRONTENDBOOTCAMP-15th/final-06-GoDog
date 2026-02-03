@@ -448,7 +448,7 @@ export default function ProductDetail({
             <div className="flex flex-col items-start gap-4 sm:flex-row sm:gap-6">
               <div className="h-24 w-24 flex-shrink-0 sm:h-[8.75rem] sm:w-[8.75rem]">
                 <Image
-                  src={product.mainImages[0]?.path || "images/product-404.jpg"}
+                  src={review.extra?.image?.path || "/images/product-404.jpg"}
                   className="block h-full w-full rounded-[1.125rem] object-cover"
                   width={140}
                   height={140}
