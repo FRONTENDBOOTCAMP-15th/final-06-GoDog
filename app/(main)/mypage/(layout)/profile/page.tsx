@@ -6,7 +6,6 @@ import { getUser } from "@/lib/user";
 export default async function ProfilePage() {
   const cookieStore = await cookies();
   const token = cookieStore.get("accessToken")?.value;
-
   if (!token) {
     redirect("/login");
   }

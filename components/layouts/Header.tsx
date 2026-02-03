@@ -5,6 +5,7 @@ import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import useUserStore from "@/zustand/useStore";
 import { usePathname, useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 const Header: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
@@ -14,15 +15,16 @@ const Header: React.FC = () => {
   const router = useRouter();
   const { user, resetUser } = useUserStore(); // login zustand 스토어에서 가져옴
 
-  const isLoggedIn = !!user?.token?.accessToken;
+  // const isLoggedIn = !!user?.token?.accessToken;
+  const isLoggedIn = Cookies.get("accessToken");
+
+  console.log(isLoggedIn, "로그인?");
   const handleLogout = (e: React.MouseEvent) => {
     // 세션 스토리지를 비우고 상태를 null로 초기화
     e.preventDefault();
     resetUser();
-    sessionStorage.removeItem("user");
-    sessionStorage.removeItem("sessionStorage");
-    localStorage.removeItem("user");
-    localStorage.removeItem("sessionStorage");
+
+    Cookies.remove("accessToken");
 
     alert("로그아웃 되었습니다.");
     router.push("/");
@@ -84,30 +86,30 @@ const Header: React.FC = () => {
             >
               My Account
             </Link>
-            <nav>
-              {isLoggedIn ? (
-                /* 토큰이 있을 때 Logout 표시, 클릭 시 상태 리셋 후 메인 이동 */
-                <Link
-                  href="/"
-                  onClick={handleLogout}
-                  className="text-[10px] font-black uppercase tracking-widest transition-colors text-text-tertiary hover:text-text-primary"
-                >
-                  Logout
-                </Link>
-              ) : (
-                /* 토큰이 없을 때 Login 표시 */
-                <Link
-                  href="/login"
-                  className={`text-[10px] font-black uppercase tracking-widest transition-colors ${
-                    pathname === "/login"
-                      ? "text-accent-primary"
-                      : "text-text-tertiary hover:text-text-primary"
-                  }`}
-                >
-                  Login
-                </Link>
-              )}
-            </nav>
+
+            {isLoggedIn ? (
+              /* 토큰이 있을 때 Logout 표시, 클릭 시 상태 리셋 후 메인 이동 */
+              <Link
+                href="/"
+                onClick={handleLogout}
+                className="text-[10px] font-black uppercase tracking-widest transition-colors text-text-tertiary hover:text-text-primary"
+              >
+                Logout
+              </Link>
+            ) : (
+              /* 토큰이 없을 때 Login 표시 */
+              <Link
+                href="/login"
+                className={`text-[10px] font-black uppercase tracking-widest transition-colors ${
+                  pathname === "/login"
+                    ? "text-accent-primary"
+                    : "text-text-tertiary hover:text-text-primary"
+                }`}
+              >
+                Login
+              </Link>
+            )}
+
             <Link
               href="/signup"
               className={`text-[10px] font-black uppercase tracking-widest transition-colors ${

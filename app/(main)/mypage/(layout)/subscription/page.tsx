@@ -10,10 +10,11 @@ import { useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { getOrders } from "@/lib/order";
 import { useEffect } from "react";
+import Cookies from "js-cookie";
 
 export default function Subscription() {
   const user = useUserStore((state) => state.user);
-  const token = user?.token?.accessToken || "";
+  const token = Cookies.get("accessToken");
   const userName = user?.name || "회원";
 
   const searchParams = useSearchParams();

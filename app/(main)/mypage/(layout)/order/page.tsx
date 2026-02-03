@@ -7,6 +7,7 @@ import MyItemList from "@/app/(main)/mypage/_components/MyItemListA";
 import PaginationWrapper from "@/components/common/PaginationWrapper";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
+import Cookies from "js-cookie";
 
 import {
   Order,
@@ -24,7 +25,7 @@ export default function Orders() {
 
   const userName = user?.name || "회원";
 
-  const token = useUserStore.getState().user?.token?.accessToken || "";
+  const token = Cookies.get("accessToken");
   const searchParams = useSearchParams();
   const page = Number(searchParams.get("page")) || 1;
   const { data: resOrderlist, isLoading } = useQuery({

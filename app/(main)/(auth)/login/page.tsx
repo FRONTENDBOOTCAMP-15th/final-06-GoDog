@@ -29,8 +29,9 @@ export default function Login() {
     if (userState?.ok === 1) {
       const storageType = !checkedState ? localStorage : sessionStorage;
       const token = userState.item.token?.accessToken;
-      const cookieExpires = checkedState ? `max-age=${60 * 60 * 24 * 7}` : "";
-
+      const LONG_LIVED = 60 * 60 * 24 * 365 * 10;
+      const cookieExpires = checkedState ? `max-age=${LONG_LIVED}` : "";
+      // const cookieExpires = checkedState ? `max-age=${60 * 60 * 24 * 7}` : "";
       document.cookie = `accessToken=${token}; path=/; ${cookieExpires}; SameSite=Lax;`;
 
       useUserStore.persist.setOptions({
@@ -42,10 +43,7 @@ export default function Login() {
         email: userState.item.email,
         name: userState.item.name,
         image: userState.item.image,
-        token: {
-          accessToken: token || "",
-          refreshToken: userState.item.token?.refreshToken || "",
-        },
+        
       });
       console.log(userState.item._id);
       console.log("setUser 후:", useUserStore.getState());
