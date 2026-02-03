@@ -100,9 +100,7 @@ export default function AdminDashboardPage() {
   const [lowStockProducts, setLowStockProducts] = useState<Product[]>([]);
   const [recentOrders, setRecentOrders] = useState<Order[]>([]);
 
-  // console.log(useUserStore.getState());
   const token = useUserStore.getState().user?.token?.accessToken;
-  // console.log(token);
 
   useEffect(() => {
     fetchDashboardData();
