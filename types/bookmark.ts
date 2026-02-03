@@ -5,7 +5,7 @@ export interface BookmarkUser {
   image?: string;
 }
 
-// 추가 정보 (관련된 상품이나 포스트 ID)
+// 추가 정보(Extra)(관련된 상품이나 포스트 ID)
 export interface BookmarkExtra {
   product_id?: string | number;
   post_id?: string | number;

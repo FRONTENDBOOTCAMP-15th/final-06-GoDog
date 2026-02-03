@@ -174,7 +174,7 @@ export async function getReplyBookmarks(token: string): Promise<BookmarkListRes 
 }
 
 /**
- * 리뷰 도움돼요 등록
+ * 리뷰 도움돼요 등록 POST
  * @param {string} token - 로그인 토큰
  * @param {number} replyId - 리뷰(댓글) id
  * @returns {Promise<BookmarkInfoRes | ErrorRes>} - 북마크 등록 응답 객체
@@ -209,7 +209,7 @@ export async function addReplyBookmark(
 }
 
 /**
- * 리뷰 도움돼요 해제
+ * 리뷰 도움돼요 해제 DELETE
  * @param {string} token - 로그인 토큰
  * @param {number} bookmarkId - 북마크 id
  * @returns {Promise<{ ok: 1 } | ErrorRes>} - 삭제 응답 객체
@@ -234,7 +234,7 @@ export async function removeReplyBookmark(
 }
 
 /**
- * 리뷰의 extra.likeCount 업데이트
+ * 리뷰의 extra.likeCount 업데이트 PATCH
  * @param {string} token - 로그인 토큰
  * @param {number} replyId - 리뷰(댓글) id
  * @param {number} likeCount - 새로운 likeCount 값
