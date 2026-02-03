@@ -139,7 +139,6 @@ export interface ProductExtra {
   neutered?: Neutered;
   mainProtein?: MainProtein[];
   grainFree?: boolean;
-  type?: string;
   category?: string[];
   feedstuff?: boolean;
   foodType?: string;
