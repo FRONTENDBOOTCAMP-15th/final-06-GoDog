@@ -16,7 +16,7 @@ interface SubscriptionItemListProps {
   isSelect: boolean;
   onSelect: () => void;
   onDeleteSuccess?: () => void;
-  onQuantityUpdateComplete?: () => void;
+  accessToken?: string;
 }
 
 export default function SubscriptionItemList({
@@ -26,13 +26,16 @@ export default function SubscriptionItemList({
   isSelect,
   onSelect,
   onDeleteSuccess,
-  onQuantityUpdateComplete,
+  accessToken,
 }: SubscriptionItemListProps) {
   const { product, quantity } = cart;
 
   const [currentQuantity, setCurrentQuantity] = useState(quantity);
   const [isLoading, setIsLoading] = useState(false);
   const [localError, setLocalError] = useState<ErrorRes | null>(null);
+
+  // 배송 주기
+  const [deliveryCycle, setDeliveryCycle] = useState<"biweekly" | "monthly">("biweekly");
 
   // 품절 여부
   const isSoldOut = product.quantity === product.buyQuantity;
@@ -51,6 +54,10 @@ export default function SubscriptionItemList({
     const formData = new FormData();
     formData.append("cartId", cart._id.toString());
     formData.append("quantity", newQuantity.toString());
+    // 토큰 추가
+    if (accessToken) {
+      formData.append("accessToken", accessToken);
+    }
 
     // 로딩 상태, api 통신
     setIsLoading(true);
@@ -78,6 +85,10 @@ export default function SubscriptionItemList({
     try {
       const formData = new FormData();
       formData.append("cartId", cart._id.toString());
+      // 토큰 추가
+      if (accessToken) {
+        formData.append("accessToken", accessToken);
+      }
 
       const result = await deleteCartItem(null, formData);
 
@@ -121,18 +132,38 @@ export default function SubscriptionItemList({
           ) : (
             <>
               <p className="text-[0.625rem] text-(--color-text-primary) font-bold">
-                배송 주기 선택: {product.extra?.period}
+                배송 주기 선택:{" "}
+                <span className="text-[#1A1A1C]">
+                  {deliveryCycle === "biweekly" ? "격주 배송(2주)" : "매월 배송(4주)"}
+                </span>
               </p>
+
               <div className="flex felx-col gap-0.5 sm:gap-1.5">
-                <Button variant="outline" size="xs">
+                <Button
+                  variant={deliveryCycle === "biweekly" ? "secondary" : "outline"}
+                  size="xs"
+                  onClick={() => setDeliveryCycle("biweekly")}
+                  disabled={isLoading}
+                  className="flex-1 px-2 py-1.5 rounded text-[0.625rem] sm:text-xs font-bold transition-all border"
+                >
                   격주 배송(2주)
                 </Button>
-                <Button variant="secondary" size="xs">
+                <Button
+                  variant={deliveryCycle === "monthly" ? "secondary" : "outline"}
+                  size="xs"
+                  onClick={() => setDeliveryCycle("monthly")}
+                  disabled={isLoading}
+                  className="flex-1 px-2 py-1.5 rounded text-[0.625rem] sm:text-xs font-bold transition-all border"
+                >
                   매월 배송(4주)
                 </Button>
               </div>
               {/* 수량 조절 버튼 */}
-              <QuantityControl initialCount={currentQuantity} onChange={handleQuantityChange} />
+              <QuantityControl
+                initialCount={currentQuantity}
+                disabled={isLoading}
+                onChange={handleQuantityChange}
+              />
             </>
           )}
           {/* 에러 메시지 */}

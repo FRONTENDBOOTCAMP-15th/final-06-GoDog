@@ -1,8 +1,9 @@
+import useUserStore from "@/app/(main)/(auth)/login/zustand/useStore";
 import SubscriptionItemList from "@/app/(main)/cart/_components/subscription-item-list";
 import { deleteCartItems } from "@/app/(main)/cart/action/cart";
 import Button from "@/components/common/Button";
 import Checkbox from "@/components/common/Checkbox";
-import { Cart, CartCost } from "@/types/cart";
+import { Cart } from "@/types/cart";
 import { ErrorRes } from "@/types/response";
 import Image from "next/image";
 import { useMemo, useState } from "react";
@@ -12,7 +13,6 @@ interface SubscriptionCartProps {
   error: ErrorRes | null;
   onDeleteSuccess?: (deleteId: number) => void;
   onDeleteMutiple?: (deleteIds: number[]) => void;
-  onQuantityUpdate?: () => void;
 }
 
 export default function SubscriptionCart({
@@ -20,7 +20,6 @@ export default function SubscriptionCart({
   error,
   onDeleteSuccess,
   onDeleteMutiple,
-  onQuantityUpdate,
 }: SubscriptionCartProps) {
   // 아이템 수량 관리
   const [quantity, setQuantity] = useState<Record<number, number>>(() => {
@@ -30,6 +29,10 @@ export default function SubscriptionCart({
     });
     return initialQuantity;
   });
+
+  // 토큰 가져오기
+  const { user } = useUserStore();
+  const accessToken = user?.token?.accessToken;
 
   // 체크박스 선택된 상품 ID
   const [selectIds, setSelectIds] = useState<number[]>([]);
@@ -43,11 +46,6 @@ export default function SubscriptionCart({
       ...prev,
       [cartId]: newQuantity,
     }));
-  };
-
-  // 수량 업데이트 완료 핸들러
-  const handleQuantityUpdateComplete = () => {
-    onQuantityUpdate?.();
   };
 
   // 실시간 총 금액
@@ -108,6 +106,12 @@ export default function SubscriptionCart({
       return;
     }
 
+    // 헤더 에러 방지
+    if (!accessToken) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
     if (!confirm(`선택한 ${selectIds.length}개 상품을 삭제하시겠습니까?`)) {
       return;
     }
@@ -116,7 +120,7 @@ export default function SubscriptionCart({
     try {
       const formData = new FormData();
       formData.append("cartIds", JSON.stringify(selectIds));
-
+      formData.append("accessToken", accessToken);
       const result = await deleteCartItems(null, formData);
 
       if (result === null) {
@@ -165,7 +169,7 @@ export default function SubscriptionCart({
                 onSelect={() => handleSelect(cart._id)}
                 onQuantityChange={handleQuantityChange}
                 onDeleteSuccess={() => handleDeleteSucces(cart._id)}
-                onQuantityUpdateComplete={handleQuantityUpdateComplete}
+                accessToken={accessToken}
               />
             ))}
           </>

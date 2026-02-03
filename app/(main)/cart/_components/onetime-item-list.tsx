@@ -15,7 +15,7 @@ interface OnetimeItemListProps {
   isSelect: boolean;
   onSelect: () => void;
   onDeleteSuccess?: () => void;
-  onQuantityUpdateComplete?: () => void;
+  accessToken?: string;
 }
 
 export default function OnetimeItemList({
@@ -25,7 +25,7 @@ export default function OnetimeItemList({
   isSelect,
   onSelect,
   onDeleteSuccess,
-  onQuantityUpdateComplete,
+  accessToken,
 }: OnetimeItemListProps) {
   const { product, quantity } = cart;
 
@@ -50,6 +50,10 @@ export default function OnetimeItemList({
     const formData = new FormData();
     formData.append("cartId", cart._id.toString());
     formData.append("quantity", newQuantity.toString());
+    // 토큰 추가
+    if (accessToken) {
+      formData.append("accessToken", accessToken);
+    }
 
     // 로딩 상태, api 통신
     setIsLoading(true);
@@ -60,7 +64,6 @@ export default function OnetimeItemList({
         setLocalError(result);
         throw new Error(result.message);
       }
-      onQuantityUpdateComplete?.();
     } catch {
       setLocalError({ ok: 0, message: "수량 변경에 실패했습니다. 다시 시도해 주세요." });
       setCurrentQuantity(quantity);
@@ -78,6 +81,10 @@ export default function OnetimeItemList({
     try {
       const formData = new FormData();
       formData.append("cartId", cart._id.toString());
+      // 토큰 추가
+      if (accessToken) {
+        formData.append("accessToken", accessToken);
+      }
 
       const result = await deleteCartItem(null, formData);
 
@@ -119,7 +126,11 @@ export default function OnetimeItemList({
               현재 상품의 재고가 없어 주문이 불가능합니다.
             </p>
           ) : (
-            <QuantityControl initialCount={currentQuantity} onChange={handleQuantityChange} />
+            <QuantityControl
+              initialCount={currentQuantity}
+              disabled={isLoading}
+              onChange={handleQuantityChange}
+            />
           )}
           {/* 에러 메시지 */}
           {localError && <p className="text-red-500 text-xs mt-1">{localError.message}</p>}

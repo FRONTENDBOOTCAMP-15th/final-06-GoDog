@@ -1,12 +1,12 @@
 "use server";
-
+import { getCartItems as apiGetCartItems } from "@/lib/cart";
 import { CartItemRes, CartListRes, ErrorRes } from "@/types/response";
 import { revalidatePath } from "next/cache";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || "";
-const TEMP_TOKEN =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOjMsInR5cGUiOiJ1c2VyIiwiaWF0IjoxNzcwMDEzNjk0LCJleHAiOjE3NzAxMDAwOTQsImlzcyI6IkZFQkMifQ.Cub-A4FlwuQ7MQ2XxIzz1kKF1cTfbXseO8PtTSaJQ2Y";
+// const TEMP_TOKEN =
+//   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOjMsInR5cGUiOiJ1c2VyIiwiaWF0IjoxNzcwMDg0MDE0LCJleHAiOjE3NzAxNzA0MTQsImlzcyI6IkZFQkMifQ.wYaIJ3zoIJrF1CPf1P_vgYDRPPQWHn3XfdgKXpF97G0";
 
 type ActionState = ErrorRes | null;
 
@@ -14,33 +14,8 @@ type ActionState = ErrorRes | null;
  * 장바구니 목록 조회
  */
 
-export async function getCartItems(): Promise<CartListRes | ErrorRes> {
-  let res: Response;
-  let data: CartListRes | ErrorRes;
-
-  try {
-    res = await fetch(`${API_URL}/carts`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Client-Id": CLIENT_ID,
-        Authorization: `Bearer ${TEMP_TOKEN}`,
-      },
-      cache: "no-store", // 항상 최신 데이터
-    });
-
-    data = await res.json();
-  } catch (error) {
-    console.error(error);
-    return { ok: 0, message: "일시적인 네트워크 문제로 조회에 실패했습니다." };
-  }
-
-  // 만약 토큰이 만료되었거나 없을 경우 서버에서 준 에러 처리
-  if (!res.ok) {
-    console.error("GET/ carts 실패:", data);
-  }
-
-  return data;
+export async function getCartItems(accessToken: string): Promise<CartListRes | ErrorRes> {
+  return apiGetCartItems(accessToken);
 }
 
 /**
@@ -51,8 +26,9 @@ export async function updateCartItem(
   prevState: ActionState,
   formData: FormData
 ): Promise<ActionState> {
+  const accessToken = formData.get("accessToken") as string;
+
   const cartId = formData.get("cartId");
-  // const accessToken = formData.get('accessToken');
 
   const body = {
     quantity: Number(formData.get("quantity")),
@@ -67,7 +43,7 @@ export async function updateCartItem(
       headers: {
         "Content-Type": "application/json",
         "Client-Id": CLIENT_ID,
-        Authorization: `Bearer ${TEMP_TOKEN}`,
+        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(body),
     });
@@ -95,7 +71,7 @@ export async function deleteCartItem(
   formData: FormData
 ): Promise<ActionState> {
   const cartId = formData.get("cartId");
-  // const accessToken = formData.get('accessToken');
+  const accessToken = formData.get("accessToken") as string;
 
   let res: Response;
   let data: CartItemRes | ErrorRes;
@@ -106,7 +82,7 @@ export async function deleteCartItem(
       headers: {
         "Content-Type": "application/json",
         "Client-Id": CLIENT_ID,
-        Authorization: `Bearer ${TEMP_TOKEN}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
 
@@ -134,6 +110,7 @@ export async function deleteCartItems(
 ): Promise<ActionState> {
   const CartIdString = formData.get("cartIds");
   const cartIds = CartIdString ? JSON.parse(CartIdString as string) : [];
+  const accessToken = formData.get("accessToken") as string;
 
   const body = {
     carts: cartIds,
@@ -148,7 +125,7 @@ export async function deleteCartItems(
       headers: {
         "Content-Type": "application/json",
         "Client-Id": CLIENT_ID,
-        Authorization: `Bearer ${TEMP_TOKEN}`,
+        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(body),
     });

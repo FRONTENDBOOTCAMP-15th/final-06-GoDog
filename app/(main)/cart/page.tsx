@@ -1,11 +1,13 @@
 "use client";
 
+import useUserStore from "@/app/(main)/(auth)/login/zustand/useStore";
 import { getCartItems } from "@/app/(main)/cart/action/cart";
 import OnetimeCart from "@/app/(main)/cart/cart";
 import SubscriptionCart from "@/app/(main)/cart/subscription-cart";
 import Badge from "@/components/common/Badge";
 import Tab from "@/components/common/Tab";
 import { CartListRes, ErrorRes } from "@/types/response";
+
 import { useEffect, useState } from "react";
 
 type TabType = "oneTime" | "subscription";
@@ -16,17 +18,32 @@ export default function Cart() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<ErrorRes | null>(null);
 
+  // 토큰 가져오기
+  const { user } = useUserStore();
+  const token = user?.token;
+
+  useEffect(() => {
+    if (token?.accessToken) {
+      loadCart(token.accessToken);
+    }
+  }, [token]);
+
   // 장바구니 데이터 로드
   useEffect(() => {
     loadCart();
   }, []);
 
   // 장바구니 로드
-  const loadCart = async () => {
+  const loadCart = async (accessToken?: string) => {
+    // 헤더 에러 방지
+    if (!accessToken) {
+      console.log("토큰이 아직 준비되지 않았습니다.");
+      return;
+    }
+
     try {
       setIsLoading(true);
-      const data = await getCartItems();
-
+      const data = await getCartItems(accessToken || "");
       if (data.ok === 0) {
         setError(data);
       } else {
@@ -57,11 +74,6 @@ export default function Cart() {
       ...cartData,
       item: cartData.item.filter((item) => !deleteIds.includes(item._id)),
     });
-  };
-
-  // 수량 변경 후 재조회
-  const handleQuantityUpdate = async () => {
-    await loadCart();
   };
 
   if (isLoading) {
@@ -119,7 +131,6 @@ export default function Cart() {
             error={error}
             onDeleteSuccess={handleDeleteSuccess}
             onDeleteMutiple={handleDeleteMultiple}
-            onQuantityUpdate={handleQuantityUpdate}
           />
         ) : (
           <SubscriptionCart
@@ -127,7 +138,6 @@ export default function Cart() {
             error={error}
             onDeleteSuccess={handleDeleteSuccess}
             onDeleteMutiple={handleDeleteMultiple}
-            onQuantityUpdate={handleQuantityUpdate}
           />
         )}
       </div>
