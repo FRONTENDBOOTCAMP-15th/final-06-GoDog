@@ -122,6 +122,7 @@ export async function createProduct(
     quantity: Number(form.quantity),
     shippingFees: form.shippingFees,
     name: form.name.trim(),
+    content: form.extra.content.trim(),
     mainImages,
     extra: buildPayloadExtra(form.extra, detailImages),
   };

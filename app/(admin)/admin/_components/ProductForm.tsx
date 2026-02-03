@@ -28,6 +28,7 @@ interface ProductFormState {
   name: string;
   price: number | "";
   quantity: number | "";
+  content: string;
   shippingFees: number;
   extra: ProductFormExtra;
 }
@@ -59,6 +60,7 @@ const INITIAL_PRODUCT_FORM: ProductFormState = {
   price: "",
   quantity: "",
   shippingFees: 0,
+  content: "",
   extra: {
     type: "사료",
     code: "",
@@ -92,6 +94,7 @@ function productToFormState(product: Product): ProductFormState {
     price: product.price,
     quantity: product.quantity,
     shippingFees: product.shippingFees,
+    content: extra.content,
     extra: {
       type: extra.type,
       code: extra.code,
@@ -318,6 +321,19 @@ export default function ProductForm({ formType, initialData }: ProductFormProps)
     }));
   };
 
+  // --- 루트 & extra 일괄적용 핸들러 ---
+  const handleContentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    const { value } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      content: value, // 루트 업데이트
+      extra: {
+        ...prev.extra,
+        content: value, // extra도 동기화
+      },
+    }));
+  };
+
   // --- 썸네일 핸들러 ---
   const handleThumbnailChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -381,8 +397,10 @@ export default function ProductForm({ formType, initialData }: ProductFormProps)
   // --- 검증 ---
   const validate = () => {
     const { extra } = form;
+    console.log(form);
 
     if (!form.name.trim()) throw new Error("상품명을 입력하세요.");
+    if (!form.extra.code.trim()) throw new Error("코드명을 입력하세요.");
     if (form.price === "" || form.price < 0) throw new Error("가격을 올바르게 입력하세요.");
     if (form.quantity === "" || form.quantity < 0)
       throw new Error("재고 수량을 올바르게 입력하세요.");
@@ -518,6 +536,19 @@ export default function ProductForm({ formType, initialData }: ProductFormProps)
                     />
                   </div>
 
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">코드명 *</label>
+                    <input
+                      type="text"
+                      name="code"
+                      required
+                      value={form.extra.code}
+                      onChange={handleExtraText}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                      placeholder="예: SNR-GF-01"
+                    />
+                  </div>
+
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">가격 *</label>
@@ -575,8 +606,8 @@ export default function ProductForm({ formType, initialData }: ProductFormProps)
                     <textarea
                       name="content"
                       required
-                      value={form.extra.content}
-                      onChange={handleExtraText}
+                      value={form.content}
+                      onChange={handleContentChange}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none min-h-[100px]"
                       placeholder="추천 이유 및 특징"
                     />
