@@ -1,24 +1,33 @@
 "use client";
 
 import Contentdetail from "@/app/(main)/mypage/_components/Contentdetail";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { PlusIcon, PrevIcon } from "@/app/(main)/mypage/_components/Icons";
 import StarComponent from "@/app/(main)/mypage/_components/StarComponent";
 import Badge from "@/components/common/Badge";
 import Button from "@/components/common/Button";
 import Input from "@/components/common/Input";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import {
   uploadFile,
   createReview,
 } from "@/app/(main)/mypage/(no-layout)/order/[orderid]/review/postreview";
+import MyReviewList from "@/app/(main)/mypage/_components/reviewItem";
+import { getOrders } from "@/lib/order";
+import useUserStore from "@/zustand/useStore";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Review() {
+  const user = useUserStore((state) => state.user);
+
+  const userName = user?.name || "회원";
+
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
+
   console.log(params);
   const order_id = Number(params.orderid);
   // const product_id = searchParams.get("productid");
@@ -32,6 +41,22 @@ export default function Review() {
   const [rating, setRating] = useState(5); // 기본 별점 5점
   const [isSubmitting, setIsSubmitting] = useState(false);
   const MAX_LEN = 100;
+
+  const token = useUserStore.getState().user?.token?.accessToken || "";
+
+  const { data: resOrderlist, isLoading } = useQuery({
+    queryKey: ["order", order_id],
+    queryFn: () =>
+      getOrders(token, {
+        custom: { _id: order_id },
+        type: "user",
+      }),
+    enabled: !!order_id && !!token,
+  });
+  console.log(resOrderlist, "resOrderlist");
+
+  const order = resOrderlist?.ok === 1 ? resOrderlist.item[0] : null;
+  console.log(order, "오더가뭔가");
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -100,6 +125,26 @@ export default function Review() {
           <p className="text-[#646468] text-center text-[14.7px] font-medium  pb-[35px] break-keep">
             작성해주신 후기는 다른 견주님들께 큰 도움이 됩니다.
           </p>
+        </div>
+
+        <div className="w-full max-w-[632px] mb-[35px]">
+          {isLoading ? (
+            <p>로딩 중...</p>
+          ) : order ? (
+            <MyReviewList
+              image={order.products[0].image.path || preview}
+              name={order.products[0].name}
+              price={order.products[0].price.toLocaleString() + "원"}
+              date={order.createdAt.split(" ")[0]}
+              state={order.state}
+            />
+          ) : (
+            <div className="col-span-full py-20 text-center">
+              <p className="text-[#909094] text-[18px] font-medium">
+                주문 정보를 불러올 수 없습니다.
+              </p>
+            </div>
+          )}
         </div>
 
         <div className="bg-white w-full max-w-[632px] rounded-[35px] flex flex-col items-center p-[20px] lg:p-[40px] shadow-sm">
