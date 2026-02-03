@@ -9,6 +9,16 @@ interface Props {
 }
 
 export default function Adjustdelivery({ value, onChange }: Props) {
+  const getTodayDate = (): string => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const todayDate = getTodayDate();
+
   return (
     <div className="flex flex-row w-full">
       <div className="w-full flex flex-col items-start self-stretch p-[35px] rounded-[42px] border border-black/5 bg-white shadow-[0_2px_12px_0_rgba(0,0,0,0.03)]">
@@ -21,6 +31,7 @@ export default function Adjustdelivery({ value, onChange }: Props) {
 
         <div className="w-full relative mb-[13px]">
           <Input
+            min={todayDate}
             label=""
             type="date"
             value={value}

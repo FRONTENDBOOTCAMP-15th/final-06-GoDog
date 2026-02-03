@@ -33,9 +33,10 @@ export default function Orders() {
       getOrders(token, {
         page,
         limit: 4,
+        type: "user",
       }),
   });
-  console.log(resOrderlist);
+  console.log(resOrderlist, "resOrderlist");
   useEffect(() => {
     if (resOrderlist) console.log(resOrderlist);
   }, [resOrderlist]);

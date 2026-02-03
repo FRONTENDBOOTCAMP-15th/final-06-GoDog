@@ -53,7 +53,7 @@ export default function WishlistComponent({ bookmarkId, Product, token }: Wishli
 
       <hr className="w-[calc(100%-58px)] h-px mx-auto border-0 bg-[rgba(0,0,0,0.06)] " />
       <div className="pb-[36px] pt-[15px] flex pl-[29px] justify-between pr-[29px] ">
-        <p className="text-[#1A1A1C] text-[12px] font-black">결제금액</p>
+        <p className="text-[#1A1A1C] text-[12px] font-black">판매 가격</p>
         <p className="text-[#FBA613] text-[12px] font-black ">{Product.price.toLocaleString()}원</p>
       </div>
 

@@ -10,6 +10,7 @@ interface GetOrdersOptions {
   page?: number;
   limit?: number;
   sort?: Record<string, 1 | -1>;
+  type?: string;
 }
 
 /**
@@ -51,9 +52,12 @@ export async function getOrders(
     }
 
     const queryString = params.toString();
+
+    const typepath = options?.type === "user" ? "" : "seller/";
+    console.log(typepath, "타입패스");
     const url = queryString
-      ? `${API_URL}/seller/orders?${queryString}`
-      : `${API_URL}/seller/orders`;
+      ? `${API_URL}/${typepath}orders?${queryString}`
+      : `${API_URL}/${typepath}orders`;
 
     const headers: HeadersInit = {
       "Client-Id": CLIENT_ID,
