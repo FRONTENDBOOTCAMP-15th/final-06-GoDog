@@ -1,82 +1,43 @@
 "use client";
 
 import useUserStore from "@/app/(main)/(auth)/login/zustand/useStore";
-import { getCartItems } from "@/app/(main)/cart/action/cart";
-import OnetimeCart from "@/app/(main)/cart/cart";
+import OnetimeCart from "@/app/(main)/cart/onetime-cart";
 import SubscriptionCart from "@/app/(main)/cart/subscription-cart";
+import useCartStore from "@/app/(main)/cart/zustand/useCartStore";
 import Badge from "@/components/common/Badge";
 import Tab from "@/components/common/Tab";
-import { CartListRes, ErrorRes } from "@/types/response";
-
 import { useEffect, useState } from "react";
 
 type TabType = "oneTime" | "subscription";
 
 export default function Cart() {
   const [activeTab, setActiveTab] = useState<TabType>("oneTime");
-  const [cartData, setCartData] = useState<CartListRes | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<ErrorRes | null>(null);
 
   // 토큰 가져오기
   const { user } = useUserStore();
-  const token = user?.token;
+  const accessToken = user?.token?.accessToken;
+
+  // zustand 상태
+  const { cartData, isLoading, error, fetchCart, getOnetimeItmes, getSubscriptionItems } =
+    useCartStore();
 
   useEffect(() => {
-    if (token?.accessToken) {
-      loadCart(token.accessToken);
+    if (accessToken) {
+      fetchCart(accessToken);
     }
-  }, [token]);
+  }, [accessToken, fetchCart]);
 
-  // 장바구니 데이터 로드
-  useEffect(() => {
-    loadCart();
-  }, []);
+  // 1회 구매와 정기구독 탭 카운트
+  const onetimeCount = getOnetimeItmes().length;
+  const subscriptionCount = getSubscriptionItems().length;
 
-  // 장바구니 로드
-  const loadCart = async (accessToken?: string) => {
-    // 헤더 에러 방지
-    if (!accessToken) {
-      console.log("토큰이 아직 준비되지 않았습니다.");
-      return;
-    }
+  const tabs: { key: TabType; label: string; count: number }[] = [
+    { key: "oneTime", label: "1회구매", count: onetimeCount },
+    { key: "subscription", label: "정기구독", count: subscriptionCount },
+  ];
 
-    try {
-      setIsLoading(true);
-      const data = await getCartItems(accessToken || "");
-      if (data.ok === 0) {
-        setError(data);
-      } else {
-        setCartData(data);
-      }
-    } catch {
-      setError({ ok: 0, message: "장바구니 목록을 불러오는데 실패했습니다. 다시 시도해 주세요." });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // 한건 삭제 성공 핸들러
-  const handleDeleteSuccess = (deleteId: number) => {
-    if (!cartData) return;
-
-    setCartData({
-      ...cartData,
-      item: cartData.item.filter((item) => item._id !== deleteId),
-    });
-  };
-
-  // 여러건 삭제 성공 핸들러
-  const handleDeleteMultiple = (deleteIds: number[]) => {
-    if (!cartData) return;
-
-    setCartData({
-      ...cartData,
-      item: cartData.item.filter((item) => !deleteIds.includes(item._id)),
-    });
-  };
-
-  if (isLoading) {
+  // 로딩
+  if (isLoading && !cartData) {
     return (
       <div className="bg-[#F9F9FB]">
         <div className="xl:max-w-300 min-w-90 mx-auto px-4 pt-8 pb-[8.75rem]">
@@ -88,7 +49,8 @@ export default function Cart() {
     );
   }
 
-  if (error || !cartData) {
+  // 에러
+  if (error) {
     return (
       <div className="bg-[#F9F9FB]">
         <div className="xl:max-w-300 min-w-90 mx-auto px-4 pt-8 pb-[8.75rem]">
@@ -99,16 +61,6 @@ export default function Cart() {
       </div>
     );
   }
-
-  // 1회 구매와 정기구독 상품 분리
-  const onetimeItems = cartData.item.filter((cart) => cart.color?.includes("1회구매"));
-
-  const subscriptionItems = cartData?.item.filter((cart) => cart.color?.includes("정기구독"));
-
-  const tabs: { key: TabType; label: string; count: number }[] = [
-    { key: "oneTime", label: "1회 구매", count: onetimeItems.length || 0 },
-    { key: "subscription", label: "정기구독", count: subscriptionItems.length || 0 },
-  ];
 
   return (
     <div className="bg-[#F9F9FB] ">
@@ -125,21 +77,7 @@ export default function Cart() {
         <section className="flex justify-center mb-9">
           <Tab tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
         </section>
-        {activeTab === "oneTime" ? (
-          <OnetimeCart
-            items={onetimeItems}
-            error={error}
-            onDeleteSuccess={handleDeleteSuccess}
-            onDeleteMutiple={handleDeleteMultiple}
-          />
-        ) : (
-          <SubscriptionCart
-            items={subscriptionItems}
-            error={error}
-            onDeleteSuccess={handleDeleteSuccess}
-            onDeleteMutiple={handleDeleteMultiple}
-          />
-        )}
+        {activeTab === "oneTime" ? <OnetimeCart /> : <SubscriptionCart />}
       </div>
     </div>
   );

@@ -65,14 +65,10 @@ export async function updateCartItem(
 /**
  * 장바구니 상품 한건 삭제
  */
-
 export async function deleteCartItem(
-  prevState: ActionState,
-  formData: FormData
-): Promise<ActionState> {
-  const cartId = formData.get("cartId");
-  const accessToken = formData.get("accessToken") as string;
-
+  cartId: number,
+  accessToken: string
+): Promise<ErrorRes | null> {
   let res: Response;
   let data: CartItemRes | ErrorRes;
 
@@ -93,10 +89,10 @@ export async function deleteCartItem(
   }
 
   if (data.ok) {
-    revalidatePath("/cart"); // 장바구니 페이지 갱신
-    return null; // 성공
+    revalidatePath("/cart");
+    return null;
   } else {
-    return data; // 에러 응답 객체 반환
+    return data;
   }
 }
 

@@ -1,78 +1,52 @@
 import useUserStore from "@/app/(main)/(auth)/login/zustand/useStore";
 import OnetimeItemList from "@/app/(main)/cart/_components/onetime-item-list";
-import { deleteCartItems } from "@/app/(main)/cart/action/cart";
+import { deleteCartItem, deleteCartItems } from "@/app/(main)/cart/action/cart";
+import useCartStore from "@/app/(main)/cart/zustand/useCartStore";
 import Button from "@/components/common/Button";
 import Checkbox from "@/components/common/Checkbox";
-import { Cart } from "@/types/cart";
-import { ErrorRes } from "@/types/response";
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
-interface OnetimeCartProps {
-  items: Cart[];
-  error: ErrorRes | null;
-  onDeleteSuccess?: (deleteId: number) => void;
-  onDeleteMutiple?: (deleteIds: number[]) => void;
-}
-
-export default function OnetimeCart({
-  items,
-  error,
-  onDeleteSuccess,
-  onDeleteMutiple,
-}: OnetimeCartProps) {
-  // 아이템 수량 관리
-  const [quantity, setQuantity] = useState<Record<number, number>>(() => {
-    const initialQuantity: Record<number, number> = {};
-    items.forEach((item) => {
-      initialQuantity[item._id] = item.quantity;
-    });
-    return initialQuantity;
-  });
-
+export default function OnetimeCart() {
   // 토큰 가져오기
   const { user } = useUserStore();
   const accessToken = user?.token?.accessToken;
 
+  // zustand 상태
+  const {
+    handleDeleteMultiple: deleteStoreItems,
+    handleDeleteSuccess: deleteStoreItem,
+    getCartTotal,
+    getOnetimeItmes,
+  } = useCartStore();
+
+  // 1회구매 상품 가져오기
+  const items = getOnetimeItmes();
+
+  // 1회구매 총액 계산
+  const { productsPrice, shippingFees, totalPrice, availableCount } = getCartTotal("oneTime");
+
   // 체크박스 선택된 상품 ID
   const [selectIds, setSelectIds] = useState<number[]>([]);
-  // 여러 건 삭제
-  const [isDeleting, setIsDeleting] = useState(false);
 
-  // 수량 변경 핸들러
-  const handleQuantityChange = (cartId: number, newQuantity: number) => {
-    setQuantity((prev) => ({
-      ...prev,
-      [cartId]: newQuantity,
-    }));
+  // 한건 삭제 핸들러
+  const handleDelete = async (cartId: number) => {
+    if (!confirm("삭제하시겠습니까?")) return;
+
+    try {
+      const result = await deleteCartItem(cartId, accessToken as string);
+
+      if (result?.ok !== 0) {
+        deleteStoreItem(cartId);
+        setSelectIds((prev) => prev.filter((id) => id !== cartId));
+      }
+    } catch {
+      alert("삭제에 실패했습니다. 다시 시도해 주세요.");
+    }
   };
 
-  // 실시간 총 금액
-  const total = useMemo(() => {
-    const productsTotal = items.reduce((sum, item) => {
-      const isSoldOut = item.product.quantity === item.product.buyQuantity;
-      if (isSoldOut) return sum;
-
-      const currentQty = quantity[item._id] || item.quantity;
-      return sum + item.product.price * currentQty;
-    }, 0);
-
-    const shippingFees = 0;
-
-    return {
-      products: productsTotal,
-      shippingFees,
-      total: productsTotal + shippingFees,
-    };
-  }, [items, quantity]);
-
-  // 품절 상품 개수
-  const soldOutCount = useMemo(() => {
-    return items.filter((item) => item.product.quantity === item.product.buyQuantity).length;
-  }, [items]);
-
-  // 구매 가능한 상품 개수
-  const availableCount = items.length - soldOutCount;
+  // 여러 건 삭제
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // 개별 선택/해제 핸들러
   const handleSelect = (id: number) => {
@@ -88,12 +62,6 @@ export default function OnetimeCart({
     } else {
       setSelectIds(items.map((item) => item._id));
     }
-  };
-
-  // 한건 삭제 핸들러
-  const handleDeleteSucces = (deleteId: number) => {
-    setSelectIds((prev) => prev.filter((id) => id !== deleteId));
-    onDeleteSuccess?.(deleteId);
   };
 
   // 여러 건 삭제 핸들러
@@ -121,7 +89,7 @@ export default function OnetimeCart({
       const result = await deleteCartItems(null, formData);
 
       if (result === null) {
-        onDeleteMutiple?.(selectIds);
+        deleteStoreItems(selectIds);
 
         setSelectIds([]); // 선택 목록 초기화
       } else {
@@ -162,12 +130,9 @@ export default function OnetimeCart({
               <OnetimeItemList
                 key={cart._id}
                 cart={cart}
-                parentError={error}
                 isSelect={selectIds.includes(cart._id)}
                 onSelect={() => handleSelect(cart._id)}
-                onQuantityChange={handleQuantityChange}
-                onDeleteSuccess={() => handleDeleteSucces(cart._id)}
-                accessToken={accessToken}
+                onDelete={handleDelete}
               />
             ))}
           </>
@@ -188,19 +153,19 @@ export default function OnetimeCart({
             <div className="flex justify-between">
               <p className="text-[0.75rem] text-text-secondary font-bold">총 상품 금액</p>
               <p className="text-[0.75rem] text-[#1A1A1C] font-black">
-                {total.products.toLocaleString()}원
+                {productsPrice.toLocaleString()}원
               </p>
             </div>
             <div className="flex justify-between">
               <p className="text-[0.75rem] text-text-secondary font-bold">배송비</p>
               <p className="text-[0.75rem] text-[#1A1A1C] font-black">
-                +{total.shippingFees.toLocaleString()}원
+                +{shippingFees.toLocaleString()}원
               </p>
             </div>
 
             <div className="flex justify-between border-t border-border-primary py-7">
               <h2 className="text-[1rem] text-[#1A1A1C] font-black">총 결제 예정액</h2>
-              <p className="text-2xl text-[#FBA613] font-black">{total.total.toLocaleString()}원</p>
+              <p className="text-2xl text-[#FBA613] font-black">{totalPrice.toLocaleString()}원</p>
             </div>
 
             {/* 구매하기 버튼 */}
