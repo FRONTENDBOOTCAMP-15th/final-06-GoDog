@@ -12,14 +12,11 @@ export default function ProductEditPage() {
 
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  console.log(productId);
 
   useEffect(() => {
-    console.log("useEffect" + productId);
     const fetchProductData = async () => {
       try {
         const res = await getProduct(Number(productId));
-        console.log(res);
         if (res.ok === 1) {
           setProduct(res.item);
         }

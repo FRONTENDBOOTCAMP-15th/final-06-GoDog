@@ -90,10 +90,13 @@ function productToFormState(product: Product): ProductFormState {
   const { extra } = product;
   const isFood = extra.type === "사료";
 
+  // 수정 시 실제 남은 재고 표시 (판매된 수량 제외)
+  const displayQuantity = product.quantity - (product.buyQuantity ?? 0);
+
   return {
     name: product.name,
     price: product.price,
-    quantity: product.quantity,
+    quantity: displayQuantity,
     shippingFees: product.shippingFees,
     content: extra.content,
     extra: {
@@ -217,6 +220,9 @@ export default function ProductForm({ formType, initialData }: ProductFormProps)
   );
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // buyQuantity 저장 (수정 시 서버 전송용)
+  const buyQuantity = initialData?.buyQuantity ?? 0;
 
   // 썸네일 상태 (기존 이미지 또는 새 파일)
   const [thumbnail, setThumbnail] = useState<ImageItem | null>(() => {
@@ -424,6 +430,15 @@ export default function ProductForm({ formType, initialData }: ProductFormProps)
     }
   };
 
+  // --- 서버 전송용 quantity 계산 ---
+  const getSubmitQuantity = (): number => {
+    const inputQuantity = form.quantity === "" ? 0 : form.quantity;
+
+    // 수정 시: 입력값 + buyQuantity (판매된 수량 다시 합산)
+    // 등록 시: 입력값 그대로
+    return formType === "modify" ? inputQuantity + buyQuantity : inputQuantity;
+  };
+
   // --- 제출 ---
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -445,10 +460,16 @@ export default function ProductForm({ formType, initialData }: ProductFormProps)
         .filter((img): img is ExistingImage => img.type === "existing")
         .map((img) => img.data);
 
+      // 서버 전송용 폼 데이터 (quantity 재계산)
+      const submitForm = {
+        ...form,
+        quantity: getSubmitQuantity(),
+      };
+
       if (formType === "create") {
         if (!newThumbnailFile) throw new Error("썸네일 이미지를 등록하세요.");
 
-        const result = await createProduct(form, newThumbnailFile, newDetailFiles);
+        const result = await createProduct(submitForm, newThumbnailFile, newDetailFiles);
         console.log("등록 완료:", result);
         alert("상품이 등록되었습니다.");
       } else {
@@ -456,7 +477,7 @@ export default function ProductForm({ formType, initialData }: ProductFormProps)
 
         const result = await updateProduct(
           initialData._id,
-          form,
+          submitForm,
           newThumbnailFile,
           newDetailFiles,
           existingMainImages,
@@ -574,6 +595,11 @@ export default function ProductForm({ formType, initialData }: ProductFormProps)
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         재고 수량 *
+                        {formType === "modify" && buyQuantity > 0 && (
+                          <span className="ml-2 text-xs text-blue-600 font-normal">
+                            (판매: {buyQuantity}개)
+                          </span>
+                        )}
                       </label>
                       <input
                         type="number"

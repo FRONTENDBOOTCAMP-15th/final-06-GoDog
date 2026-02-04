@@ -46,10 +46,7 @@ export default function Login() {
       });
 
       setUser({
-        _id: userState.item._id,
-        email: userState.item.email,
-        name: userState.item.name,
-        image: userState.item.image,
+        ...userState.item,
         token: {
           accessToken: userState.item.token?.accessToken || "",
           refreshToken: userState.item.token?.refreshToken || "",

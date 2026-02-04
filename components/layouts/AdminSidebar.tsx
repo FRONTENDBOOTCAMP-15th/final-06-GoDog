@@ -179,7 +179,7 @@ export function AdminSidebar({ isOpen, onClose }: SidebarProps) {
                         {expandedItems.includes(item.label) && (
                           <div className="mt-1 ml-4 space-y-1">
                             {item.subItems!.map((subItem, subIndex) => {
-                              const isSubItemActive = isActive(subItem.path);
+                              const isSubItemActive = isActive(subItem.path, true);
 
                               return (
                                 <button
