@@ -6,7 +6,7 @@ import MyItemList from "@/app/(main)/mypage/_components/MyItemListA";
 import PaginationWrapper from "@/components/common/PaginationWrapper";
 import Image from "next/image";
 import useUserStore from "@/zustand/useStore";
-import { useSearchParams } from "next/navigation";
+import { useParams, usePathname, useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { getOrders } from "@/lib/order";
 import { useEffect } from "react";
@@ -16,7 +16,8 @@ export default function Subscription() {
   const user = useUserStore((state) => state.user);
   const token = Cookies.get("accessToken");
   const userName = user?.name || "회원";
-
+  const params = usePathname();
+  console.log(params, "파람스");
   const searchParams = useSearchParams();
   const page = Number(searchParams.get("page")) || 1;
 
@@ -26,6 +27,7 @@ export default function Subscription() {
       getOrders(token, {
         page,
         limit: 4,
+        path: params,
       }),
     enabled: !!token,
   });

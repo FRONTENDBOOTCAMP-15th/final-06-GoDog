@@ -23,9 +23,20 @@ export default function SubscriptionEditClient({ initialData, orderId }: Props) 
   const router = useRouter();
   const product = initialData.products[0];
 
+  const [deteletedPeriod, setDeletedPeriod] = useState(initialData.period);
   const [selectedPeriod, setSelectedPeriod] = useState(initialData.period);
   const [selectedDate, setSelectedDate] = useState(initialData.nextdeliverydate || "");
   const isSaveDisabled = !selectedPeriod || !selectedDate;
+
+  const onDelete = async () => {
+    try {
+      await updateSubscriptionPlan(orderId, { period: "", date: "" });
+      alert("변경 사항이 성공적으로 저장되었습니다.");
+      router.push("/mypage/subscription");
+    } catch (error) {
+      alert("저장 중 오류가 발생했습니다. 다시 시도해 주세요.");
+    }
+  };
 
   const handleSave = async () => {
     try {
@@ -64,6 +75,7 @@ export default function SubscriptionEditClient({ initialData, orderId }: Props) 
             <Adjustdelivery value={selectedDate} onChange={setSelectedDate} />
 
             <ActionButtons onSave={handleSave} disabled={isSaveDisabled} />
+            <DeleteButtons onDelete={onDelete} />
           </div>
         </div>
       </div>
@@ -96,15 +108,21 @@ const ProductImage = ({ src, alt }: { src: string; alt: string }) => (
   </div>
 );
 
-const ActionButtons = ({ onSave, disabled }: { onSave: () => void; disabled: boolean }) => (
-  <div className="flex flex-col gap-[12px]">
+const DeleteButtons = ({ onDelete }: { onDelete: () => void }) => (
+  <div>
     <Button
+      onClick={onDelete}
       className="rounded-[28px] border-2 border-black/[0.06] w-full"
       size="md"
       variant="ghost"
     >
       구독 해지 신청
     </Button>
+  </div>
+);
+
+const ActionButtons = ({ onSave, disabled }: { onSave: () => void; disabled: boolean }) => (
+  <div className="flex flex-col gap-[12px]">
     <Button
       size="md"
       variant="primary"

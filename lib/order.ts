@@ -1,3 +1,4 @@
+import { SubscriptIcon } from "lucide-react";
 import { ErrorRes, OrderListRes } from "@/types/response";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -11,6 +12,7 @@ interface GetOrdersOptions {
   limit?: number;
   sort?: Record<string, 1 | -1>;
   type?: string;
+  path?: string;
 }
 
 /**
@@ -39,7 +41,7 @@ export async function getOrders(
 ): Promise<OrderListRes | ErrorRes> {
   try {
     const params = new URLSearchParams();
-
+    const mypagesubscription = options?.path === "/mypage/subscription";
     if (options) {
       const { user_id, state, custom, page, limit, sort } = options;
 
@@ -49,6 +51,7 @@ export async function getOrders(
       if (page) params.append("page", String(page));
       if (limit) params.append("limit", String(limit));
       if (sort) params.append("sort", JSON.stringify(sort));
+      if (mypagesubscription) params.append("custom", `{"period":{"$regex":"주기 배송"}}`);
     }
 
     const queryString = params.toString();
