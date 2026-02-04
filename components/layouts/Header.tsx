@@ -266,13 +266,26 @@ const Header: React.FC = () => {
         <div className="flex flex-col grow p-8 space-y-10 overflow-y-auto">
           {/* 모바일 계정 퀵 링크 */}
           <div className="flex gap-4">
-            <Link
-              href="/login"
-              onClick={closeMobileMenu}
-              className="flex-1 py-4 bg-bg-secondary rounded-2xl text-sm font-black text-text-primary border border-border-primary active:scale-95 transition-all text-center"
-            >
-              로그인
-            </Link>
+            {isLoggedIn ? (
+              <Link
+                href="/"
+                onClick={(e) => {
+                  handleLogout(e);
+                  closeMobileMenu();
+                }}
+                className="flex-1 py-4 bg-bg-secondary rounded-2xl text-sm font-black text-text-primary border border-border-primary active:scale-95 transition-all text-center"
+              >
+                로그아웃
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                onClick={closeMobileMenu}
+                className="flex-1 py-4 bg-bg-secondary rounded-2xl text-sm font-black text-text-primary border border-border-primary active:scale-95 transition-all text-center"
+              >
+                로그인
+              </Link>
+            )}
             <Link
               href="/signup"
               onClick={closeMobileMenu}

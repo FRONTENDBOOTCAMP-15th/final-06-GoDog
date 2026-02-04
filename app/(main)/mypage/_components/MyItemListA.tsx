@@ -88,7 +88,7 @@ export default function MyItemList({
         onClick={getHref}
       >
         <div
-          className={`text-center text-[11px] font-black ${
+          className={`text-center text-[11px] font-black leading-4 ${
             isReviewed ? "text-[#909094]" : "text-[#FBA613]"
           }`}
         >
