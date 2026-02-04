@@ -215,7 +215,25 @@ export default function PurchaseModal({ isOpen, onClose, product }: Props) {
             type="button"
             size="lg"
             variant="primary"
-            onClick={() => router.push("/checkout")}
+            onClick={() => {
+              if (!user?.token?.accessToken) {
+                alert("로그인이 필요합니다. 로그인 페이지로 이동합니다.");
+                router.push("/login");
+                return;
+              }
+              const params = new URLSearchParams({
+                product_id: String(product._id),
+                name: product.name,
+                image: product.mainImages[0]?.path || "",
+                price: String(basePrice),
+                quantity: String(quantity),
+                type: purchaseType,
+              });
+              if (purchaseType === "subscribe") {
+                params.set("cycle", deliveryCycle);
+              }
+              router.push(`/checkout?${params.toString()}`);
+            }}
             className="flex-1 w-[35rem] rounded py-2"
           >
             바로 구매하기
