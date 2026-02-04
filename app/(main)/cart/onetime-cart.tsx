@@ -5,7 +5,7 @@ import useCartStore from "@/app/(main)/cart/zustand/useCartStore";
 import Button from "@/components/common/Button";
 import Checkbox from "@/components/common/Checkbox";
 import Image from "next/image";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 export default function OnetimeCart() {
   // 토큰 가져오기
@@ -17,17 +17,32 @@ export default function OnetimeCart() {
     handleDeleteMultiple: deleteStoreItems,
     handleDeleteSuccess: deleteStoreItem,
     getCartTotal,
-    getOnetimeItmes,
+    getOnetimeItems,
+    getSelectCartTotal,
   } = useCartStore();
-
-  // 1회구매 상품 가져오기
-  const items = getOnetimeItmes();
-
-  // 1회구매 총액 계산
-  const { productsPrice, shippingFees, totalPrice, availableCount } = getCartTotal("oneTime");
 
   // 체크박스 선택된 상품 ID
   const [selectIds, setSelectIds] = useState<number[]>([]);
+
+  // 1회구매 상품 가져오기
+  const items = getOnetimeItems();
+
+  // 1회구매 총액 계산 (선택 || 전체)
+  const { productsPrice, shippingFees, totalPrice, selectCount, availableCount } = useMemo(() => {
+    if (selectIds.length > 0) {
+      // 선택된 상품만 계산
+      return {
+        ...getSelectCartTotal(selectIds, "oneTime"),
+        availableCount: getCartTotal("oneTime").availableCount, // 전체 개수 유지
+      };
+    } else {
+      // 전체 상품 계산
+      return {
+        ...getCartTotal("oneTime"),
+        selectCount: 0, // 기본값 설정
+      };
+    }
+  }, [selectIds, getSelectCartTotal, getCartTotal]);
 
   // 한건 삭제 핸들러
   const handleDelete = async (cartId: number) => {
@@ -96,7 +111,7 @@ export default function OnetimeCart() {
         alert(result.message);
       }
     } catch {
-      alert("삭제애 실패했습니다. 다시 시도해 주세요.");
+      alert("삭제에 실패했습니다. 다시 시도해 주세요.");
     } finally {
       setIsDeleting(false);
     }
@@ -111,7 +126,7 @@ export default function OnetimeCart() {
             <section className="flex gap-3 items-center bg-white border border-[#F9F9FB] rounded-[0.875rem] p-3 sm:p-7 mb-5 shadow-(--shadow-card)">
               <Checkbox
                 label={`전체 선택(${selectIds.length}/${items.length})`}
-                checked={selectIds.length === items.length}
+                checked={selectIds.length === items.length && items.length > 0}
                 onChange={handleSelectAll}
                 className="text-[#1A1A1C] text-[0.75rem] font-black"
               />
@@ -169,8 +184,15 @@ export default function OnetimeCart() {
             </div>
 
             {/* 구매하기 버튼 */}
-            <Button href="/checkout" disabled={availableCount === 0}>
-              {availableCount > 0
+            <Button
+              href="/checkout"
+              disabled={selectIds.length > 0 ? selectCount === 0 : availableCount === 0}
+            >
+              {selectIds.length > 0
+                ? selectCount > 0
+                  ? `${selectCount}개 상품 구매하기`
+                  : "선택한 상품 중 구매 가능한 상품이 없습니다."
+                : availableCount > 0
                 ? `${availableCount}개 상품 구매하기`
                 : "구매 가능한 상품이 없습니다."}
             </Button>

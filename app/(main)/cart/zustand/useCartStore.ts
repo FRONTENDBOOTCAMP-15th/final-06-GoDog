@@ -2,7 +2,7 @@ import { getCartItems } from "@/lib/cart";
 import { CartListRes, ErrorRes } from "@/types/response";
 import { create } from "zustand";
 
-type DeliveryÇycle = "biweekly" | "monthly";
+type DeliveryCycle = "2w" | "4w";
 
 interface CartStoreState {
   cartData: CartListRes | null;
@@ -10,7 +10,7 @@ interface CartStoreState {
   error: ErrorRes | null;
 
   // 정기구독 배송 주기 상태
-  deliveryCycles: Record<number, DeliveryÇycle>;
+  deliveryCycles: Record<number, DeliveryCycle>;
 
   // 상태 변경 함수
   setError: (error: ErrorRes | null) => void;
@@ -20,11 +20,11 @@ interface CartStoreState {
   updateQuantity: (cartId: number, newQuantity: number) => void;
 
   // 정기구독 배송 함수
-  setDeliveryCycle: (cartId: number, cycle: DeliveryÇycle) => void;
-  getDeliveryCycle: (cartId: number) => DeliveryÇycle;
+  setDeliveryCycle: (cartId: number, cycle: DeliveryCycle) => void;
+  getDeliveryCycle: (cartId: number) => DeliveryCycle;
 
   // 1회구매/정기구독 필터링 데이터
-  getOnetimeItmes: () => CartListRes["item"];
+  getOnetimeItems: () => CartListRes["item"];
   getSubscriptionItems: () => CartListRes["item"];
 
   // 품절 여부 확인
@@ -35,19 +35,22 @@ interface CartStoreState {
     productsPrice: number;
     shippingFees: number;
     totalPrice: number;
+    discount: number;
     availableCount: number;
+    selectCount?: number;
   };
 
-  // // 선택 상품 총 금액 계산
-  // getSelectedCartTotal: (
-  //   selectIds: number[],
-  //   type?: "oneTime" | "subscription"
-  // ) => {
-  //   productsPrice: number;
-  //   shippingFees: number;
-  //   totalPrice: number;
-  //   selectedCount: number;
-  // };
+  // 선택 상품 총 금액 계산
+  getSelectCartTotal: (
+    selectIds: number[],
+    type?: "oneTime" | "subscription"
+  ) => {
+    productsPrice: number;
+    shippingFees: number;
+    totalPrice: number;
+    discount: number;
+    selectCount: number;
+  };
 }
 
 const useCartStore = create<CartStoreState>((set, get) => ({
@@ -66,10 +69,10 @@ const useCartStore = create<CartStoreState>((set, get) => ({
       if (data.ok === 0) {
         set({ error: data, isLoading: false });
       } else {
-        const initialCycles: Record<number, DeliveryÇycle> = {};
+        const initialCycles: Record<number, DeliveryCycle> = {};
         data.item.forEach((cart) => {
-          if (cart.color?.includes("정기구독")) {
-            initialCycles[cart._id] = "biweekly";
+          if (cart.color?.includes("subscription")) {
+            initialCycles[cart._id] = (cart.size as DeliveryCycle) || "2w";
           }
         });
 
@@ -87,7 +90,7 @@ const useCartStore = create<CartStoreState>((set, get) => ({
   handleDeleteSuccess: (deleteId: number) => {
     set((state) => {
       const newCycles = { ...state.deliveryCycles };
-      delete newCycles[deleteId]; // ✅ 삭제된 상품의 배송 주기도 제거
+      delete newCycles[deleteId]; // 삭제된 상품의 배송 주기도 제거
 
       return {
         cartData: state.cartData
@@ -102,7 +105,7 @@ const useCartStore = create<CartStoreState>((set, get) => ({
   handleDeleteMultiple: (deleteIds: number[]) => {
     set((state) => {
       const newCycles = { ...state.deliveryCycles };
-      deleteIds.forEach((id) => delete newCycles[id]); // ✅ 삭제된 상품들의 배송 주기도 제거
+      deleteIds.forEach((id) => delete newCycles[id]); // 삭제된 상품들의 배송 주기도 제거
 
       return {
         cartData: state.cartData
@@ -131,30 +134,38 @@ const useCartStore = create<CartStoreState>((set, get) => ({
   },
 
   // 배송 주기 설정
-  setDeliveryCycle: (cartId: number, cycle: DeliveryÇycle) => {
+  setDeliveryCycle: (cartId: number, cycle: DeliveryCycle) => {
     set((state) => ({
       deliveryCycles: {
         ...state.deliveryCycles,
         [cartId]: cycle,
       },
+      cartData: state.cartData
+        ? {
+            ...state.cartData,
+            item: state.cartData.item.map((item) =>
+              item._id === cartId ? { ...item, size: cycle } : item
+            ),
+          }
+        : null,
     }));
   },
 
   // 배송 주기 가져오기
   getDeliveryCycle: (cartId: number) => {
-    return get().deliveryCycles[cartId] || "biweekly";
+    return get().deliveryCycles[cartId] || "2w";
   },
 
   // 1회구매 상품
-  getOnetimeItmes: () => {
+  getOnetimeItems: () => {
     const items = get().cartData?.item || [];
-    return items.filter((cart) => cart.color?.includes("1회구매"));
+    return items.filter((cart) => cart.color?.includes("oneTime"));
   },
 
   // 정기구독 상품
   getSubscriptionItems: () => {
     const items = get().cartData?.item || [];
-    return items.filter((cart) => cart.color?.includes("정기구독"));
+    return items.filter((cart) => cart.color?.includes("subscription"));
   },
 
   // 품절 여부 확인
@@ -173,9 +184,9 @@ const useCartStore = create<CartStoreState>((set, get) => ({
 
     // 타입별 필터링
     if (type === "oneTime") {
-      items = items.filter((cart) => cart.color?.includes("1회구매"));
+      items = items.filter((cart) => cart.color?.includes("oneTime"));
     } else if (type === "subscription") {
-      items = items.filter((cart) => cart.color?.includes("정기구독"));
+      items = items.filter((cart) => cart.color?.includes("subscription"));
     }
 
     // 구매 가능한 상품
@@ -189,23 +200,55 @@ const useCartStore = create<CartStoreState>((set, get) => ({
       0
     );
 
+    // 정기구독 시 10% 할인
+    const discount = type === "subscription" ? productsTotal * 0.1 : 0;
+
     return {
       productsPrice: productsTotal,
       shippingFees: 0,
       totalPrice: productsTotal,
+      discount,
       availableCount: availableItems.length,
+      selectCount: 0,
     };
   },
 
-  // // 선택 상품 총 금액 계산
-  // getSelectedCartTotal: (selectIds: number[], type?: "oneTime" | "subscription") => {
-  //   let items = get().cartData?.item || [];
+  // 선택 상품 총 금액 계산
+  getSelectCartTotal: (selectIds: number[], type?: "oneTime" | "subscription") => {
+    let items = get().cartData?.item || [];
 
-  //   // 타입별 필터링
-  //   if (type === "oneTime") {
-  //     items = items.filter((cart) => cart.color?.includes("1회구매"));
-  //   }
-  // },
+    // 타입별 필터링
+    if (type === "oneTime") {
+      items = items.filter((cart) => cart.color?.includes("oneTime"));
+    } else if (type === "subscription") {
+      items = items.filter((cart) => cart.color?.includes("subscription"));
+    }
+
+    // 선택된 상품 필터링
+    const selectItems = items.filter((item) => selectIds.includes(item._id));
+
+    // 선택된 상품 총 구매 가능한 상품(품절 제외)
+    const availableSelectItems = selectItems.filter(
+      (item) => item.product.quantity !== item.product.buyQuantity
+    );
+
+    // 총 상품 금액 계산
+    const productsTotal = availableSelectItems.reduce(
+      (sum, item) => sum + item.product.price * item.quantity,
+      0
+    );
+
+    // 정기구독일 때만 10% 할인
+    const discount = type === "subscription" ? productsTotal * 0.1 : 0;
+
+    return {
+      productsPrice: productsTotal,
+      shippingFees: 0,
+      totalPrice: productsTotal,
+      discount,
+      selectCount: availableSelectItems.length,
+    };
+  },
 }));
 
 export default useCartStore;

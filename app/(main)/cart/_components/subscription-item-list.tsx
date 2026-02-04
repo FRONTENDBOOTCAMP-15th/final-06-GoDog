@@ -8,7 +8,6 @@ import ProductImage from "@/components/common/ProductImage";
 import QuantityControl from "@/components/common/Quantitycontrol";
 import { Cart } from "@/types/cart";
 import Image from "next/image";
-import { useState } from "react";
 
 interface SubscriptionItemListProps {
   cart: Cart;
@@ -86,7 +85,7 @@ export default function SubscriptionItemList({
   };
 
   // 배송 주기 변경 핸들러
-  const handleCycleChange = (cycle: "biweekly" | "monthly") => {
+  const handleCycleChange = async (cycle: "2w" | "4w") => {
     setDeliveryCycle(cart._id, cycle);
     // 필요하다면 여기서 API 호출도 가능
   };
@@ -125,26 +124,26 @@ export default function SubscriptionItemList({
               <p className="text-[0.625rem] text-(--color-text-primary) font-bold">
                 배송 주기 선택:{" "}
                 <span className="text-[#1A1A1C]">
-                  {deliveryCycle === "biweekly" ? "격주 배송(2주)" : "매월 배송(4주)"}
+                  {deliveryCycle === "2w" ? "격주 배송(2주)" : "매월 배송(4주)"}
                 </span>
               </p>
 
               <div className="flex felx-col gap-0.5 sm:gap-1.5">
                 <Button
-                  variant={deliveryCycle === "biweekly" ? "secondary" : "outline"}
+                  variant={deliveryCycle === "2w" ? "secondary" : "outline"}
                   size="xs"
-                  onClick={() => handleCycleChange("biweekly")}
+                  onClick={() => handleCycleChange("2w")}
                   disabled={isLoading}
-                  className="flex-1 px-2 py-1.5 rounded text-[0.625rem] sm:text-xs font-bold transition-all border"
+                  className="flex-1 px-1 py-1.5 rounded text-[0.625rem] sm:text-xs font-bold transition-all border sm:whitespace-nowrap"
                 >
                   격주 배송(2주)
                 </Button>
                 <Button
-                  variant={deliveryCycle === "monthly" ? "secondary" : "outline"}
+                  variant={deliveryCycle === "4w" ? "secondary" : "outline"}
                   size="xs"
-                  onClick={() => handleCycleChange("monthly")}
+                  onClick={() => handleCycleChange("4w")}
                   disabled={isLoading}
-                  className="flex-1 px-2 py-1.5 rounded text-[0.625rem] sm:text-xs font-bold transition-all border"
+                  className="flex-1 px-1 py-1.5 rounded text-[0.625rem] sm:text-xs font-bold transition-all border sm:whitespace-nowrap"
                 >
                   매월 배송(4주)
                 </Button>

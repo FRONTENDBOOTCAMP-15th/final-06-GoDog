@@ -18,7 +18,7 @@ export default function Cart() {
   const accessToken = user?.token?.accessToken;
 
   // zustand 상태
-  const { cartData, isLoading, error, fetchCart, getOnetimeItmes, getSubscriptionItems } =
+  const { cartData, isLoading, error, fetchCart, getOnetimeItems, getSubscriptionItems } =
     useCartStore();
 
   useEffect(() => {
@@ -28,7 +28,7 @@ export default function Cart() {
   }, [accessToken, fetchCart]);
 
   // 1회 구매와 정기구독 탭 카운트
-  const onetimeCount = getOnetimeItmes().length;
+  const onetimeCount = getOnetimeItems().length;
   const subscriptionCount = getSubscriptionItems().length;
 
   const tabs: { key: TabType; label: string; count: number }[] = [

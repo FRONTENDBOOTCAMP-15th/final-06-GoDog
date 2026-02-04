@@ -1,8 +1,8 @@
 import { Product, ProductImage } from "@/types/product";
 
 // cart 전용 Product타입
-export interface CartProduct extends Omit<Product, 'mainImages'> {
-  image: ProductImage;  // mainImages 대신 image 사용
+export interface CartProduct extends Omit<Product, "mainImages"> {
+  image: ProductImage; // mainImages 대신 image 사용
 }
 
 // 개별 장바구니 아이템 인터페이스
@@ -11,22 +11,11 @@ export interface Cart {
   user_id: number;
   product_id: number;
   quantity: number;
-  color?: "oneTime" | "subscribe";
-  size?: "2w" | "4w";
-  product?: {
-    _id: number;
-    name: string;
-    price: number;
-    image?: { path: string; name: string };
-    mainImages?: { path: string; name: string }[];
-    extra?: {
-      weight?: number;
-    };
-  };
   createdAt: string;
   updatedAt: string;
   product: CartProduct;
   color: string;
+  size?: string;
   cost: CartCost;
 }
 

@@ -32,7 +32,7 @@ export default function OnetimeItemList({
   const soldOut = isSoldOut(cart._id);
 
   // 개별 금액 총 금액
-  const totalPrice = cart.product.price * cart.quantity;
+  const totalPrice = cart && cart.product.price * cart.quantity;
 
   // 수량 변경 핸들러
   const handleQuantityChange = async (newQuantity: number) => {
