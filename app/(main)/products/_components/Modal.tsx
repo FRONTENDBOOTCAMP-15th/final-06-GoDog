@@ -25,6 +25,7 @@ export default function PurchaseModal({ isOpen, onClose, product }: Props) {
   const [quantity, setQuantity] = useState(1);
 
   const user = useUserStore((state) => state.user);
+  const incrementCart = useUserStore((state) => state.incrementCart);
 
   const basePrice = product.price;
   const discountRate = 0.1;
@@ -65,9 +66,12 @@ export default function PurchaseModal({ isOpen, onClose, product }: Props) {
     );
 
     if (res.ok === 1) {
-      alert("장바구니에 담았습니다.");
-      onClose();
-      router.push(purchaseType === "subscribe" ? "/cart?tab=subscription" : "/cart");
+      incrementCart(1);
+      const goToCart = confirm("장바구니에 담았습니다.\n장바구니로 이동하시겠습니까?");
+      if (goToCart) {
+        onClose();
+        router.push(purchaseType === "subscribe" ? "/cart?tab=subscription" : "/cart");
+      }
     } else {
       alert("장바구니 담기에 실패했습니다.");
     }
