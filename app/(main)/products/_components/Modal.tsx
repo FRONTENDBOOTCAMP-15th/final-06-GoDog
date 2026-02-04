@@ -8,7 +8,7 @@ import Tab from "@/components/common/Tab";
 import QuantityControl from "@/components/common/Quantitycontrol";
 import { Product } from "@/types/product";
 import { addToCart } from "@/lib/cart";
-import useUserStore from "@/zustand/useStore";
+import useUserStore from "@/app/(main)/(auth)/login/zustand/useStore";
 
 type PurchaseType = "oneTime" | "subscription";
 
@@ -25,7 +25,6 @@ export default function PurchaseModal({ isOpen, onClose, product }: Props) {
   const [quantity, setQuantity] = useState(1);
 
   const user = useUserStore((state) => state.user);
-  const incrementCart = useUserStore((state) => state.incrementCart);
 
   const basePrice = product.price;
   const discountRate = 0.1;
@@ -62,16 +61,13 @@ export default function PurchaseModal({ isOpen, onClose, product }: Props) {
       product._id,
       quantity,
       purchaseType,
-      purchaseType === "subscription" ? deliveryCycle : undefined,
+      purchaseType === "subscription" ? deliveryCycle : undefined
     );
 
     if (res.ok === 1) {
-      incrementCart(1);
-      const goToCart = confirm("장바구니에 담았습니다.\n장바구니로 이동하시겠습니까?");
-      if (goToCart) {
-        onClose();
-        router.push(purchaseType === "subscription" ? "/cart?tab=subscription" : "/cart");
-      }
+      alert("장바구니에 담았습니다.");
+      onClose();
+      router.push(purchaseType === "subscription" ? "/cart?tab=subscription" : "/cart");
     } else {
       alert("장바구니 담기에 실패했습니다.");
     }
