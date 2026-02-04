@@ -18,6 +18,7 @@ import MyReviewList from "@/app/(main)/mypage/_components/reviewItem";
 import { getOrders } from "@/lib/order";
 import useUserStore from "@/zustand/useStore";
 import { useQuery } from "@tanstack/react-query";
+import Cookies from "js-cookie";
 
 export default function Review() {
   const user = useUserStore((state) => state.user);
@@ -42,7 +43,7 @@ export default function Review() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const MAX_LEN = 100;
 
-  const token = useUserStore.getState().user?.token?.accessToken || "";
+  const token = Cookies.get("accessToken");
 
   const { data: resOrderlist, isLoading } = useQuery({
     queryKey: ["order", order_id],
@@ -54,6 +55,7 @@ export default function Review() {
     enabled: !!order_id && !!token,
   });
   console.log(resOrderlist, "resOrderlist");
+  console.log(token, "토큰");
 
   const order = resOrderlist?.ok === 1 ? resOrderlist.item[0] : null;
   console.log(order, "오더가뭔가");
