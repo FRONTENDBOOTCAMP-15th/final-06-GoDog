@@ -185,6 +185,13 @@ export interface ConfigInfoRes {
   pagination: Pagination;
 }
 
+// 데이터 없이 성공 응답만 오는 경우 (예: 삭제 성공)
+export interface EmptyRes {
+  ok: 1;
+  item: null;
+  pagination: Pagination;
+}
+
 // 서버의 응답
 
 export type ResDate<
@@ -208,6 +215,7 @@ export type ResDate<
     | CodeListRes
     | CodeInfoRes
     | ConfigListRes
+    | EmptyRes
     | ConfigInfoRes,
 > = T | ErrorRes;
 

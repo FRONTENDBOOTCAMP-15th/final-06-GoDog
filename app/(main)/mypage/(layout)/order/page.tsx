@@ -1,88 +1,108 @@
+"use client";
+
+// import { getOrderlist } from "./getOrderlist";
 import { Product404 } from "@/app/(main)/mypage/_components/DogFoodImage";
 import { Pencil } from "@/app/(main)/mypage/_components/Mark";
 import MyItemList from "@/app/(main)/mypage/_components/MyItemListA";
 import PaginationWrapper from "@/components/common/PaginationWrapper";
+import Image from "next/image";
+import { useSearchParams } from "next/navigation";
+import Cookies from "js-cookie";
 
-interface Props {
-  searchParams: Promise<{ page?: string }>;
-}
+import {
+  Order,
+  OrderListRes,
+  FlattenedOrderProduct,
+} from "@/app/(main)/mypage/(layout)/order/types/order";
+import { getOrders } from "@/lib/order";
+import { useQuery } from "@tanstack/react-query";
+import useUserStore from "@/zustand/useStore";
+import { Item } from "@/types/product";
+import { useEffect } from "react";
 
-// 임시 데이터
-const orderItems = [
-  {
-    id: 1,
-    title: "나인독 정밀 사료A",
-    href: "/mypage/orders/1",
-    date: "2026.01.20",
-    period: "2주 주기 배송",
-    price: "45,800원",
-  },
-  {
-    id: 2,
-    title: "나인독 정밀 사료A",
-    href: "/mypage/orders/1",
-    date: "2026.01.20",
-    period: "2주 주기 배송",
-    price: "45,800원",
-  },
-  {
-    id: 3,
-    title: "나인독 정밀 사료A",
-    href: "/mypage/orders/1",
-    date: "2026.01.20",
-    period: "2주 주기 배송",
-    price: "45,800원",
-  },
-  {
-    id: 4,
-    title: "나인독 정밀 사료A",
-    href: "/mypage/orders/1",
-    date: "2026.01.20",
-    period: "2주 주기 배송",
-    price: "45,800원",
-  },
-];
+export default function Orders() {
+  const user = useUserStore((state) => state.user);
 
-export default async function Orders({ searchParams }: Props) {
-  const { page } = await searchParams;
-  const currentPage = Number(page) || 1;
+  const userName = user?.name || "회원";
 
-  // 임시 값
-  const totalPages = 3;
+  const token = Cookies.get("accessToken");
+  const searchParams = useSearchParams();
+  const page = Number(searchParams.get("page")) || 1;
+  const { data: resOrderlist, isLoading } = useQuery({
+    queryKey: [page],
+    queryFn: () =>
+      getOrders(token, {
+        page,
+        limit: 4,
+        type: "user",
+      }),
+  });
+  console.log(resOrderlist, "resOrderlist");
+  useEffect(() => {
+    if (resOrderlist) console.log(resOrderlist);
+  }, [resOrderlist]);
+
+  const orderlist = resOrderlist?.ok === 1 ? resOrderlist.item : [];
+  const pagination = resOrderlist?.ok === 1 ? resOrderlist.pagination : undefined;
 
   return (
     <div className="w-full min-w-[360px] pb-[70px]">
-      <p className="mt-[108px] text-[#1A1A1C] text-center text-[26.3px] not-italic font-[900]">
-        김구독님이 이용 중인
-      </p>
-      <div className="flex flex-row justify-center">
-        <p className="text-[#FBA613] text-center text-[26.3px] not-italic font-[900]">주문 내역</p>
-        <p className="text-[#1A1A1C] text-center text-[26.3px] not-italic font-[900]">입니다</p>
+      <div className="mt-[108px]">
+        <p className="text-[#1A1A1C] text-center text-[26.3px] font-[900]">
+          {userName}님이 이용 중인
+        </p>
+        <div className="flex flex-row justify-center">
+          <p className="text-[#FBA613] text-center text-[26.3px] font-[900]">주문 내역</p>
+          <p className="text-[#1A1A1C] text-center text-[26.3px] font-[900]">입니다</p>
+        </div>
       </div>
 
       <div className="max-w-[1280px] mx-auto pt-[57px] pb-[100px] px-[20px] lg:px-0">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-[20px] lg:gap-7 justify-items-center">
-          {orderItems.map((item) => (
-            <MyItemList
-              key={item.id}
-              title={item.title}
-              image={
-                <div className="rounded-3xl overflow-hidden w-full h-full">
-                  <Product404 />
-                </div>
-              }
-              href={item.href}
-              content="리뷰 작성"
-              date={item.date}
-              period={item.period}
-              price={item.price}
-              mark={<Pencil />}
-            />
-          ))}
+          {resOrderlist?.ok && resOrderlist.item.length > 0 ? (
+            resOrderlist.item.map((item, index: number) => {
+              const hasReview = !!item.products[0].review_id;
+              return (
+                <MyItemList
+                  key={item._id}
+                  productid={item.products[0]._id}
+                  orderId={String(item._id)}
+                  title={item.products[0].name}
+                  image={
+                    <div className="rounded-3xl overflow-hidden w-[211px] h-[211px] relative">
+                      {item.products[0].image?.path ? (
+                        <Image
+                          src={item.products[0].image?.path}
+                          alt={item.products[0].name}
+                          width={211}
+                          height={211}
+                          className="object-cover"
+                        />
+                      ) : (
+                        <Product404 />
+                      )}
+                    </div>
+                  }
+                  content={hasReview ? "리뷰 작성 완료" : "리뷰 작성"}
+                  date={item.createdAt.split(" ")[0]}
+                  period={item.period || "1회 구매"}
+                  quantity={item.products[0].quantity}
+                  price={`${item.products[0].price.toLocaleString()}원`}
+                  mark={hasReview ? null : <Pencil />}
+                  isReviewed={hasReview}
+                />
+              );
+            })
+          ) : (
+            <div className="col-span-full py-20 text-center">
+              <p className="text-[#909094] text-[18px] font-medium">
+                현재 이용 중인 주문 내역이 없습니다.
+              </p>
+            </div>
+          )}
         </div>
       </div>
-      {/* 페이지네이션 */}
-      <PaginationWrapper currentPage={currentPage} totalPages={totalPages} />
+      <PaginationWrapper currentPage={page} totalPages={pagination?.totalPages || 1} />
     </div>
   );
 }
