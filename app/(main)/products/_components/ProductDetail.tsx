@@ -267,11 +267,16 @@ export default function ProductDetail({
             {/* 구매하기 버튼 */}
             <div className="flex w-full flex-row items-start gap-3.5">
               <button
-                className="flex h-[3.25rem] flex-1 items-center justify-center rounded-[0.875rem] bg-[#fba613] text-white px-4 py-[1.09375rem] shadow-[0_0.5rem_2rem_0_rgba(251,166,19,0.2)] sm:px-[1.3125rem]"
+                className={`flex h-[3.25rem] flex-1 items-center justify-center rounded-[0.875rem] px-4 py-[1.09375rem] sm:px-[1.3125rem] ${
+                  product.quantity <= 0
+                    ? "cursor-not-allowed bg-[#d1d1d6] text-white"
+                    : "bg-[#fba613] text-white shadow-[0_0.5rem_2rem_0_rgba(251,166,19,0.2)]"
+                }`}
                 type="button"
+                disabled={product.quantity <= 0}
                 onClick={() => setIsModalOpen(true)}
               >
-                구매하기
+                {product.quantity <= 0 ? "Sold Out" : "구매하기"}
               </button>
 
               {/* 관심상품 버튼 */}
@@ -346,20 +351,35 @@ export default function ProductDetail({
             isDetailExpanded ? "max-h-none" : "max-h-[400px]"
           }`}
         >
-          <Image
-            src="/images/image 27.png"
-            width={1200}
-            height={800}
-            alt="상품 상세 이미지 1"
-            className="h-auto w-full"
-          />
-          <Image
-            src="/images/image 28.png"
-            width={1200}
-            height={800}
-            alt="상품 상세 이미지 2"
-            className="h-auto w-full"
-          />
+          {product.extra?.detailImages && product.extra.detailImages.length > 0 ? (
+            product.extra.detailImages.map((img, idx) => (
+              <Image
+                key={idx}
+                src={img.path}
+                width={1200}
+                height={800}
+                alt={img.name || `상품 상세 이미지 ${idx + 1}`}
+                className="h-auto w-full"
+              />
+            ))
+          ) : (
+            <>
+              <Image
+                src="/images/image 27.png"
+                width={1200}
+                height={800}
+                alt="상품 상세 이미지 1"
+                className="h-auto w-full"
+              />
+              <Image
+                src="/images/image 28.png"
+                width={1200}
+                height={800}
+                alt="상품 상세 이미지 2"
+                className="h-auto w-full"
+              />
+            </>
+          )}
           {!isDetailExpanded && (
             <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent" />
           )}
