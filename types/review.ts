@@ -10,7 +10,14 @@ export interface ReviewExtra {
   likeCount?: string | number;
   price?: string | number;
   reviewId?: string | number;
-  image?: string;
+  image?: { path: string; name: string };
+}
+
+// 리뷰에 포함된 상품 요약 정보
+export interface ReviewProduct {
+  _id: number;
+  image: { path: string; name: string } | null;
+  name: string;
 }
 
 export interface Review {
@@ -22,6 +29,8 @@ export interface Review {
   rating: number;
   content: string;
   extra?: ReviewExtra;
+  user: ReviewUser;
   createdAt: string;
+  product: ReviewProduct;
   updatedAt?: string;
 }
