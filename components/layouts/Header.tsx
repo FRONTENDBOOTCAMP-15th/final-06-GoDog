@@ -44,10 +44,10 @@ const Header: React.FC = () => {
     { name: "정기구독", href: "/survey" },
     {
       name: "상품보기",
-      href: "/products",
+      href: "/products?type=사료",
       subMenu: [
-        { name: "사료", href: "/products?category=food" },
-        { name: "간식", href: "/products?category=snack" },
+        { name: "사료", href: "/products?type=사료" },
+        { name: "간식", href: "/products?type=간식" },
       ],
     },
     { name: "구매후기", href: "/reviews" },

@@ -6,11 +6,9 @@ import { HeartIcon } from "@/app/(main)/mypage/_components/Icons";
 
 interface MyItemListProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "className"> {
   title: string;
-
-  image: React.ReactElement; // 아이콘 컴포넌트
+  image: React.ReactElement;
   href: string;
   price: string;
-
   period?: string;
   date?: string;
   className?: string;
@@ -19,12 +17,9 @@ interface MyItemListProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "c
 export default function WishlistComponent({
   title,
   image,
-  href,
-
   date,
   period,
   price,
-
   className = "",
 }: MyItemListProps) {
   return (
@@ -35,9 +30,7 @@ export default function WishlistComponent({
         <div className="mt-[30px] ml-[30px] mr-[30px] ">{image}</div>
         <div className="flex justify-between items-center mt-[27px] px-[29px] pb-[14.5px]">
           <div className="text-[#1A1A1C] text-[18px] font-black">{title}</div>
-          <button>
-            <HeartIcon className="text-[#FBA613]" />
-          </button>
+          <HeartIcon className="text-[#FBA613]" />
         </div>
         <div className="flex pl-[29px] justify-between pr-[29px]">
           <p className="text-[#646468]">{date}</p>

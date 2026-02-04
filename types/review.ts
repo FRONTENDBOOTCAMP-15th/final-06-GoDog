@@ -12,18 +12,27 @@ export interface ReviewExtra {
   likeCount?: string | number;
   price?: string | number;
   reviewId?: string | number;
+  image?: { path: string; name: string };
+}
+
+// 리뷰에 포함된 상품 요약 정보
+export interface ReviewProduct {
+  _id: number;
+  image: { path: string; name: string } | null;
+  name: string;
 }
 
 // 개별 후기 인터페이스
 export interface Review {
   _id: number;
-  user_id: number;
-  user: ReviewUser;
-  order_id: number;
-  product_id: number;
   rating: number; // 1 ~ 5
   content: string;
   extra?: ReviewExtra;
+  user: ReviewUser;
   createdAt: string;
-  updatedAt?: string; // 일부 데이터에 없을 수 있음
+  product: ReviewProduct;
+  user_id?: number;
+  order_id?: number;
+  product_id?: number;
+  updatedAt?: string;
 }
