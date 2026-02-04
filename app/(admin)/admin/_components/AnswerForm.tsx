@@ -156,14 +156,14 @@ export default function AnswerForm({ postId, questionData, productData }: Answer
                   <Trash2 className="w-5 h-5" />
                 </button>
               )}
-              <button
+              {/* <button
                 type="button"
                 onClick={() => openDeleteModal("post")}
                 className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
                 title="질문 삭제"
               >
                 <Trash2 className="w-5 h-5" />
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

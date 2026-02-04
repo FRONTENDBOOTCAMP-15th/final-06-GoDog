@@ -253,7 +253,7 @@ export default function QnAListPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-center text-sm">
                       <Link
-                        href={`/admin/qna/1/answer`}
+                        href={`/admin/qna/${item._id}/answer`}
                         className="text-blue-600 hover:text-blue-800 inline-flex items-center"
                       >
                         <span>{(item.repliesCount ?? 0) > 0 ? "답변수정하기" : "답변하기"}</span>

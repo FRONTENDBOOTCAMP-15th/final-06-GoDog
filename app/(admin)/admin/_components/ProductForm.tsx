@@ -20,6 +20,7 @@ import {
   LineTag,
 } from "@/types/product";
 import { createProduct, updateProduct } from "@/actions/product";
+import { useRouter } from "next/navigation";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -209,6 +210,8 @@ function RadioPill({
 
 // ===== 메인 컴포넌트 =====
 export default function ProductForm({ formType, initialData }: ProductFormProps) {
+  const router = useRouter();
+
   const [form, setForm] = useState<ProductFormState>(() =>
     initialData ? productToFormState(initialData) : INITIAL_PRODUCT_FORM,
   );
@@ -462,6 +465,7 @@ export default function ProductForm({ formType, initialData }: ProductFormProps)
         console.log("수정 완료:", result);
         alert("상품이 수정되었습니다.");
       }
+      router.push("/admin/products");
     } catch (e) {
       if (e instanceof Error) setError(e.message);
     } finally {
