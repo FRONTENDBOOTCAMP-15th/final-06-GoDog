@@ -4,7 +4,7 @@ import type { Product } from "@/types/product";
 import type { Post, Reply } from "@/types/post";
 import type { Order, OrderStatistics } from "@/types/order";
 import type { Bookmark } from "@/types/bookmark";
-import type { Cart } from "@/types/cart";
+import type { Cart, CartCost } from "@/types/cart";
 import type { FileInfo } from "@/types/file";
 import type { CodeGroup } from "@/types/codes";
 import type { SystemConfig } from "@/types/config";
@@ -70,6 +70,14 @@ export interface ReviewInfoRes {
   ok: 1;
   item: Review;
   pagination: Pagination;
+}
+
+// 페이지네이션 정보
+export interface Pagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
 }
 
 // 상품 목록 조회 결과
@@ -184,6 +192,13 @@ export interface ConfigInfoRes {
   pagination: Pagination;
 }
 
+// 데이터 없이 성공 응답만 오는 경우 (예: 삭제 성공)
+export interface EmptyRes {
+  ok: 1;
+  item: null;
+  pagination: Pagination;
+}
+
 // 서버의 응답
 
 export type ResData<
@@ -208,6 +223,7 @@ export type ResData<
     | CodeListRes
     | CodeInfoRes
     | ConfigListRes
+    | EmptyRes
     | ConfigInfoRes,
 > = T | ErrorRes;
 

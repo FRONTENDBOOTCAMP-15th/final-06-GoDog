@@ -3,8 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
-import useUserStore from "@/app/(main)/(auth)/login/zustand/useStore";
+import useUserStore from "@/zustand/useStore";
 import { usePathname, useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 const Header: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
@@ -14,15 +15,16 @@ const Header: React.FC = () => {
   const router = useRouter();
   const { user, resetUser } = useUserStore(); // login zustand 스토어에서 가져옴
 
-  const isLoggedIn = !!user?.token?.accessToken;
+  // const isLoggedIn = !!user?.token?.accessToken;
+  const isLoggedIn = Cookies.get("accessToken");
+
+  console.log(isLoggedIn, "로그인?");
   const handleLogout = (e: React.MouseEvent) => {
     // 세션 스토리지를 비우고 상태를 null로 초기화
     e.preventDefault();
     resetUser();
-    sessionStorage.removeItem("user");
-    sessionStorage.removeItem("sessionStorage");
-    localStorage.removeItem("user");
-    localStorage.removeItem("sessionStorage");
+
+    Cookies.remove("accessToken");
 
     alert("로그아웃 되었습니다.");
     router.push("/");
@@ -44,10 +46,10 @@ const Header: React.FC = () => {
     { name: "정기구독", href: "/survey" },
     {
       name: "상품보기",
-      href: "/products",
+      href: "/products?type=사료",
       subMenu: [
-        { name: "사료", href: "/products?category=food" },
-        { name: "간식", href: "/products?category=snack" },
+        { name: "사료", href: "/products?type=사료" },
+        { name: "간식", href: "/products?type=간식" },
       ],
     },
     { name: "구매후기", href: "/reviews" },
@@ -84,30 +86,30 @@ const Header: React.FC = () => {
             >
               My Account
             </Link>
-            <nav>
-              {isLoggedIn ? (
-                /* 토큰이 있을 때 Logout 표시, 클릭 시 상태 리셋 후 메인 이동 */
-                <Link
-                  href="/"
-                  onClick={handleLogout}
-                  className="text-[10px] font-black uppercase tracking-widest transition-colors text-text-tertiary hover:text-text-primary"
-                >
-                  Logout
-                </Link>
-              ) : (
-                /* 토큰이 없을 때 Login 표시 */
-                <Link
-                  href="/login"
-                  className={`text-[10px] font-black uppercase tracking-widest transition-colors ${
-                    pathname === "/login"
-                      ? "text-accent-primary"
-                      : "text-text-tertiary hover:text-text-primary"
-                  }`}
-                >
-                  Login
-                </Link>
-              )}
-            </nav>
+
+            {isLoggedIn ? (
+              /* 토큰이 있을 때 Logout 표시, 클릭 시 상태 리셋 후 메인 이동 */
+              <Link
+                href="/"
+                onClick={handleLogout}
+                className="text-[10px] font-black uppercase tracking-widest transition-colors text-text-tertiary hover:text-text-primary"
+              >
+                Logout
+              </Link>
+            ) : (
+              /* 토큰이 없을 때 Login 표시 */
+              <Link
+                href="/login"
+                className={`text-[10px] font-black uppercase tracking-widest transition-colors ${
+                  pathname === "/login"
+                    ? "text-accent-primary"
+                    : "text-text-tertiary hover:text-text-primary"
+                }`}
+              >
+                Login
+              </Link>
+            )}
+
             <Link
               href="/signup"
               className={`text-[10px] font-black uppercase tracking-widest transition-colors ${
@@ -264,13 +266,26 @@ const Header: React.FC = () => {
         <div className="flex flex-col grow p-8 space-y-10 overflow-y-auto">
           {/* 모바일 계정 퀵 링크 */}
           <div className="flex gap-4">
-            <Link
-              href="/login"
-              onClick={closeMobileMenu}
-              className="flex-1 py-4 bg-bg-secondary rounded-2xl text-sm font-black text-text-primary border border-border-primary active:scale-95 transition-all text-center"
-            >
-              로그인
-            </Link>
+            {isLoggedIn ? (
+              <Link
+                href="/"
+                onClick={(e) => {
+                  handleLogout(e);
+                  closeMobileMenu();
+                }}
+                className="flex-1 py-4 bg-bg-secondary rounded-2xl text-sm font-black text-text-primary border border-border-primary active:scale-95 transition-all text-center"
+              >
+                로그아웃
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                onClick={closeMobileMenu}
+                className="flex-1 py-4 bg-bg-secondary rounded-2xl text-sm font-black text-text-primary border border-border-primary active:scale-95 transition-all text-center"
+              >
+                로그인
+              </Link>
+            )}
             <Link
               href="/signup"
               onClick={closeMobileMenu}
