@@ -4,7 +4,7 @@ import PaginationWrapper from "@/components/common/PaginationWrapper";
 import { getWishlist } from "@/lib/bookmark";
 import { getUser } from "@/lib/user";
 import { Product } from "@/types/product";
-import { BookmarkListRes, ResDate } from "@/types/response";
+import { BookmarkListRes, ResData } from "@/types/response";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
 
@@ -51,7 +51,7 @@ export default async function Wishlist({ searchParams }: Props) {
     }
   }
 
-  const response: ResDate<BookmarkListRes> = await getWishlist(token, {
+  const response: ResData<BookmarkListRes> = await getWishlist(token, {
     page: currentPage,
     limit: 4,
   });

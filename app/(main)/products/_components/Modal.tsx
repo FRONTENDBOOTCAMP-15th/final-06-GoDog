@@ -8,7 +8,7 @@ import Tab from "@/components/common/Tab";
 import QuantityControl from "@/components/common/Quantitycontrol";
 import { Product } from "@/types/product";
 import { addToCart } from "@/lib/cart";
-import useUserStore from "@/app/(main)/(auth)/login/zustand/useStore";
+import useUserStore from "@/zustand/useStore";
 
 type PurchaseType = "oneTime" | "subscription";
 
@@ -61,7 +61,7 @@ export default function PurchaseModal({ isOpen, onClose, product }: Props) {
       product._id,
       quantity,
       purchaseType,
-      purchaseType === "subscription" ? deliveryCycle : undefined
+      purchaseType === "subscription" ? deliveryCycle : undefined,
     );
 
     if (res.ok === 1) {

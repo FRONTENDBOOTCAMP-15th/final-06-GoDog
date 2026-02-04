@@ -1,4 +1,3 @@
-import useUserStore from "@/app/(main)/(auth)/login/zustand/useStore";
 import { updateCartItem } from "@/app/(main)/cart/action/cart";
 import useCartStore from "@/app/(main)/cart/zustand/useCartStore";
 import Badge from "@/components/common/Badge";
@@ -7,6 +6,7 @@ import Checkbox from "@/components/common/Checkbox";
 import ProductImage from "@/components/common/ProductImage";
 import QuantityControl from "@/components/common/Quantitycontrol";
 import { Cart } from "@/types/cart";
+import useUserStore from "@/zustand/useStore";
 import Image from "next/image";
 
 interface SubscriptionItemListProps {
@@ -93,80 +93,106 @@ export default function SubscriptionItemList({
   return (
     <section className="flex flex-col gap-3.5">
       <div
-        className={`flex items-center gap-2 sm:gap-5 border border-[#F9F9FB] rounded-[0.875rem] px-3 py-3 sm:px-7 sm:py-7 bg-white shadow-(--shadow-card) ${
+        className={`grid grid-cols-[auto_80px_1fr_auto] sm:grid-cols-[auto_96px_1fr_auto] gap-x-2 gap-y-2 sm:gap-5 border rounded-[0.875rem] px-3 py-3 sm:px-7 sm:py-7 bg-white shadow-(--shadow-card) ${
           soldOut ? "border-bg-tertiary opacity-60" : "border-[#F9F9FB]"
         }`}
       >
-        <Checkbox label={cart.product.name} hideLabel checked={isSelect} onChange={onSelect} />
-        <div className="w-20 h-20 sm:w-24 shrink-0">
+        {/* 체크박스 */}
+        <div className="row-span-2 place-self-center sm:pt-1">
+          <Checkbox label={cart.product.name} hideLabel checked={isSelect} onChange={onSelect} />
+        </div>
+
+        {/* 상품 이미지 */}
+        <div className="row-span-2 w-20 h-20 sm:w-24 sm:h-24 shrink-0 place-self-center">
           <ProductImage
             src={cart.product.image?.path}
             alt=""
             className={`rounded-[0.875rem] ${soldOut ? "grayscale" : ""}`}
           />
         </div>
-        <div className="flex flex-col gap-1 sm:gap-2">
+
+        {/* 상품 정보 영역 */}
+        <div className="flex flex-col gap-1 sm:gap-2 min-w-0">
+          {/* 상품명 + 품절 뱃지 */}
           <div className="flex gap-1 items-center">
-            <h3 className="text-[#1A1A1C] text-xs sm:text-[1rem] font-black">
+            <h3 className="text-[#1A1A1C] text-xs sm:text-[1rem] font-black truncate">
               {cart.product.name}
             </h3>
             {soldOut && <Badge variant="default">품절</Badge>}
           </div>
+
+          {/* 단가 */}
           <p className="text-text-tertiary text-[0.75rem] font-bold">
             {cart.product.price.toLocaleString()}원
           </p>
-          {soldOut ? (
+
+          {soldOut && (
             <p className="text-text-tertiary text-xs font-bold">
               현재 상품의 재고가 없어 주문이 불가능합니다.
             </p>
-          ) : (
-            <>
-              <p className="text-[0.625rem] text-(--color-text-primary) font-bold">
-                배송 주기 선택:{" "}
-                <span className="text-[#1A1A1C]">
-                  {deliveryCycle === "2w" ? "격주 배송(2주)" : "매월 배송(4주)"}
-                </span>
-              </p>
-
-              <div className="flex felx-col gap-0.5 sm:gap-1.5">
-                <Button
-                  variant={deliveryCycle === "2w" ? "secondary" : "outline"}
-                  size="xs"
-                  onClick={() => handleCycleChange("2w")}
-                  disabled={isLoading}
-                  className="flex-1 px-1 py-1.5 rounded text-[0.625rem] sm:text-xs font-bold transition-all border sm:whitespace-nowrap"
-                >
-                  격주 배송(2주)
-                </Button>
-                <Button
-                  variant={deliveryCycle === "4w" ? "secondary" : "outline"}
-                  size="xs"
-                  onClick={() => handleCycleChange("4w")}
-                  disabled={isLoading}
-                  className="flex-1 px-1 py-1.5 rounded text-[0.625rem] sm:text-xs font-bold transition-all border sm:whitespace-nowrap"
-                >
-                  매월 배송(4주)
-                </Button>
-              </div>
-              {/* 수량 조절 버튼 */}
-              <QuantityControl
-                initialCount={cart.quantity}
-                disabled={isLoading}
-                onChange={handleQuantityChange}
-              />
-            </>
           )}
+
           {/* 에러 메시지 */}
           {storeError && <p className="text-red-500 text-xs mt-1">{storeError.message}</p>}
         </div>
-        <div className="flex flex-col items-end ml-auto gap-18 sm:gap-32">
+
+        {/* 삭제 버튼 + 가격 */}
+        <div className="row-span-2 flex flex-col items-end justify-between">
           <button onClick={handleDelete} disabled={isLoading}>
             <Image src="/images/cart/x.svg" alt="" width={28} height={28} />
           </button>
-          <p className="text-[#1A1A1C] font-black text-xs sm:text-[1rem] whitespace-nowrap">
+          {/* PC에서만 여기에 가격 표시 */}
+          <p className="hidden sm:block text-[#1A1A1C] font-black text-[1rem] whitespace-nowrap">
             {totalPrice.toLocaleString()}원
           </p>
         </div>
+
+        {/* 배송 옵션 영역 - 모바일: 2번째 줄 풀너비 / PC: 상품정보 아래 */}
+        {!soldOut && (
+          <div className="col-start-1 col-end-5 sm:col-start-3 sm:col-end-4 flex flex-col gap-2 pt-2 sm:pt-0 border-t sm:border-t-0 border-gray-100">
+            {/* 배송 주기 선택 라벨 */}
+            <p className="text-[0.625rem] text-(--color-text-primary) font-bold">
+              배송 주기 선택:{" "}
+              <span className="text-[#1A1A1C]">
+                {deliveryCycle === "2w" ? "격주 배송(2주)" : "매월 배송(4주)"}
+              </span>
+            </p>
+
+            {/* 배송 주기 버튼 */}
+            <div className="grid grid-cols-2 sm:flex gap-1.5 sm:gap-1.5">
+              <Button
+                variant={deliveryCycle === "2w" ? "secondary" : "outline"}
+                size="xs"
+                onClick={() => handleCycleChange("2w")}
+                disabled={isLoading}
+                className="py-1.5 sm:px-3 rounded text-[0.625rem] sm:text-xs font-bold transition-all border whitespace-nowrap"
+              >
+                격주 배송(2주)
+              </Button>
+              <Button
+                variant={deliveryCycle === "4w" ? "secondary" : "outline"}
+                size="xs"
+                onClick={() => handleCycleChange("4w")}
+                disabled={isLoading}
+                className="py-1.5 sm:px-3 rounded text-[0.625rem] sm:text-xs font-bold transition-all border whitespace-nowrap"
+              >
+                매월 배송(4주)
+              </Button>
+            </div>
+
+            {/* 수량 조절 */}
+            <QuantityControl
+              initialCount={cart.quantity}
+              disabled={isLoading}
+              onChange={handleQuantityChange}
+            />
+
+            {/* 모바일 합계 금액 */}
+            <p className="sm:hidden text-[#1A1A1C] font-black text-sm text-right">
+              {totalPrice.toLocaleString()}원
+            </p>
+          </div>
+        )}
       </div>
     </section>
   );

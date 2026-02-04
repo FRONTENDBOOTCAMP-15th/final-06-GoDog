@@ -5,7 +5,7 @@ import { AdminLayoutClient } from "@/components/layouts/AdminLayoutClient";
 import { ReactNode, useEffect } from "react";
 import "pretendard/dist/web/variable/pretendardvariable.css";
 import Providers from "@/app/provider";
-import useUserStore from "@/app/(main)/(auth)/login/zustand/useStore";
+import useUserStore from "@/zustand/useStore";
 import { useRouter } from "next/navigation";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
