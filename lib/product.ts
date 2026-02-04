@@ -4,6 +4,7 @@ import {
   ProductInfoRes,
   ReviewListRes,
   BookmarkListRes,
+  ResDate,
   BookmarkInfoRes,
 } from "@/types/response";
 
@@ -38,7 +39,7 @@ interface GetProductsOptions {
  * @param {number} [options.limit] - 한 페이지당 항목 수 (미지정시 최대 100개)
  * @param {Record<string, 1 | -1>} [options.sort] - 정렬 조건 (예: { price: -1 })
  * @param {boolean} [options.showSoldOut] - 매진 상품 포함 여부
- * @returns {Promise<ProductListRes | ErrorRes>} - 상품 목록 응답 객체
+ * @returns {Promise<ResDate<ProductListRes>>} - 상품 목록 응답 객체
  * @example
  * // 전체 조회
  * getProducts();
@@ -49,9 +50,7 @@ interface GetProductsOptions {
  * // 신상품만 조회
  * getProducts({ custom: { 'extra.isNew': true }, limit: 10 });
  */
-export async function getProducts(
-  options?: GetProductsOptions,
-): Promise<ProductListRes | ErrorRes> {
+export async function getProducts(options?: GetProductsOptions): Promise<ResDate<ProductListRes>> {
   try {
     const params = new URLSearchParams();
 

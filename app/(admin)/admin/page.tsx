@@ -20,7 +20,7 @@ import { Post } from "@/types/post";
 import { getOrders } from "@/lib/order";
 import { getUsers } from "@/lib/user";
 import { getOrderStatistics } from "@/lib/statistics";
-import useUserStore from "@/app/(main)/(auth)/login/zustand/useStore";
+import useUserStore from "@/zustand/useStore";
 
 // 가격 포맷
 const formatPrice = (price: number) => {
