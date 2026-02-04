@@ -4,7 +4,7 @@ import type { Product } from "@/types/product";
 import type { Post } from "@/types/post";
 import type { Order, OrderStatistics } from "@/types/order";
 import type { Bookmark } from "@/types/bookmark";
-import type { Cart } from "@/types/cart";
+import type { Cart, CartCost } from "@/types/cart";
 import type { FileInfo } from "@/types/file";
 import type { CodeGroup } from "@/types/codes";
 import type { SystemConfig } from "@/types/config";
