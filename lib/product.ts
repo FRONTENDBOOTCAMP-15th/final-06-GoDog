@@ -1,4 +1,4 @@
-import { ProductInfoRes, ProductListRes, ResDate } from "@/types/response";
+import { ProductInfoRes, ProductListRes, ResData } from "@/types/response";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || "";
@@ -31,7 +31,7 @@ interface GetProductsOptions {
  * @param {number} [options.limit] - 한 페이지당 항목 수 (미지정시 최대 100개)
  * @param {Record<string, 1 | -1>} [options.sort] - 정렬 조건 (예: { price: -1 })
  * @param {boolean} [options.showSoldOut] - 매진 상품 포함 여부
- * @returns {Promise<ResDate<ProductListRes>>} - 상품 목록 응답 객체
+ * @returns {Promise<ResData<ProductListRes>>} - 상품 목록 응답 객체
  * @example
  * // 전체 조회
  * getProducts();
@@ -42,7 +42,7 @@ interface GetProductsOptions {
  * // 신상품만 조회
  * getProducts({ custom: { 'extra.isNew': true }, limit: 10 });
  */
-export async function getProducts(options?: GetProductsOptions): Promise<ResDate<ProductListRes>> {
+export async function getProducts(options?: GetProductsOptions): Promise<ResData<ProductListRes>> {
   try {
     const params = new URLSearchParams();
 
@@ -92,12 +92,12 @@ export async function getProducts(options?: GetProductsOptions): Promise<ResDate
 /**
  * 상품 상세 조회
  * @param {number} _id - 상품 id
- * @returns {Promise<ResDate<ProductInfoRes>>} - 상품 상세 응답 객체
+ * @returns {Promise<ResData<ProductInfoRes>>} - 상품 상세 응답 객체
  * @example
  * // 상품 상세 조회
  * getProduct(4);
  */
-export async function getProduct(_id: number): Promise<ResDate<ProductInfoRes>> {
+export async function getProduct(_id: number): Promise<ResData<ProductInfoRes>> {
   try {
     const res = await fetch(`${API_URL}/products/${_id}`, {
       headers: {

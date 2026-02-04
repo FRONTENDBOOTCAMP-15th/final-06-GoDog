@@ -19,7 +19,7 @@ import {
   SpecialFeature,
   LineTag,
 } from "@/types/product";
-import { createProduct, updateProduct } from "@/actions/Createproduct";
+import { createProduct, updateProduct } from "@/actions/product";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
