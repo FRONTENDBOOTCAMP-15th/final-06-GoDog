@@ -2,21 +2,37 @@ import SubscriptionItemList from "@/app/(main)/cart/_components/subscription-ite
 import Button from "@/components/common/Button";
 import Checkbox from "@/components/common/Checkbox";
 import Image from "next/image";
+import { Cart } from "@/types/cart";
 
-export default function SubscriptionCart() {
+interface Props {
+  items: Cart[];
+  onRemove: (cartId: number) => void;
+}
+
+export default function SubscriptionCart({ items, onRemove }: Props) {
+  const discountRate = 0.1;
+  const totalOriginal = items.reduce((sum, item) => {
+    const price = item.product?.price ?? 0;
+    return sum + price * item.quantity;
+  }, 0);
+  const totalPrice = Math.round(totalOriginal * (1 - discountRate));
+
   return (
     <div className="flex flex-col xl:flex-row gap-9 justify-center">
       {/* 장바구니 목록 */}
       <div className="xl:w-2/3">
         <section className="flex gap-3 items-center bg-white border border-[#F9F9FB] rounded-[0.875rem] p-3 sm:p-7 mb-5 shadow-(--shadow-card)">
-          <Checkbox label="전체 선택(2/2)" className="text-[#1A1A1C] text-[0.75rem] font-black" />
+          <Checkbox
+            label={`전체 선택(${items.length}/${items.length})`}
+            className="text-[#1A1A1C] text-[0.75rem] font-black"
+          />
           <button className="ml-auto text-text-tertiary text-[0.625rem] font-bold">
             선택 삭제
           </button>
         </section>
 
         {/* 상품 목록 */}
-        <SubscriptionItemList />
+        <SubscriptionItemList items={items} onRemove={onRemove} />
       </div>
 
       {/* 결제 상세 요약 */}
@@ -26,7 +42,15 @@ export default function SubscriptionCart() {
             <h2 className="text-[1.125rem] text-[#1A1A1C] font-black">결제 상세 요약</h2>
             <div className="flex justify-between">
               <p className="text-[0.75rem] text-text-secondary font-bold">총 상품 금액</p>
-              <p className="text-[0.75rem] text-[#1A1A1C] font-black">59,000원</p>
+              <p className="text-[0.75rem] text-[#1A1A1C] font-black">
+                {totalOriginal.toLocaleString()}원
+              </p>
+            </div>
+            <div className="flex justify-between">
+              <p className="text-[0.75rem] text-text-secondary font-bold">정기구독 할인(10%)</p>
+              <p className="text-[0.75rem] text-[#FBA613] font-black">
+                -{(totalOriginal - totalPrice).toLocaleString()}원
+              </p>
             </div>
             <div className="flex justify-between">
               <p className="text-[0.75rem] text-text-secondary font-bold">배송비</p>
@@ -35,11 +59,13 @@ export default function SubscriptionCart() {
 
             <div className="flex justify-between border-t border-border-primary py-7">
               <h2 className="text-[1rem] text-[#1A1A1C] font-black">총 결제 예정액</h2>
-              <p className="text-2xl text-[#FBA613] font-black">59,000원</p>
+              <p className="text-2xl text-[#FBA613] font-black">
+                {totalPrice.toLocaleString()}원
+              </p>
             </div>
 
             {/* 구매하기 버튼 */}
-            <Button>2개 상품 구매하기</Button>
+            <Button>{items.length}개 상품 구매하기</Button>
 
             <div className="flex items-center justify-center gap-2">
               <Image src="/images/cart/safe.svg" alt="" width={14} height={14} />
