@@ -69,6 +69,14 @@ export default function Review() {
     }
   };
 
+  const handleRemoveImage = () => {
+    if (preview && preview !== "/images/galary.png") {
+      URL.revokeObjectURL(preview);
+    }
+    setSelectedFile(null);
+    setPreview("/images/galary.png");
+  };
+
   const handleSubmit = async () => {
     if (rating === 0) return alert("만족도를 선택해 주세요.");
     if (!reviewContent.trim()) return alert("후기 내용을 입력해 주세요.");
@@ -177,7 +185,7 @@ export default function Review() {
 
           {/* 사진 업로드 영역 */}
           <div className="flex flex-col items-start w-full max-w-[532px] mt-[35px]">
-            <p className="text-[#1A1A1C] text-[11.5px] font-black  pb-[14px]">사진 첨부</p>
+            <p className="text-[#1A1A1C] text-[11.5px] font-black pb-[14px]">사진 첨부</p>
             <div className="flex flex-row items-center gap-4">
               <div className="relative w-[84px] h-[84px]">
                 <img
@@ -185,6 +193,23 @@ export default function Review() {
                   src={preview}
                   alt="미리보기"
                 />
+
+                {selectedFile && (
+                  <button
+                    onClick={handleRemoveImage}
+                    className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-red-600 transition-colors z-10"
+                    title="이미지 삭제"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="3"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                )}
               </div>
 
               {/* 업로드 버튼 */}
