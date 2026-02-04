@@ -6,22 +6,30 @@ import { useEffect, useState } from "react";
 import Button from "@/components/common/Button";
 import Tab from "@/components/common/Tab";
 import QuantityControl from "@/components/common/Quantitycontrol";
+import { Product } from "@/types/product";
+import { addToCart } from "@/lib/cart";
+import useUserStore from "@/app/(main)/(auth)/login/zustand/useStore";
 
 type PurchaseType = "oneTime" | "subscribe";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  product: Product;
 }
 
-export default function PurchaseModal({ isOpen, onClose }: Props) {
+export default function PurchaseModal({ isOpen, onClose, product }: Props) {
   const router = useRouter();
   const [purchaseType, setPurchaseType] = useState<PurchaseType>("oneTime");
   const [deliveryCycle, setDeliveryCycle] = useState<"2w" | "4w">("2w");
+  const [quantity, setQuantity] = useState(1);
 
-  const basePrice = 32000;
+  const user = useUserStore((state) => state.user);
+
+  const basePrice = product.price;
   const discountRate = 0.1;
-  const finalPrice = purchaseType === "subscribe" ? basePrice * (1 - discountRate) : basePrice;
+  const unitPrice = purchaseType === "subscribe" ? basePrice * (1 - discountRate) : basePrice;
+  const totalPrice = unitPrice * quantity;
 
   const purchaseTabs: { key: PurchaseType; label: string }[] = [
     { key: "oneTime", label: "1회 구매" },
@@ -40,6 +48,30 @@ export default function PurchaseModal({ isOpen, onClose }: Props) {
       document.body.style.overflow = "";
     };
   }, [isOpen]);
+
+  const handleAddToCart = async () => {
+    if (!user?.token?.accessToken) {
+      alert("로그인이 필요합니다. 로그인 페이지로 이동합니다.");
+      router.push("/login");
+      return;
+    }
+
+    const res = await addToCart(
+      user.token.accessToken,
+      product._id,
+      quantity,
+      purchaseType,
+      purchaseType === "subscribe" ? deliveryCycle : undefined,
+    );
+
+    if (res.ok === 1) {
+      alert("장바구니에 담았습니다.");
+      onClose();
+      router.push(purchaseType === "subscribe" ? "/cart?tab=subscription" : "/cart");
+    } else {
+      alert("장바구니 담기에 실패했습니다.");
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -70,8 +102,8 @@ export default function PurchaseModal({ isOpen, onClose }: Props) {
         {/* 상품 정보 */}
         <div className="flex items-stretch gap-6 mt-10">
           <Image
-            src="/images/product-404.jpg"
-            alt="상품 이미지"
+            src={product.mainImages[0]?.path || "/images/product-404.jpg"}
+            alt={product.name}
             width={130}
             height={130}
             className="rounded-3xl"
@@ -82,15 +114,8 @@ export default function PurchaseModal({ isOpen, onClose }: Props) {
                 일회성구매
               </span>
             )}
-            <p className="text-center font-bold text-2xl">어덜트 밸런스 치킨</p>
-            <div className="flex items-center gap-2">
-              {purchaseType === "subscribe" && (
-                <span className="text-sm text-gray-400 line-through">
-                  {basePrice.toLocaleString()}원
-                </span>
-              )}
-              <p className="font-bold text-xl text-[#fba613]">{finalPrice.toLocaleString()}원</p>
-            </div>
+            <p className="text-center font-bold text-2xl">{product.name}</p>
+            <p className="font-bold text-xl text-[#fba613]">{basePrice.toLocaleString()}원</p>
           </div>
 
           <button
@@ -145,7 +170,7 @@ export default function PurchaseModal({ isOpen, onClose }: Props) {
         {/* 수량 */}
         <div className="flex justify-between mt-10">
           <p className="font-semibold text-m">수량</p>
-          <QuantityControl />
+          <QuantityControl onChange={setQuantity} />
         </div>
 
         <div className="h-px bg-gray-200 mt-10" />
@@ -168,10 +193,10 @@ export default function PurchaseModal({ isOpen, onClose }: Props) {
           <div className="flex items-center gap-3">
             {purchaseType === "subscribe" && (
               <span className="text-2xl text-gray-400 line-through">
-                {basePrice.toLocaleString()}원
+                {(basePrice * quantity).toLocaleString()}원
               </span>
             )}
-            <p className="font-bold text-2xl text-[#fba613]">{finalPrice.toLocaleString()}원</p>
+            <p className="font-bold text-2xl text-[#fba613]">{totalPrice.toLocaleString()}원</p>
           </div>
         </div>
 
@@ -181,7 +206,7 @@ export default function PurchaseModal({ isOpen, onClose }: Props) {
             type="button"
             size="lg"
             variant="outline"
-            onClick={() => router.push("/cart")}
+            onClick={handleAddToCart}
             className="flex-1 w-[35rem] border border-black rounded bg-white py-2"
           >
             장바구니 담기
@@ -190,7 +215,25 @@ export default function PurchaseModal({ isOpen, onClose }: Props) {
             type="button"
             size="lg"
             variant="primary"
-            onClick={() => router.push("/checkout")}
+            onClick={() => {
+              if (!user?.token?.accessToken) {
+                alert("로그인이 필요합니다. 로그인 페이지로 이동합니다.");
+                router.push("/login");
+                return;
+              }
+              const params = new URLSearchParams({
+                product_id: String(product._id),
+                name: product.name,
+                image: product.mainImages[0]?.path || "",
+                price: String(basePrice),
+                quantity: String(quantity),
+                type: purchaseType,
+              });
+              if (purchaseType === "subscribe") {
+                params.set("cycle", deliveryCycle);
+              }
+              router.push(`/checkout?${params.toString()}`);
+            }}
             className="flex-1 w-[35rem] rounded py-2"
           >
             바로 구매하기

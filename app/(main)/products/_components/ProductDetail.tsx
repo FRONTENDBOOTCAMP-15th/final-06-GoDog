@@ -11,7 +11,7 @@ import { Product } from "@/types/product";
 import { Review } from "@/types/review";
 import { Post } from "@/types/post";
 import useUserStore from "@/app/(main)/(auth)/login/zustand/useStore";
-import { addBookmark, getBookmarks, removeBookmark } from "@/lib/bookmar";
+import { addBookmark, getBookmarks, removeBookmark } from "@/lib/bookmark";
 import {
   getReplyBookmarks,
   addReplyBookmark,
@@ -637,7 +637,7 @@ export default function ProductDetail({
       />
 
       {/* 구매 모달 */}
-      <PurchaseModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <PurchaseModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} product={product} />
     </main>
   );
 }
