@@ -1,5 +1,4 @@
-import { SubscriptIcon } from "lucide-react";
-import { ErrorRes, OrderListRes } from "@/types/response";
+import { OrderListRes, ResData } from "@/types/response";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || "";
@@ -24,7 +23,7 @@ interface GetOrdersOptions {
  * @param {number} [options.page] - 페이지 번호
  * @param {number} [options.limit] - 한 페이지당 항목 수
  * @param {Record<string, 1 | -1>} [options.sort] - 정렬 조건 (기본값: { createdAt: -1 })
- * @returns {Promise<OrderListRes | ErrorRes>} - 주문 목록 응답 객체
+ * @returns {Promise<ResData<OrderListRes>>} - 주문 목록 응답 객체
  * @example
  * // 전체 조회
  * getOrders();
@@ -38,7 +37,7 @@ interface GetOrdersOptions {
 export async function getOrders(
   token: string, // 토큰값 필수
   options?: GetOrdersOptions,
-): Promise<OrderListRes | ErrorRes> {
+): Promise<ResData<OrderListRes>> {
   try {
     const params = new URLSearchParams();
     const mypagesubscription = options?.path === "/mypage/subscription";

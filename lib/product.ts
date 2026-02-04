@@ -4,7 +4,7 @@ import {
   ProductInfoRes,
   ReviewListRes,
   BookmarkListRes,
-  ResDate,
+  ResData,
   BookmarkInfoRes,
 } from "@/types/response";
 
@@ -50,9 +50,7 @@ interface GetProductsOptions {
  * // 신상품만 조회
  * getProducts({ custom: { 'extra.isNew': true }, limit: 10 });
  */
-export async function getProducts(
-  options?: GetProductsOptions,
-): Promise<ProductListRes | ErrorRes> {
+export async function getProducts(options?: GetProductsOptions): Promise<ResData<ProductListRes>> {
   try {
     const params = new URLSearchParams();
 
@@ -156,31 +154,11 @@ export async function getProductsByCodes(codes: string[]) {
 }
 
 /**
- * 상품 상세 조회
- * @param {number} productId - 상품 id
- * @returns {Promise<ProductInfoRes | ErrorRes>} - 상품 상세 응답 객체
- */
-export async function getProduct(productId: number): Promise<ProductInfoRes | ErrorRes> {
-  try {
-    const res = await fetch(`${API_URL}/products/${productId}`, {
-      headers: {
-        "Client-Id": CLIENT_ID,
-      },
-      cache: "no-store",
-    });
-    return res.json();
-  } catch (error) {
-    console.error(error);
-    return { ok: 0, message: "상품 정보를 불러오는데 실패했습니다." };
-  }
-}
-
-/**
  * 리뷰 도움돼요 북마크 목록 조회
  * @param {string} token - 로그인 토큰
- * @returns {Promise<BookmarkListRes | ErrorRes>} - 북마크 목록 응답 객체
+ * @returns {Promise<ResData<BookmarkListRes>>} - 북마크 목록 응답 객체
  */
-export async function getReplyBookmarks(token: string): Promise<BookmarkListRes | ErrorRes> {
+export async function getReplyBookmarks(token: string): Promise<ResData<BookmarkListRes>> {
   try {
     const res = await fetch(`${API_URL}/bookmarks/post`, {
       headers: {
@@ -200,12 +178,12 @@ export async function getReplyBookmarks(token: string): Promise<BookmarkListRes 
  * 리뷰 도움돼요 등록 POST
  * @param {string} token - 로그인 토큰
  * @param {number} replyId - 리뷰(댓글) id
- * @returns {Promise<BookmarkInfoRes | ErrorRes>} - 북마크 등록 응답 객체
+ * @returns {Promise<<ResData<BookmarkInfoRes>>>} - 북마크 등록 응답 객체
  */
 export async function addReplyBookmark(
   token: string,
   replyId: number,
-): Promise<BookmarkInfoRes | ErrorRes> {
+): Promise<ResData<BookmarkInfoRes>> {
   try {
     const res = await fetch(`${API_URL}/bookmarks/post`, {
       method: "POST",
@@ -295,9 +273,9 @@ export async function updateReplyLikeCount(
 /**
  * 상세 리뷰 목록 조회
  * @param {string} productId - 상품 id
- * @returns {Promise<ReviewListRes | ErrorRes>} - 리뷰 목록 응답 객체
+ * @returns {Promise<ResData<ReviewListRes>>} - 리뷰 목록 응답 객체
  */
-export async function getReviews(productId: string): Promise<ReviewListRes | ErrorRes> {
+export async function getReviews(productId: string): Promise<ResData<ReviewListRes>> {
   try {
     const res = await fetch(`${API_URL}/replies/products/${productId}`, {
       headers: {
