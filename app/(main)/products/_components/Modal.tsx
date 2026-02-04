@@ -10,7 +10,7 @@ import { Product } from "@/types/product";
 import { addToCart } from "@/lib/cart";
 import useUserStore from "@/app/(main)/(auth)/login/zustand/useStore";
 
-type PurchaseType = "oneTime" | "subscribe";
+type PurchaseType = "oneTime" | "subscription";
 
 interface Props {
   isOpen: boolean;
@@ -29,12 +29,12 @@ export default function PurchaseModal({ isOpen, onClose, product }: Props) {
 
   const basePrice = product.price;
   const discountRate = 0.1;
-  const unitPrice = purchaseType === "subscribe" ? basePrice * (1 - discountRate) : basePrice;
+  const unitPrice = purchaseType === "subscription" ? basePrice * (1 - discountRate) : basePrice;
   const totalPrice = unitPrice * quantity;
 
   const purchaseTabs: { key: PurchaseType; label: string }[] = [
-    { key: "oneTime", label: "1회 구매" },
-    { key: "subscribe", label: "정기구독" },
+    { key: "oneTime", label: "1회구매" },
+    { key: "subscription", label: "정기구독" },
   ];
 
   // 스크롤 방지
@@ -62,7 +62,7 @@ export default function PurchaseModal({ isOpen, onClose, product }: Props) {
       product._id,
       quantity,
       purchaseType,
-      purchaseType === "subscribe" ? deliveryCycle : undefined,
+      purchaseType === "subscription" ? deliveryCycle : undefined,
     );
 
     if (res.ok === 1) {
@@ -113,7 +113,7 @@ export default function PurchaseModal({ isOpen, onClose, product }: Props) {
             className="rounded-3xl"
           />
           <div className="flex flex-col h-full justify-center items-start gap-2">
-            {purchaseType !== "subscribe" && (
+            {purchaseType !== "subscription" && (
               <span className="inline-block rounded-lg bg-gray-200 px-2 py-1 text-xs font-semibold text-gray-600">
                 일회성구매
               </span>
@@ -132,7 +132,7 @@ export default function PurchaseModal({ isOpen, onClose, product }: Props) {
         </div>
 
         {/* 1회 구매 */}
-        {purchaseType !== "subscribe" && (
+        {purchaseType !== "subscription" && (
           <div className="flex flex-col gap-15 mt-10">
             <div className="rounded-full border border-black/10 bg-gray-50 px-6 py-5.5 text-center">
               <span className="flex justify-center text-l font-semibold text-[#646468]">
@@ -145,7 +145,7 @@ export default function PurchaseModal({ isOpen, onClose, product }: Props) {
         )}
 
         {/* 정기구독 */}
-        {purchaseType === "subscribe" && (
+        {purchaseType === "subscription" && (
           <div className="flex flex-col gap-6 mt-10">
             <span className="font-semibold text-m">배송주기 선택</span>
             <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
@@ -183,19 +183,19 @@ export default function PurchaseModal({ isOpen, onClose, product }: Props) {
         <div className="flex justify-between mt-10">
           <div className="flex justify-center items-center gap-3">
             <p className="font-semibold text-xl">총 결제금액</p>
-            {purchaseType === "subscribe" && (
+            {purchaseType === "subscription" && (
               <span className="rounded-lg bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-600">
                 10% 할인
               </span>
             )}
-            {purchaseType !== "subscribe" && (
+            {purchaseType !== "subscription" && (
               <span className="rounded-lg bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-600">
                 무료배송
               </span>
             )}
           </div>
           <div className="flex items-center gap-3">
-            {purchaseType === "subscribe" && (
+            {purchaseType === "subscription" && (
               <span className="text-2xl text-gray-400 line-through">
                 {(basePrice * quantity).toLocaleString()}원
               </span>
@@ -233,7 +233,7 @@ export default function PurchaseModal({ isOpen, onClose, product }: Props) {
                 quantity: String(quantity),
                 type: purchaseType,
               });
-              if (purchaseType === "subscribe") {
+              if (purchaseType === "subscription") {
                 params.set("cycle", deliveryCycle);
               }
               router.push(`/checkout?${params.toString()}`);
