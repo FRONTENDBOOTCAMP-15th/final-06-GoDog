@@ -12,9 +12,18 @@ const Header: React.FC = () => {
 
   const pathname = usePathname();
   const router = useRouter();
-  const { user, resetUser } = useUserStore(); // login zustand 스토어에서 가져옴
+  const { user, resetUser, cartCount, fetchCartCount, resetCart } = useUserStore();
 
   const isLoggedIn = !!user?.token?.accessToken;
+
+  // 로그인 상태일 때 장바구니 수량 조회
+  useEffect(() => {
+    if (user?.token?.accessToken) {
+      fetchCartCount(user.token.accessToken);
+    } else {
+      resetCart();
+    }
+  }, [user?.token?.accessToken, fetchCartCount, resetCart]);
   const handleLogout = (e: React.MouseEvent) => {
     // 세션 스토리지를 비우고 상태를 null로 초기화
     e.preventDefault();
@@ -126,7 +135,8 @@ const Header: React.FC = () => {
                   : "text-text-tertiary hover:text-text-primary"
               }`}
             >
-              Cart <span className="ml-1 text-accent-primary">(2)</span>
+              Cart{" "}
+              {cartCount > 0 && <span className="ml-1 text-accent-primary">({cartCount})</span>}
             </Link>
           </div>
         </div>
@@ -202,9 +212,11 @@ const Header: React.FC = () => {
                   d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                 />
               </svg>
-              <span className="absolute top-1 right-1 w-4 h-4 bg-accent-primary text-white text-[9px] font-black rounded-full flex items-center justify-center">
-                2
-              </span>
+              {cartCount > 0 && (
+                <span className="absolute top-1 right-1 w-4 h-4 bg-accent-primary text-white text-[9px] font-black rounded-full flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
             </Link>
 
             {/* 햄버거 메뉴 (모바일) */}
@@ -357,9 +369,11 @@ const Header: React.FC = () => {
                   <span className="group-hover:text-accent-primary transition-colors">
                     장바구니
                   </span>
-                  <span className="ml-2 px-2 py-0.5 bg-accent-primary text-white text-[10px] rounded-full">
-                    2
-                  </span>
+                  {cartCount > 0 && (
+                    <span className="ml-2 px-2 py-0.5 bg-accent-primary text-white text-[10px] rounded-full">
+                      {cartCount}
+                    </span>
+                  )}
                 </div>
                 <svg
                   className="w-4 h-4 text-accent-primary"
