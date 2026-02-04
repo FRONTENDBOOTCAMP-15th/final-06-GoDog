@@ -16,7 +16,7 @@ const PaginationWrapper = ({ currentPage, totalPages, paramKey = "page" }: Props
   const handlePageChange = (page: number) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set(paramKey, String(page));
-    router.push(`?${params.toString()}`, { scroll: false });
+    router.push(`?${params.toString()}`, { scroll: true });
   };
 
   return (
