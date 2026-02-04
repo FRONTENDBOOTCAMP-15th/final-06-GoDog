@@ -10,8 +10,8 @@ import PurchaseModal from "@/app/(main)/products/_components/Modal";
 import { Product } from "@/types/product";
 import { Review } from "@/types/review";
 import { Post } from "@/types/post";
-import useUserStore from "@/app/(main)/(auth)/login/zustand/useStore";
-import { addBookmark, getBookmarks, removeBookmark } from "@/lib/bookmark";
+import useUserStore from "@/zustand/useStore";
+import { addBookmark, getWishlist, deleteWishlist } from "@/lib/bookmark";
 import {
   getReplyBookmarks,
   addReplyBookmark,
@@ -80,7 +80,7 @@ export default function ProductDetail({
   useEffect(() => {
     const checkBookmark = async () => {
       if (!user?.token?.accessToken) return;
-      const data = await getBookmarks(user.token.accessToken);
+      const data = await getWishlist(user.token.accessToken);
       if (data.ok === 1) {
         const found = data.item.find((b) => b.product?._id === productId);
         if (found) {
@@ -100,7 +100,7 @@ export default function ProductDetail({
       return;
     }
     if (isLiked && bookmarkId) {
-      const res = await removeBookmark(user.token.accessToken, bookmarkId);
+      const res = await deleteWishlist(user.token.accessToken, bookmarkId);
       if (res.ok === 1) {
         setIsLiked(false);
         setBookmarkId(null);
@@ -111,7 +111,7 @@ export default function ProductDetail({
         setIsLiked(true);
         setBookmarkId(res.item._id);
       } else {
-        const bookmarks = await getBookmarks(user.token.accessToken);
+        const bookmarks = await getWishlist(user.token.accessToken);
         if (bookmarks.ok === 1) {
           const existing = bookmarks.item.find((b) => b.product?._id === productId);
           if (existing) {

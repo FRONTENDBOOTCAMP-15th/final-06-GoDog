@@ -7,7 +7,7 @@ import Tab from "@/components/common/Tab";
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { getCarts, removeFromCart } from "@/lib/cart";
-import useUserStore from "@/app/(main)/(auth)/login/zustand/useStore";
+import useUserStore from "@/zustand/useStore";
 import { Cart } from "@/types/cart";
 
 type TabType = "oneTime" | "subscription";
@@ -40,12 +40,8 @@ function CartContent() {
     }
   };
 
-  const onetimeItems = cartItems.filter(
-    (item) => !item.color || item.color === "oneTime",
-  );
-  const subscriptionItems = cartItems.filter(
-    (item) => item.color === "subscribe",
-  );
+  const onetimeItems = cartItems.filter((item) => !item.color || item.color === "oneTime");
+  const subscriptionItems = cartItems.filter((item) => item.color === "subscribe");
 
   const tabs: { key: TabType; label: string; count: number }[] = [
     { key: "oneTime", label: "1회 구매", count: onetimeItems.length },
