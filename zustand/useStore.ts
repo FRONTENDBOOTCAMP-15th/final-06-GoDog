@@ -1,5 +1,6 @@
 import { create, StateCreator } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { getCarts } from "@/lib/cart";
 
 interface User {
   _id: number;
@@ -17,6 +18,11 @@ interface UserStoreState {
   user: User | null;
   setUser: (user: User | null) => void;
   resetUser: () => void;
+  // 장바구니 카운드 관련
+  cartCount: number;
+  fetchCartCount: (token: string) => Promise<void>;
+  incrementCart: (qty: number) => void;
+  resetCart: () => void;
 }
 
 // 로그인한 사용자 정보를 관리하는 스토어를 생성
@@ -25,7 +31,18 @@ interface UserStoreState {
 const UserStore: StateCreator<UserStoreState> = (set) => ({
   user: null,
   setUser: (user: User | null) => set({ user }),
-  resetUser: () => set({ user: null }),
+  resetUser: () => set({ user: null, cartCount: 0 }),
+
+  // 장바구니 카운트 관련
+  cartCount: 0,
+  fetchCartCount: async (token: string) => {
+    const res = await getCarts(token);
+    if (res.ok === 1) {
+      set({ cartCount: res.item.length });
+    }
+  },
+  incrementCart: (qty: number) => set((state) => ({ cartCount: state.cartCount + qty })),
+  resetCart: () => set({ cartCount: 0 }),
 });
 
 // 스토리지 사용 ( sessionStorage에 저장)
