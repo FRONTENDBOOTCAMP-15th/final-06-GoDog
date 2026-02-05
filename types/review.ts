@@ -29,7 +29,6 @@ export interface Review {
   rating: number;
   content: string;
   extra?: ReviewExtra;
-  user: ReviewUser;
   createdAt: string;
   product: ReviewProduct;
   updatedAt?: string;
