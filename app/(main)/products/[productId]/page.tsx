@@ -1,6 +1,6 @@
 import ProductDetail from "@/app/(main)/products/_components/ProductDetail";
 import { getPosts } from "@/lib/post";
-import { getProduct, getReviews } from "@/lib/product";
+import { getProduct } from "@/lib/product";
 
 interface Props {
   params: Promise<{ productId: string }>;
@@ -31,8 +31,7 @@ export default async function ProductPage({ params, searchParams }: Props) {
   const product = data.item;
 
   // 리뷰 목록
-  const reviewData = await getReviews(productId);
-  const allReviews = reviewData.ok === 1 ? reviewData.item : [];
+  const allReviews = product.replies ?? [];
 
   // 최신순 정렬 또는 사진후기만(필터링)
   let filteredReviews = [...allReviews].sort(

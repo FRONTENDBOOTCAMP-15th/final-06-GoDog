@@ -10,8 +10,9 @@ import PurchaseModal from "@/app/(main)/products/_components/Modal";
 import { Product } from "@/types/product";
 import { Review } from "@/types/review";
 import { Post } from "@/types/post";
+import Cookies from "js-cookie";
 import useUserStore from "@/zustand/useStore";
-import { addBookmark, getBookmarks, removeBookmark } from "@/lib/bookmar";
+import { addBookmark, getWishlist, deleteWishlist } from "@/lib/bookmark";
 import {
   getReplyBookmarks,
   addReplyBookmark,
@@ -75,12 +76,13 @@ export default function ProductDetail({
   const [isLiked, setIsLiked] = useState(false);
   const [bookmarkId, setBookmarkId] = useState<number | null>(null);
   const user = useUserStore((state) => state.user);
+  const token = user?.token?.accessToken || Cookies.get("accessToken");
 
   // 페이지 로드 시 이 상품이 북마크되어 있는지 확인
   useEffect(() => {
     const checkBookmark = async () => {
-      if (!user?.token?.accessToken) return;
-      const data = await getBookmarks(user.token.accessToken);
+      if (!token) return;
+      const data = await getWishlist(token);
       if (data.ok === 1) {
         const found = data.item.find((b) => b.product?._id === productId);
         if (found) {
@@ -94,24 +96,24 @@ export default function ProductDetail({
 
   // 하트 클릭
   const handleToggleBookmark = async () => {
-    if (!user?.token?.accessToken) {
+    if (!token) {
       alert("로그인이 필요합니다.");
       router.push("/login");
       return;
     }
     if (isLiked && bookmarkId) {
-      const res = await removeBookmark(user.token.accessToken, bookmarkId);
+      const res = await deleteWishlist(token, bookmarkId);
       if (res.ok === 1) {
         setIsLiked(false);
         setBookmarkId(null);
       }
     } else {
-      const res = await addBookmark(user.token.accessToken, productId);
+      const res = await addBookmark(token, productId);
       if (res.ok === 1) {
         setIsLiked(true);
         setBookmarkId(res.item._id);
       } else {
-        const bookmarks = await getBookmarks(user.token.accessToken);
+        const bookmarks = await getWishlist(token);
         if (bookmarks.ok === 1) {
           const existing = bookmarks.item.find((b) => b.product?._id === productId);
           if (existing) {
@@ -142,8 +144,8 @@ export default function ProductDetail({
     setHelpfulCounts(counts);
 
     const fetchHelpful = async () => {
-      if (!user?.token?.accessToken) return;
-      const data = await getReplyBookmarks(user.token.accessToken);
+      if (!token) return;
+      const data = await getReplyBookmarks(token);
       if (data.ok === 1) {
         const map: Record<number, number> = {};
         data.item.forEach((b) => {
@@ -156,7 +158,7 @@ export default function ProductDetail({
   }, [user, reviews]);
 
   const toggleHelpful = async (reviewId: number) => {
-    if (!user?.token?.accessToken) {
+    if (!token) {
       alert("로그인이 필요합니다.");
       router.push("/login");
       return;
@@ -170,7 +172,7 @@ export default function ProductDetail({
     try {
       if (helpfulMap[reviewId]) {
         // 이미 누른 도움돼요 → 해제
-        const res = await removeReplyBookmark(user.token.accessToken, helpfulMap[reviewId]);
+        const res = await removeReplyBookmark(token, helpfulMap[reviewId]);
         if (res.ok === 1) {
           const newCount = Math.max(0, (helpfulCounts[reviewId] || 0) - 1);
           setHelpfulMap((prev) => {
@@ -179,16 +181,16 @@ export default function ProductDetail({
             return next;
           });
           setHelpfulCounts((prev) => ({ ...prev, [reviewId]: newCount }));
-          await updateReplyLikeCount(user.token.accessToken, reviewId, newCount, reviewContent);
+          await updateReplyLikeCount(token, reviewId, newCount, reviewContent);
         }
       } else {
         // 처음 누른 도움돼요 → 등록
-        const res = await addReplyBookmark(user.token.accessToken, reviewId);
+        const res = await addReplyBookmark(token, reviewId);
         if (res.ok === 1) {
           const newCount = (helpfulCounts[reviewId] || 0) + 1;
           setHelpfulMap((prev) => ({ ...prev, [reviewId]: res.item._id }));
           setHelpfulCounts((prev) => ({ ...prev, [reviewId]: newCount }));
-          await updateReplyLikeCount(user.token.accessToken, reviewId, newCount, reviewContent);
+          await updateReplyLikeCount(token, reviewId, newCount, reviewContent);
         }
       }
     } finally {
@@ -237,7 +239,7 @@ export default function ProductDetail({
                 <div className="flex min-h-[1.5625rem] w-full items-center justify-between self-stretch py-4 sm:py-7">
                   <dt className="font-medium">판매가격</dt>
                   <dd className="text-xl font-bold sm:text-[1.625rem]">
-                    {product.price.toLocaleString()}원
+                    {product.price.toLocaleString("ko-KR")}원
                   </dd>
                 </div>
 
@@ -265,11 +267,16 @@ export default function ProductDetail({
             {/* 구매하기 버튼 */}
             <div className="flex w-full flex-row items-start gap-3.5">
               <button
-                className="flex h-[3.25rem] flex-1 items-center justify-center rounded-[0.875rem] bg-[#fba613] text-white px-4 py-[1.09375rem] shadow-[0_0.5rem_2rem_0_rgba(251,166,19,0.2)] sm:px-[1.3125rem]"
+                className={`flex h-[3.25rem] flex-1 items-center justify-center rounded-[0.875rem] px-4 py-[1.09375rem] sm:px-[1.3125rem] ${
+                  product.quantity <= 0
+                    ? "cursor-not-allowed bg-[#d1d1d6] text-white"
+                    : "bg-[#fba613] text-white shadow-[0_0.5rem_2rem_0_rgba(251,166,19,0.2)]"
+                }`}
                 type="button"
+                disabled={product.quantity <= 0}
                 onClick={() => setIsModalOpen(true)}
               >
-                구매하기
+                {product.quantity <= 0 ? "Sold Out" : "구매하기"}
               </button>
 
               {/* 관심상품 버튼 */}
@@ -344,20 +351,35 @@ export default function ProductDetail({
             isDetailExpanded ? "max-h-none" : "max-h-[400px]"
           }`}
         >
-          <Image
-            src="/images/image 27.png"
-            width={1200}
-            height={800}
-            alt="상품 상세 이미지 1"
-            className="h-auto w-full"
-          />
-          <Image
-            src="/images/image 28.png"
-            width={1200}
-            height={800}
-            alt="상품 상세 이미지 2"
-            className="h-auto w-full"
-          />
+          {product.extra?.detailImages && product.extra.detailImages.length > 0 ? (
+            product.extra.detailImages.map((img, idx) => (
+              <Image
+                key={idx}
+                src={img.path}
+                width={1200}
+                height={800}
+                alt={img.name || `상품 상세 이미지 ${idx + 1}`}
+                className="h-auto w-full"
+              />
+            ))
+          ) : (
+            <>
+              <Image
+                src="/images/image 27.png"
+                width={1200}
+                height={800}
+                alt="상품 상세 이미지 1"
+                className="h-auto w-full"
+              />
+              <Image
+                src="/images/image 28.png"
+                width={1200}
+                height={800}
+                alt="상품 상세 이미지 2"
+                className="h-auto w-full"
+              />
+            </>
+          )}
           {!isDetailExpanded && (
             <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent" />
           )}
@@ -556,6 +578,12 @@ export default function ProductDetail({
             variant="primary"
             size="sm"
             className="h-11 w-fit cursor-pointer self-start whitespace-nowrap rounded-[0.875rem] border-0 bg-[#fba613] px-[1.125rem] text-center text-[0.76875rem] font-bold leading-[1.09375rem] text-white shadow-[0_8px_32px_rgba(251,166,19,0.2)] sm:self-center"
+            onClick={() => {
+              const params = new URLSearchParams();
+              params.set("productName", product.name);
+              params.set("productImage", product.mainImages[0]?.path || "");
+              router.push(`/products/${productId}/qna?${params.toString()}`);
+            }}
           >
             문의 작성하기
           </Button>

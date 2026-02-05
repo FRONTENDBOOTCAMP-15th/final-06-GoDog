@@ -1,5 +1,5 @@
 // lib/bookmark.ts
-import { BookmarkListRes, ResData } from "@/types/response";
+import { BookmarkInfoRes, BookmarkListRes, ResData } from "@/types/response";
 import { EmptyRes } from "@/types/response";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -60,5 +60,37 @@ export async function deleteWishlist(
   } catch (error) {
     console.error("삭제 에러:", error);
     return { ok: 0, message: "삭제 도중 오류가 발생했습니다." };
+  }
+}
+
+/**
+ * 북마크(관심상품) 등록
+ * @param {string} token - 로그인 토큰
+ * @param {number} productId - 상품 id
+ * @returns {Promise<ResData<BookmarkInfoRes>>} - 북마크 등록 응답 객체
+ */
+export async function addBookmark(
+  token: string,
+  productId: number,
+): Promise<ResData<BookmarkInfoRes>> {
+  try {
+    const res = await fetch(`${API_URL}/bookmarks/product`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Client-Id": CLIENT_ID,
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        target_id: productId,
+      }),
+    });
+    if (res.status === 409) {
+      return { ok: 0, message: "이미 등록된 관심상품입니다." };
+    }
+    return res.json();
+  } catch (error) {
+    console.error(error);
+    return { ok: 0, message: "관심상품 등록에 실패했습니다." };
   }
 }
