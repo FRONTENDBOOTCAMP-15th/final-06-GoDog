@@ -1,5 +1,5 @@
 import { updateCartItem } from "@/app/(main)/cart/action/cart";
-import useCartStore from "@/app/(main)/cart/zustand/useCartStore";
+import useCartStore from "@/zustand/useCartStore";
 import Badge from "@/components/common/Badge";
 import Button from "@/components/common/Button";
 import Checkbox from "@/components/common/Checkbox";

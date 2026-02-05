@@ -1,7 +1,7 @@
 import { User } from "@/types/user";
 import { create, StateCreator } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { getCarts } from "@/lib/cart";
+import { getCartItems } from "@/lib/cart";
 
 // 로그인한 사용자 정보를 관리하는 스토어의 상태 인터페이스
 interface UserStoreState {
@@ -26,7 +26,7 @@ const UserStore: StateCreator<UserStoreState> = (set) => ({
   // 장바구니 카운트 관련
   cartCount: 0,
   fetchCartCount: async (token: string) => {
-    const res = await getCarts(token);
+    const res = await getCartItems(token);
     if (res.ok === 1) {
       set({ cartCount: res.item.length });
     }
@@ -40,7 +40,7 @@ const useUserStore = create<UserStoreState>()(
   persist(UserStore, {
     name: "user",
     storage: createJSONStorage(() => localStorage), // 기본은 localStorage
-  }),
+  })
 );
 
 export default useUserStore;
