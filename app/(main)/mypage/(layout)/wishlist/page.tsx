@@ -58,12 +58,9 @@ export default async function Wishlist({ searchParams }: Props) {
 
   const wishlistItems = (response?.ok === 1 ? response.item : []) as unknown as BookmarkItem[];
   const totalPages = (response?.ok === 1 && response?.pagination?.totalPages) || 1;
-  console.log(wishlistItems, "위시리스트");
-  console.log(response, "응답");
-  console.log(totalPages, "토탈");
 
   return (
-    <div className="w-full min-w-[360px] pb-[70px]">
+    <div className="w-full pb-[70px]">
       <div className="mt-[108px]">
         <p className="text-[#1A1A1C] text-center text-[26.3px] font-[900]">{userName}님이 저장한</p>
         <div className="flex flex-row justify-center">
@@ -73,25 +70,24 @@ export default async function Wishlist({ searchParams }: Props) {
       </div>
 
       <div className="max-w-[1280px] mx-auto pt-[57px] pb-[100px] px-[20px] lg:px-0">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-[20px] lg:gap-7 justify-items-center">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 md:gap-x-10 lg:gap-x-7 gap-y-10 justify-items-center max-w-[500px] md:max-w-[700px] lg:max-w-none mx-auto">
           {wishlistItems.length > 0 ? (
             wishlistItems.map((item: BookmarkItem) => (
-              <WishlistComponent
-                key={item._id}
-                Product={item.product}
-                bookmarkId={item._id}
-                token={token}
-              />
+              <div key={item._id} className="w-full max-w-[280px]">
+                <WishlistComponent Product={item.product} bookmarkId={item._id} token={token} />
+              </div>
             ))
           ) : (
-            <div className="col-span-full py-20 text-center text-text-tertiary">
+            <div className="col-span-full py-20 text-center text-[#909094]">
               저장된 관심 상품이 없습니다.
             </div>
           )}
         </div>
       </div>
 
-      <PaginationWrapper currentPage={currentPage} totalPages={totalPages} />
+      <div className="flex justify-center">
+        <PaginationWrapper currentPage={currentPage} totalPages={totalPages} />
+      </div>
     </div>
   );
 }

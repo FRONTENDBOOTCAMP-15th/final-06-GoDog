@@ -6,10 +6,9 @@ import MyItemList from "@/app/(main)/mypage/_components/MyItemListA";
 import PaginationWrapper from "@/components/common/PaginationWrapper";
 import Image from "next/image";
 import useUserStore from "@/zustand/useStore";
-import { useParams, usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { getOrders } from "@/lib/order";
-import { useEffect } from "react";
 import Cookies from "js-cookie";
 
 export default function Subscription() {
@@ -17,14 +16,13 @@ export default function Subscription() {
   const token = Cookies.get("accessToken");
   const userName = user?.name || "회원";
   const params = usePathname();
-  console.log(params, "파람스");
   const searchParams = useSearchParams();
   const page = Number(searchParams.get("page")) || 1;
 
   const { data: resSublist, isLoading } = useQuery({
     queryKey: ["subscriptions", page],
     queryFn: () =>
-      getOrders(token, {
+      getOrders(token ?? "", {
         page,
         limit: 4,
         path: params,
@@ -32,8 +30,14 @@ export default function Subscription() {
     enabled: !!token,
   });
 
+  const getPeriodText = (size: string) => {
+    if (size === "2w") return "2주 주기 배송";
+    if (size === "4w") return "4주 주기 배송";
+    return "";
+  };
+
   return (
-    <div className="w-full min-w-[360px] pb-[70px]">
+    <div className="w-full pb-[70px]">
       <div className="mt-[108px]">
         <p className="text-[#1A1A1C] text-center text-[26px] font-[900]">
           {userName}님이 이용 중인
@@ -45,36 +49,38 @@ export default function Subscription() {
       </div>
 
       <div className="max-w-[1280px] mx-auto pt-[57px] pb-[110px] px-[20px] lg:px-0">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-[20px] lg:gap-7 justify-items-center">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 md:gap-x-10 lg:gap-x-7 gap-y-10 justify-items-center max-w-[500px] md:max-w-[700px] lg:max-w-none mx-auto">
           {isLoading ? (
             <div className="col-span-full py-20 text-center">불러오는 중...</div>
           ) : resSublist?.ok === 1 && resSublist.item.length > 0 ? (
             resSublist.item.map((item) => (
-              <MyItemList
-                key={item._id}
-                subscriptionId={String(item._id)}
-                title={item.products[0].name}
-                image={
-                  <div className="rounded-3xl overflow-hidden w-[211px] h-[211px] relative">
-                    {item.products[0].image?.path ? (
-                      <Image
-                        src={item.products[0].image?.path}
-                        alt={item.products[0].name}
-                        fill
-                        className="object-cover"
-                      />
-                    ) : (
-                      <Product404 />
-                    )}
-                  </div>
-                }
-                content="상세 보기"
-                date={item.createdAt.split(" ")[0]}
-                period={item.period}
-                quantity={item.products[0].quantity}
-                price={`${item.products[0].price.toLocaleString()}원`}
-                mark={<RigthMark />}
-              />
+              <div key={item._id} className="w-full max-w-[280px]">
+                <MyItemList
+                  subscriptionId={String(item._id)}
+                  title={item.products[0].name}
+                  image={
+                    <div className="rounded-3xl overflow-hidden w-full aspect-square relative bg-gray-50">
+                      {item.products[0].image?.path ? (
+                        <Image
+                          src={item.products[0].image?.path}
+                          alt={item.products[0].name}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 1024px) 50vw, 25vw"
+                        />
+                      ) : (
+                        <Product404 />
+                      )}
+                    </div>
+                  }
+                  content="상세 보기"
+                  date={item.createdAt.split(" ")[0]}
+                  period={getPeriodText(item.size)}
+                  quantity={item.products[0].quantity}
+                  price={`${item.products[0].price.toLocaleString()}원`}
+                  mark={<RigthMark />}
+                />
+              </div>
             ))
           ) : (
             <div className="col-span-full py-20 text-center text-[#909094]">
@@ -83,10 +89,13 @@ export default function Subscription() {
           )}
         </div>
       </div>
-      <PaginationWrapper
-        currentPage={page}
-        totalPages={resSublist?.ok === 1 ? resSublist.pagination.totalPages : 1}
-      />
+
+      <div className="flex justify-center">
+        <PaginationWrapper
+          currentPage={page}
+          totalPages={resSublist?.ok === 1 ? resSublist.pagination.totalPages : 1}
+        />
+      </div>
     </div>
   );
 }
