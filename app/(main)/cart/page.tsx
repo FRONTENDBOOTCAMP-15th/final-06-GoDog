@@ -2,7 +2,7 @@
 
 import OnetimeCart from "@/app/(main)/cart/onetime-cart";
 import SubscriptionCart from "@/app/(main)/cart/subscription-cart";
-import useCartStore from "@/app/(main)/cart/zustand/useCartStore";
+import useCartStore from "@/zustand/useCartStore";
 import Badge from "@/components/common/Badge";
 import Tab from "@/components/common/Tab";
 import { Suspense, useEffect, useState } from "react";
