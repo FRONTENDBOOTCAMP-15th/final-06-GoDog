@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-import useUserStore from "@/zustand/useStore";
->>>>>>> 8d5d22cb8c823cb32dcd6ffa1d409e319fa9244e
 import { Reply } from "@/types/post";
 import { PostInfoRes, ReplyListRes, ResData } from "@/types/response";
 import useUserStore from "@/zustand/useStore";
