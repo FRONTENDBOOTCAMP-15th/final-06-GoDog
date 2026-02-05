@@ -155,7 +155,7 @@ export default function ProfileClient({
                     ? preview.startsWith("http")
                       ? preview
                       : `${API_URL}${preview}`
-                    : "/default-profile.png"
+                    : "/images/userImage.jpg"
                 }
                 alt="프로필"
               />
