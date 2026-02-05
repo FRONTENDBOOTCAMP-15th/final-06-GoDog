@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useSyncExternalStore } from "react";
 import useUserStore from "@/zustand/useStore";
 import { usePathname, useRouter } from "next/navigation";
 import Cookies from "js-cookie";
@@ -15,8 +15,18 @@ const Header: React.FC = () => {
   const router = useRouter();
   const { user, resetUser, cartCount, fetchCartCount, resetCart } = useUserStore();
 
-  // const isLoggedIn = !!user?.token?.accessToken;
-  const isLoggedIn = Cookies.get("accessToken");
+  // useSyncExternalStore 훅 사용
+  // 토큰 값 가져오기
+  // const accessToken = useSyncExternalStore(
+  //   () => () => {},
+  //   () => Cookies.get("accessToken") ?? null,
+  //   () => null,
+  // );
+
+  // zustand 에서 토큰 끌어오기 - hydration 에러 수정
+  const isLoggedIn = !!user?.token?.accessToken;
+  // // 로그인 여부는 토큰에서 파생
+  // const isLoggedIn = !!accessToken;
 
   // 로그인 상태일 때 장바구니 수량 조회
   useEffect(() => {

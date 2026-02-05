@@ -55,7 +55,8 @@ export interface Order {
   createdAt: string;
   updatedAt: string;
   user: User;
-  period?: string;
+  size: string;
+  color?: string;
 }
 
 export interface OrderStatistics {

@@ -16,7 +16,7 @@ export interface OrderProduct {
 
   size?: string | null;
   color?: string | null;
-  period: string;
+  period?: string;
 }
 
 export interface Order {

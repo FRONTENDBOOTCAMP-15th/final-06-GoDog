@@ -1,6 +1,5 @@
 "use client";
 
-// import { getOrderlist } from "./getOrderlist";
 import { Product404 } from "@/app/(main)/mypage/_components/DogFoodImage";
 import { Pencil } from "@/app/(main)/mypage/_components/Mark";
 import MyItemList from "@/app/(main)/mypage/_components/MyItemListA";
@@ -9,44 +8,40 @@ import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import Cookies from "js-cookie";
 
-import {
-  Order,
-  OrderListRes,
-  FlattenedOrderProduct,
-} from "@/app/(main)/mypage/(layout)/order/types/order";
 import { getOrders } from "@/lib/order";
 import { useQuery } from "@tanstack/react-query";
 import useUserStore from "@/zustand/useStore";
-import { Item } from "@/types/product";
 import { useEffect } from "react";
 
 export default function Orders() {
   const user = useUserStore((state) => state.user);
-
   const userName = user?.name || "회원";
 
   const token = Cookies.get("accessToken");
   const searchParams = useSearchParams();
   const page = Number(searchParams.get("page")) || 1;
+
   const { data: resOrderlist, isLoading } = useQuery({
-    queryKey: [page],
+    queryKey: ["orders", page],
     queryFn: () =>
-      getOrders(token, {
+      getOrders(token ?? "", {
         page,
         limit: 4,
         type: "user",
       }),
   });
-  console.log(resOrderlist, "resOrderlist");
-  useEffect(() => {
-    if (resOrderlist) console.log(resOrderlist);
-  }, [resOrderlist]);
 
-  const orderlist = resOrderlist?.ok === 1 ? resOrderlist.item : [];
+  const getPeriodText = (color: string, size?: string) => {
+    if (color === "subscription") {
+      return size === "2w" ? "2주 주기 배송" : "4주 주기 배송";
+    }
+    return "1회 구매";
+  };
+
   const pagination = resOrderlist?.ok === 1 ? resOrderlist.pagination : undefined;
 
   return (
-    <div className="w-full min-w-[360px] pb-[70px]">
+    <div className="w-full pb-[70px]">
       <div className="mt-[108px]">
         <p className="text-[#1A1A1C] text-center text-[26.3px] font-[900]">
           {userName}님이 이용 중인
@@ -57,40 +52,48 @@ export default function Orders() {
         </div>
       </div>
 
-      <div className="max-w-[1280px] mx-auto pt-[57px] pb-[100px] px-[20px] lg:px-0">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-[20px] lg:gap-7 justify-items-center">
+      <div className="mx-auto pt-[57px] pb-[100px] px-[20px] lg:px-0 max-w-[1280px]">
+        <div
+          className="grid 
+          grid-cols-2 lg:grid-cols-4 
+          gap-x-[15px] md:gap-x-[40px] lg:gap-x-7 
+          gap-y-10
+          justify-items-center
+          max-w-[500px] md:max-w-[700px] lg:max-w-none mx-auto"
+        >
           {resOrderlist?.ok && resOrderlist.item.length > 0 ? (
-            resOrderlist.item.map((item, index: number) => {
+            resOrderlist.item.map((item) => {
               const hasReview = !!item.products[0].review_id;
               return (
-                <MyItemList
-                  key={item._id}
-                  productid={item.products[0]._id}
-                  orderId={String(item._id)}
-                  title={item.products[0].name}
-                  image={
-                    <div className="rounded-3xl overflow-hidden w-[211px] h-[211px] relative">
-                      {item.products[0].image?.path ? (
-                        <Image
-                          src={item.products[0].image?.path}
-                          alt={item.products[0].name}
-                          width={211}
-                          height={211}
-                          className="object-cover"
-                        />
-                      ) : (
-                        <Product404 />
-                      )}
-                    </div>
-                  }
-                  content={hasReview ? "리뷰 작성 완료" : "리뷰 작성"}
-                  date={item.createdAt.split(" ")[0]}
-                  period={item.period || "1회 구매"}
-                  quantity={item.products[0].quantity}
-                  price={`${item.products[0].price.toLocaleString()}원`}
-                  mark={hasReview ? null : <Pencil />}
-                  isReviewed={hasReview}
-                />
+                <div key={item._id} className="w-full">
+                  <MyItemList
+                    productid={item.products[0]._id}
+                    orderId={String(item._id)}
+                    title={item.products[0].name}
+                    image={
+                      <div className="rounded-3xl overflow-hidden w-full aspect-square relative bg-gray-50">
+                        {item.products[0].image?.path ? (
+                          <Image
+                            src={item.products[0].image?.path}
+                            alt={item.products[0].name}
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 1024px) 50vw, 25vw"
+                          />
+                        ) : (
+                          <Product404 />
+                        )}
+                      </div>
+                    }
+                    content={hasReview ? "리뷰 작성 완료" : "리뷰 작성"}
+                    date={item.createdAt.split(" ")[0]}
+                    period={getPeriodText(item.color ?? "oneTime", item.size)}
+                    quantity={item.products[0].quantity}
+                    price={`${item.products[0].price.toLocaleString()}원`}
+                    mark={hasReview ? null : <Pencil />}
+                    isReviewed={hasReview}
+                  />
+                </div>
               );
             })
           ) : (
@@ -102,7 +105,10 @@ export default function Orders() {
           )}
         </div>
       </div>
-      <PaginationWrapper currentPage={page} totalPages={pagination?.totalPages || 1} />
+
+      <div className="flex justify-center">
+        <PaginationWrapper currentPage={page} totalPages={pagination?.totalPages || 1} />
+      </div>
     </div>
   );
 }
