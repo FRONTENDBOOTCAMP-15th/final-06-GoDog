@@ -1,7 +1,7 @@
 import type { User } from "@/types/user";
 import type { Review } from "@/types/review";
 import type { Product } from "@/types/product";
-import type { Post } from "@/types/post";
+import type { Post, Reply } from "@/types/post";
 import type { Order, OrderStatistics } from "@/types/order";
 import type { Bookmark } from "@/types/bookmark";
 import type { Cart, CartCost } from "@/types/cart";
@@ -108,6 +108,13 @@ export interface PostInfoRes {
   pagination: Pagination;
 }
 
+// 댓글 목록 조회 결과
+export interface ReplyListRes {
+  ok: 1;
+  item: Reply[];
+  pagination: Pagination;
+}
+
 // 주문 목록 조회 결과
 export interface OrderListRes {
   ok: 1;
@@ -194,7 +201,7 @@ export interface EmptyRes {
 
 // 서버의 응답
 
-export type ResDate<
+export type ResData<
   T extends
     | UserInfoRes
     | UserListRes
@@ -204,6 +211,7 @@ export type ResDate<
     | ProductListRes
     | ProductInfoRes
     | PostListRes
+    | ReplyListRes
     | PostInfoRes
     | OrderListRes
     | OrderInfoRes

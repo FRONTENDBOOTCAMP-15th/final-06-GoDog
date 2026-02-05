@@ -1,11 +1,11 @@
 "use client";
 
-import useUserStore from "@/app/(main)/(auth)/login/zustand/useStore";
 import OnetimeCart from "@/app/(main)/cart/onetime-cart";
 import SubscriptionCart from "@/app/(main)/cart/subscription-cart";
 import useCartStore from "@/app/(main)/cart/zustand/useCartStore";
 import Badge from "@/components/common/Badge";
 import Tab from "@/components/common/Tab";
+import useUserStore from "@/zustand/useStore";
 import { useEffect, useState } from "react";
 
 type TabType = "oneTime" | "subscription";

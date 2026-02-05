@@ -1,4 +1,4 @@
-import { CartItemRes, CartListRes, ErrorRes } from "@/types/response";
+import { CartItemRes, CartListRes, ResData } from "@/types/response";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || "";
@@ -6,12 +6,12 @@ const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || "";
 /**
  * 장바구니 목록 조회
  * @param {string} accessToken - 인증 토큰
- * @returns {Promise<CartListRes | ErrorRes>} - 장바구니 목록 응답 객체
+ * @returns {Promise<ResData<CartListRes>>} - 장바구니 목록 응답 객체
  * @example
  * // 장바구니 조회
  * getCartItems(token);
  */
-export async function getCartItems(accessToken: string): Promise<CartListRes | ErrorRes> {
+export async function getCartItems(accessToken: string): Promise<ResData<CartListRes>> {
   try {
     const headers: HeadersInit = {
       "Client-Id": CLIENT_ID,
@@ -38,8 +38,8 @@ export async function addToCart(
   productId: number,
   quantity: number,
   purchaseType: "oneTime" | "subscription",
-  deliveryCycle?: "2w" | "4w"
-): Promise<CartItemRes | ErrorRes> {
+  deliveryCycle?: "2w" | "4w",
+): Promise<ResData<CartItemRes>> {
   try {
     const res = await fetch(`${API_URL}/carts`, {
       method: "POST",

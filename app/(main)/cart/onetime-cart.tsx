@@ -1,9 +1,9 @@
-import useUserStore from "@/app/(main)/(auth)/login/zustand/useStore";
 import OnetimeItemList from "@/app/(main)/cart/_components/onetime-item-list";
 import { deleteCartItem, deleteCartItems } from "@/app/(main)/cart/action/cart";
 import useCartStore from "@/app/(main)/cart/zustand/useCartStore";
 import Button from "@/components/common/Button";
 import Checkbox from "@/components/common/Checkbox";
+import useUserStore from "@/zustand/useStore";
 import Image from "next/image";
 import { useMemo, useState } from "react";
 
@@ -66,7 +66,7 @@ export default function OnetimeCart() {
   // 개별 선택/해제 핸들러
   const handleSelect = (id: number) => {
     setSelectIds((prev) =>
-      prev.includes(id) ? prev.filter((itemId) => itemId !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((itemId) => itemId !== id) : [...prev, id],
     );
   };
 
@@ -193,8 +193,8 @@ export default function OnetimeCart() {
                   ? `${selectCount}개 상품 구매하기`
                   : "선택한 상품 중 구매 가능한 상품이 없습니다."
                 : availableCount > 0
-                ? `${availableCount}개 상품 구매하기`
-                : "구매 가능한 상품이 없습니다."}
+                  ? `${availableCount}개 상품 구매하기`
+                  : "구매 가능한 상품이 없습니다."}
             </Button>
 
             <div className="flex items-center justify-center gap-2">

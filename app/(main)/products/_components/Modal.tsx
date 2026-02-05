@@ -8,7 +8,7 @@ import Tab from "@/components/common/Tab";
 import QuantityControl from "@/components/common/Quantitycontrol";
 import { Product } from "@/types/product";
 import { addToCart } from "@/lib/cart";
-import useUserStore from "@/app/(main)/(auth)/login/zustand/useStore";
+import useUserStore from "@/zustand/useStore";
 
 type PurchaseType = "oneTime" | "subscription";
 

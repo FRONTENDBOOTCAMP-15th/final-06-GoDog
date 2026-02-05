@@ -1,4 +1,3 @@
-import useUserStore from "@/app/(main)/(auth)/login/zustand/useStore";
 import { updateCartItem } from "@/app/(main)/cart/action/cart";
 import useCartStore from "@/app/(main)/cart/zustand/useCartStore";
 import Badge from "@/components/common/Badge";
@@ -6,6 +5,7 @@ import Checkbox from "@/components/common/Checkbox";
 import ProductImage from "@/components/common/ProductImage";
 import QuantityControl from "@/components/common/Quantitycontrol";
 import { Cart } from "@/types/cart";
+import useUserStore from "@/zustand/useStore";
 import Image from "next/image";
 
 interface OnetimeItemListProps {
@@ -75,43 +75,51 @@ export default function OnetimeItemList({
   return (
     <section className="flex flex-col gap-3.5">
       <div
-        className={`flex items-center gap-2 sm:gap-5 border border-[#F9F9FB] rounded-[0.875rem] px-3 py-3 sm:px-7 sm:py-7 bg-white shadow-(--shadow-card) ${
+        className={`grid grid-cols-[auto_80px_1fr_auto] sm:grid-cols-[auto_96px_1fr_auto] gap-x-2 gap-y-2 sm:gap-5 border rounded-[0.875rem] px-3 py-3 sm:px-7 sm:py-7 bg-white shadow-(--shadow-card) ${
           soldOut ? "border-bg-tertiary opacity-60" : "border-[#F9F9FB]"
         }`}
       >
-        <Checkbox label={cart.product.name} hideLabel checked={isSelect} onChange={onSelect} />
-        <div className="w-20 h-20 sm:w-24 shrink-0 relative">
+        {/* 체크박스 */}
+        <div className="row-span-2 place-self-center sm:pt-1">
+          <Checkbox label={cart.product.name} hideLabel checked={isSelect} onChange={onSelect} />
+        </div>
+
+        {/* 상품 이미지 */}
+        <div className="row-span-2 w-20 h-20 sm:w-24 sm:h-24 shrink-0 place-self-center">
           <ProductImage
             src={cart.product.image?.path}
             alt=""
             className={`rounded-[0.875rem] ${soldOut ? "grayscale" : ""}`}
           />
         </div>
-        <div className="flex flex-col gap-1 sm:gap-3.5">
-          <div className="flex gap-1 items-center ">
-            <h3 className="text-[#1A1A1C] text-xs sm:text-[1rem] font-black">
+
+        {/* 상품 정보 영역 */}
+        <div className="flex flex-col gap-1 sm:gap-2 min-w-0">
+          {/* 상품명 + 품절 뱃지 */}
+          <div className="flex gap-1 items-center">
+            <h3 className="text-[#1A1A1C] text-xs sm:text-[1rem] font-black truncate">
               {cart.product.name}
             </h3>
             {soldOut && <Badge variant="default">품절</Badge>}
           </div>
+
+          {/* 단가 */}
           <p className="text-text-tertiary text-[0.75rem] font-bold">
             {cart.product.price.toLocaleString()}원
           </p>
-          {soldOut ? (
+
+          {soldOut && (
             <p className="text-text-tertiary text-xs font-bold">
               현재 상품의 재고가 없어 주문이 불가능합니다.
             </p>
-          ) : (
-            <QuantityControl
-              initialCount={cart.quantity}
-              disabled={isLoading}
-              onChange={handleQuantityChange}
-            />
           )}
+
           {/* 에러 메시지 */}
           {storeError && <p className="text-red-500 text-xs mt-1">{storeError.message}</p>}
         </div>
-        <div className="flex flex-col items-end ml-auto gap-8 sm:gap-14">
+
+        {/* 삭제 버튼 + 가격 */}
+        <div className="row-span-2 flex flex-col items-end justify-between">
           <button onClick={handleDelete} disabled={isLoading}>
             <Image src="/images/cart/x.svg" alt="" width={28} height={28} />
           </button>
@@ -119,6 +127,17 @@ export default function OnetimeItemList({
             {totalPrice.toLocaleString()}원
           </p>
         </div>
+
+        {/* 수량 조절 영역 - 모바일: 2번째 줄 풀너비 / PC: 상품정보 아래 */}
+        {!soldOut && (
+          <div className="col-start-1 col-end-5 sm:col-start-3 sm:col-end-4 pt-2 sm:pt-0 border-t sm:border-t-0 border-gray-100">
+            <QuantityControl
+              initialCount={cart.quantity}
+              disabled={isLoading}
+              onChange={handleQuantityChange}
+            />
+          </div>
+        )}
       </div>
     </section>
   );

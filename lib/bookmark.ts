@@ -1,5 +1,5 @@
 // lib/bookmark.ts
-import { BookmarkListRes, ResDate } from "@/types/response";
+import { BookmarkListRes, ResData } from "@/types/response";
 import { EmptyRes } from "@/types/response";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -14,7 +14,7 @@ interface GetWishlistOptions {
 export async function getWishlist(
   token: string,
   options?: GetWishlistOptions,
-): Promise<ResDate<BookmarkListRes>> {
+): Promise<ResData<BookmarkListRes>> {
   try {
     const params = new URLSearchParams();
 
@@ -46,7 +46,7 @@ export async function getWishlist(
 export async function deleteWishlist(
   token: string,
   bookmarkId: number,
-): Promise<ResDate<EmptyRes>> {
+): Promise<ResData<EmptyRes>> {
   try {
     const res = await fetch(`${API_URL}/bookmarks/${bookmarkId}`, {
       method: "DELETE",

@@ -10,8 +10,8 @@ import PurchaseModal from "@/app/(main)/products/_components/Modal";
 import { Product } from "@/types/product";
 import { Review } from "@/types/review";
 import { Post } from "@/types/post";
-import useUserStore from "@/app/(main)/(auth)/login/zustand/useStore";
-import { addBookmark, getBookmarks, removeBookmark } from "@/lib/bookmark";
+import useUserStore from "@/zustand/useStore";
+import { addBookmark, getBookmarks, removeBookmark } from "@/lib/bookmar";
 import {
   getReplyBookmarks,
   addReplyBookmark,
