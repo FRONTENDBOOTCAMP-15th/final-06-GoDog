@@ -11,6 +11,15 @@ import { useQuery } from "@tanstack/react-query";
 import { getOrders } from "@/lib/order";
 import { useEffect } from "react";
 import Cookies from "js-cookie";
+import { Product } from "@/types/product";
+
+interface SubscriptionOrderItem {
+  _id: string | number;
+  color?: "subscription" | "oneTime";
+  size?: "2w" | "4w";
+  createdAt: string;
+  products: Product;
+}
 
 export default function Subscription() {
   const user = useUserStore((state) => state.user);
@@ -31,6 +40,12 @@ export default function Subscription() {
       }),
     enabled: !!token,
   });
+
+  const getPeriodText = (size: string) => {
+    if (size === "2w") return "2주 주기 배송";
+    if (size === "4w") return "4주 주기 배송";
+    return "";
+  };
 
   return (
     <div className="w-full min-w-[360px] pb-[70px]">
@@ -70,7 +85,7 @@ export default function Subscription() {
                 }
                 content="상세 보기"
                 date={item.createdAt.split(" ")[0]}
-                period={item.period}
+                period={getPeriodText(item.size)}
                 quantity={item.products[0].quantity}
                 price={`${item.products[0].price.toLocaleString()}원`}
                 mark={<RigthMark />}

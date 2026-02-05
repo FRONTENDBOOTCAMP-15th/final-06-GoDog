@@ -12,6 +12,8 @@ interface GetOrdersOptions {
   sort?: Record<string, 1 | -1>;
   type?: string;
   path?: string;
+  color?: string;
+  size?: string;
 }
 
 /**
@@ -42,7 +44,7 @@ export async function getOrders(
     const params = new URLSearchParams();
     const mypagesubscription = options?.path === "/mypage/subscription";
     if (options) {
-      const { user_id, state, custom, page, limit, sort } = options;
+      const { user_id, state, custom, page, limit, sort, path } = options;
 
       if (user_id) params.append("user_id", String(user_id));
       if (state) params.append("state", state);
@@ -50,7 +52,13 @@ export async function getOrders(
       if (page) params.append("page", String(page));
       if (limit) params.append("limit", String(limit));
       if (sort) params.append("sort", JSON.stringify(sort));
-      if (mypagesubscription) params.append("custom", `{"period":{"$regex":"주기 배송"}}`);
+      // if (mypagesubscription) params.append("custom", `{"period":{"$regex":"주기 배송"}}`);
+      const finalCustom =
+        path === "/mypage/subscription" ? { ...custom, color: "subscription" } : custom;
+
+      if (finalCustom && Object.keys(finalCustom).length > 0) {
+        params.append("custom", JSON.stringify(finalCustom));
+      }
     }
 
     const queryString = params.toString();
