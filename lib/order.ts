@@ -48,15 +48,16 @@ export async function getOrders(
 
       if (user_id) params.append("user_id", String(user_id));
       if (state) params.append("state", state);
-      if (custom) params.append("custom", JSON.stringify(custom));
+      // if (custom) params.append("custom", JSON.stringify(custom));
       if (page) params.append("page", String(page));
       if (limit) params.append("limit", String(limit));
       if (sort) params.append("sort", JSON.stringify(sort));
-      // if (mypagesubscription) params.append("custom", `{"period":{"$regex":"주기 배송"}}`);
-      const finalCustom =
-        path === "/mypage/subscription" ? { ...custom, color: "subscription" } : custom;
+      const finalCustom = {
+        ...(custom || {}),
+        ...(path === "/mypage/subscription" ? { color: "subscription" } : {}),
+      };
 
-      if (finalCustom && Object.keys(finalCustom).length > 0) {
+      if (Object.keys(finalCustom).length > 0) {
         params.append("custom", JSON.stringify(finalCustom));
       }
     }
