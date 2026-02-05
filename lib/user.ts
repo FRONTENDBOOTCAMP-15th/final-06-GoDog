@@ -1,6 +1,6 @@
 "use server";
 
-import { ErrorRes, UserInfoRes, UserListRes } from "@/types/response";
+import { ResData, UserInfoRes, UserListRes } from "@/types/response";
 import { cookies } from "next/headers";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -32,7 +32,7 @@ interface GetUsersOptions {
  * @param {number} [options.page] - 페이지 번호
  * @param {number} [options.limit] - 한 페이지당 항목 수
  * @param {Record<string, 1 | -1>} [options.sort] - 정렬 조건 (기본값: { _id: -1 })
- * @returns {Promise<UserListRes | ErrorRes>} - 회원 목록 응답 객체
+ * @returns {Promise<ResData<UserListRes>>} - 회원 목록 응답 객체
  * @example
  * // 전체 조회
  * getUsers();
@@ -43,7 +43,7 @@ interface GetUsersOptions {
  * // 생일이 11월인 회원 조회
  * getUsers({ custom: { "extra.birthday": { $gte: "11", $lt: "12" } } });
  */
-export async function getUsers(options?: GetUsersOptions): Promise<UserListRes | ErrorRes> {
+export async function getUsers(options?: GetUsersOptions): Promise<ResData<UserListRes>> {
   try {
     const params = new URLSearchParams();
 
@@ -81,12 +81,12 @@ export async function getUsers(options?: GetUsersOptions): Promise<UserListRes |
 /**
  * 회원 정보 조회 (단일)
  * @param {number} _id - 조회할 회원 id
- * @returns {Promise<UserRes | ErrorRes>} - 회원 정보 응답 객체
+ * @returns {Promise<ResData<UserInfoRes>>} - 회원 정보 응답 객체
  * @example
  * // 회원 정보 조회
  * getUser(4);
  */
-export async function getUser(_id: number): Promise<UserInfoRes | ErrorRes> {
+export async function getUser(_id: number): Promise<ResData<UserInfoRes>> {
   try {
     const res = await fetch(`${API_URL}/users/${_id}`, {
       headers: {
@@ -120,7 +120,7 @@ interface UpdateUserOptions {
  * 회원 정보 수정
  * @param {number | string} _id - 수정할 회원 id
  * @param {UpdateUserOptions} data - 수정할 회원 정보
- * @returns {Promise<UserInfoRes | ErrorRes>} - 수정된 회원 정보 응답 객체
+ * @returns {Promise<ResData<UserInfoRes>>} - 수정된 회원 정보 응답 객체
  * @example
  * // 이름과 전화번호 수정
  * updateUser(4, { name: "길드래곤", phone: "01099998888" });
@@ -138,7 +138,7 @@ interface UpdateUserOptions {
 export async function updateUser(
   _id: number | string,
   data: UpdateUserOptions,
-): Promise<UserInfoRes | ErrorRes> {
+): Promise<ResData<UserInfoRes>> {
   try {
     const cookieStore = await cookies();
     const token = cookieStore.get("accessToken")?.value;
