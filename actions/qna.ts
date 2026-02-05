@@ -1,4 +1,4 @@
-import useUserStore from "@/app/(main)/(auth)/login/zustand/useStore";
+import useUserStore from "@/zustand/useStore";
 import { Reply } from "@/types/post";
 import { PostInfoRes, ReplyListRes, ResData } from "@/types/response";
 
@@ -8,6 +8,56 @@ const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || "";
 // 폼 상태 타입
 export interface ReplyFormState {
   content: string;
+}
+
+export interface QnaPostForm {
+  title: string;
+  content: string;
+  product_id: number;
+  category: string;
+  product_name?: string;
+  product_img?: string;
+}
+
+/**
+ * QnA 게시글 등록
+ */
+export async function createQnaPost(form: QnaPostForm) {
+  const token = useUserStore.getState().user?.token?.accessToken;
+  if (!token) throw new Error("로그인이 필요합니다.");
+
+  const payload = {
+    type: "qna",
+    title: form.title.trim(),
+    content: form.content.trim(),
+    product_id: form.product_id,
+    extra: {
+      category: form.category,
+      product_name: form.product_name,
+      product_img: form.product_img,
+    },
+  };
+
+  const res = await fetch(`${API_URL}/posts`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "client-id": CLIENT_ID,
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const data: ResData<PostInfoRes> = await res.json();
+
+  if (data.ok !== 1) {
+    const errorMsg = data.errors
+      ? Object.values(data.errors)[0].msg
+      : data.message || "문의 등록에 실패했습니다.";
+    throw new Error(errorMsg);
+  }
+
+  return data.item;
 }
 
 /**

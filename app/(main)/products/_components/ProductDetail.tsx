@@ -578,6 +578,12 @@ export default function ProductDetail({
             variant="primary"
             size="sm"
             className="h-11 w-fit cursor-pointer self-start whitespace-nowrap rounded-[0.875rem] border-0 bg-[#fba613] px-[1.125rem] text-center text-[0.76875rem] font-bold leading-[1.09375rem] text-white shadow-[0_8px_32px_rgba(251,166,19,0.2)] sm:self-center"
+            onClick={() => {
+              const params = new URLSearchParams();
+              params.set("productName", product.name);
+              params.set("productImage", product.mainImages[0]?.path || "");
+              router.push(`/products/${productId}/qna?${params.toString()}`);
+            }}
           >
             문의 작성하기
           </Button>
