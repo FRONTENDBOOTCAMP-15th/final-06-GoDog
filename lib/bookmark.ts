@@ -1,5 +1,5 @@
 // lib/bookmark.ts
-import { BookmarkListRes, ResData } from "@/types/response";
+import { BookmarkInfoRes, BookmarkListRes, ResData } from "@/types/response";
 import { EmptyRes } from "@/types/response";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -67,12 +67,12 @@ export async function deleteWishlist(
  * 북마크(관심상품) 등록
  * @param {string} token - 로그인 토큰
  * @param {number} productId - 상품 id
- * @returns {Promise<BookmarkInfoRes | ErrorRes>} - 북마크 등록 응답 객체
+ * @returns {Promise<ResData<BookmarkInfoRes>>} - 북마크 등록 응답 객체
  */
 export async function addBookmark(
   token: string,
   productId: number,
-): Promise<BookmarkInfoRes | ErrorRes> {
+): Promise<ResData<BookmarkInfoRes>> {
   try {
     const res = await fetch(`${API_URL}/bookmarks/product`, {
       method: "POST",
