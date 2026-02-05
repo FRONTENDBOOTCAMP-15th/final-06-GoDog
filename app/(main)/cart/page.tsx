@@ -5,11 +5,8 @@ import SubscriptionCart from "@/app/(main)/cart/subscription-cart";
 import useCartStore from "@/zustand/useCartStore";
 import Badge from "@/components/common/Badge";
 import Tab from "@/components/common/Tab";
-import { Suspense, useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
-import { getCarts, removeFromCart } from "@/lib/cart";
 import useUserStore from "@/zustand/useStore";
-import { Cart } from "@/types/cart";
+import { useEffect, useState } from "react";
 
 type TabType = "oneTime" | "subscription";
 
@@ -25,26 +22,14 @@ export default function Cart() {
     useCartStore();
 
   useEffect(() => {
-    const fetchCart = async () => {
-      if (!user?.token?.accessToken) return;
-      const res = await getCarts(user.token.accessToken);
-      if (res.ok === 1) {
-        setCartItems(res.item);
-      }
-    };
-    fetchCart();
-  }, [user]);
-
-  const handleRemove = async (cartId: number) => {
-    if (!user?.token?.accessToken) return;
-    const res = await removeFromCart(user.token.accessToken, cartId);
-    if (res.ok === 1) {
-      setCartItems((prev) => prev.filter((item) => item._id !== cartId));
+    if (accessToken) {
+      fetchCart(accessToken);
     }
-  };
+  }, [accessToken, fetchCart]);
 
-  const onetimeItems = cartItems.filter((item) => !item.color || item.color === "oneTime");
-  const subscriptionItems = cartItems.filter((item) => item.color === "subscribe");
+  // 1회 구매와 정기구독 탭 카운트
+  const onetimeCount = getOnetimeItems().length;
+  const subscriptionCount = getSubscriptionItems().length;
 
   const tabs: { key: TabType; label: string; count: number }[] = [
     { key: "oneTime", label: "1회구매", count: onetimeCount },
