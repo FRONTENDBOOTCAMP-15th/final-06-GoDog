@@ -1,6 +1,6 @@
 import SubscriptionItemList from "@/app/(main)/cart/_components/subscription-item-list";
 import { deleteCartItem, deleteCartItems } from "@/app/(main)/cart/action/cart";
-import useCartStore from "@/app/(main)/cart/zustand/useCartStore";
+import useCartStore from "@/zustand/useCartStore";
 import Button from "@/components/common/Button";
 import Checkbox from "@/components/common/Checkbox";
 import useUserStore from "@/zustand/useStore";
@@ -67,7 +67,7 @@ export default function SubscriptionCart() {
   // 개별 선택/해제 핸들러
   const handleSelect = (id: number) => {
     setSelectIds((prev) =>
-      prev.includes(id) ? prev.filter((itemId) => itemId !== id) : [...prev, id],
+      prev.includes(id) ? prev.filter((itemId) => itemId !== id) : [...prev, id]
     );
   };
 
@@ -201,8 +201,8 @@ export default function SubscriptionCart() {
                   ? `${selectCount}개 상품 구매하기`
                   : "선택한 상품 중 구매 가능한 상품이 없습니다."
                 : availableCount > 0
-                  ? `${availableCount}개 상품 구매하기`
-                  : "구매 가능한 상품이 없습니다."}
+                ? `${availableCount}개 상품 구매하기`
+                : "구매 가능한 상품이 없습니다."}
             </Button>
 
             <div className="flex items-center justify-center gap-2">
