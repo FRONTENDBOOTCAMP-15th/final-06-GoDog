@@ -22,7 +22,7 @@ export default function Subscription() {
   const { data: resSublist, isLoading } = useQuery({
     queryKey: ["subscriptions", page],
     queryFn: () =>
-      getOrders(token, {
+      getOrders(token ?? "", {
         page,
         limit: 4,
         path: params,

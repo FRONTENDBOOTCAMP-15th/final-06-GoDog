@@ -19,6 +19,7 @@ import { getOrders } from "@/lib/order";
 import useUserStore from "@/zustand/useStore";
 import { useQuery } from "@tanstack/react-query";
 import Cookies from "js-cookie";
+import { OrderStateCode } from "@/types/codes";
 
 export default function Review() {
   const user = useUserStore((state) => state.user);
@@ -48,7 +49,7 @@ export default function Review() {
   const { data: resOrderlist, isLoading } = useQuery({
     queryKey: ["order", order_id],
     queryFn: () =>
-      getOrders(token, {
+      getOrders(token ?? "", {
         custom: { _id: order_id },
         type: "user",
       }),
@@ -146,7 +147,7 @@ export default function Review() {
               name={order.products[0].name}
               price={order.products[0].price.toLocaleString() + "원"}
               date={order.createdAt.split(" ")[0]}
-              state={order.state}
+              state={order.state as OrderStateCode}
             />
           ) : (
             <div className="col-span-full py-20 text-center">

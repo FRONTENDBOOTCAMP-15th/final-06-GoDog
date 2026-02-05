@@ -24,7 +24,7 @@ export default function Orders() {
   const { data: resOrderlist, isLoading } = useQuery({
     queryKey: ["orders", page],
     queryFn: () =>
-      getOrders(token, {
+      getOrders(token ?? "", {
         page,
         limit: 4,
         type: "user",
@@ -87,7 +87,7 @@ export default function Orders() {
                     }
                     content={hasReview ? "리뷰 작성 완료" : "리뷰 작성"}
                     date={item.createdAt.split(" ")[0]}
-                    period={getPeriodText(item.color, item.size)}
+                    period={getPeriodText(item.color ?? "oneTime", item.size)}
                     quantity={item.products[0].quantity}
                     price={`${item.products[0].price.toLocaleString()}원`}
                     mark={hasReview ? null : <Pencil />}
