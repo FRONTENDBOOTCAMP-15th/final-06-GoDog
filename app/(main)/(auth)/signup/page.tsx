@@ -49,7 +49,6 @@ export default function SignupForm() {
     <>
       <div className="bg-bg-secondary min-h-screen py-20 px-4">
         <div className="max-w-125 mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700">
-          {/* 상단 섹션 */}
           <div className="text-center mb-12">
             <Badge variant="accent" className="mb-4">
               JOIN US
@@ -62,10 +61,8 @@ export default function SignupForm() {
             </p>
           </div>
 
-          {/* 회원가입 폼 */}
           <div className="bg-white rounded-[3.5rem] p-10 md:p-14 shadow-card border border-border-primary">
             <form onSubmit={handleSignup} className="space-y-8">
-              {/* 이름 필드 추가 (필수) */}
               <Input
                 label="이름"
                 name="name"
@@ -75,7 +72,6 @@ export default function SignupForm() {
                 required
               />
 
-              {/* 이메일 */}
               <Input
                 type="email"
                 label="이메일 계정"
@@ -86,7 +82,6 @@ export default function SignupForm() {
                 required
               />
 
-              {/* 비밀번호 */}
               <Input
                 label="비밀번호"
                 type="password"
@@ -97,7 +92,6 @@ export default function SignupForm() {
                 required
               />
 
-              {/* 비밀번호 확인 */}
               <Input
                 label="비밀번호 확인"
                 type="password"
@@ -122,7 +116,6 @@ export default function SignupForm() {
             </form>
           </div>
 
-          {/* 푸터 보조 액션 */}
           <div className="text-center mt-12">
             <p className="text-sm font-bold text-text-secondary">
               이미 계정이 있으신가요?
