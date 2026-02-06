@@ -393,38 +393,38 @@ export default function ProductDetail({
           </div>
         ) : (
           reviews.map((review) => (
-          <article
-            key={review._id}
-            className="mt-6 rounded-[1.5rem] border border-black/[0.06] bg-white p-4 shadow-[0_2px_12px_0_rgba(0,0,0,0.03)] sm:mt-10 sm:rounded-[2.1875rem] sm:p-7"
-          >
-            <div className="flex flex-col items-start gap-4 sm:flex-row sm:gap-6">
-              <div className="h-24 w-24 flex-shrink-0 sm:h-[8.75rem] sm:w-[8.75rem]">
-                <Image
-                  src={review.extra?.image?.path || "/images/product-404.jpg"}
-                  className="block h-full w-full rounded-[1.125rem] object-cover"
-                  width={140}
-                  height={140}
-                  alt="리뷰 상품 이미지"
-                />
-              </div>
-
-              <div className="w-full flex-1">
-                <div className="flex flex-wrap items-start gap-2 sm:gap-3">
-                  <Link href="#" className="flex flex-col gap-1 hover:opacity-80">
-                    <StarRating rating={review.rating} />
-                    <p className="text-sm sm:text-base">{review.extra?.title}</p>
-                    <p className="text-xs text-gray-500 sm:text-sm">
-                      {review.user.name} | {review.createdAt}
-                    </p>
-                  </Link>
+            <article
+              key={review._id}
+              className="mt-6 rounded-[1.5rem] border border-black/[0.06] bg-white p-4 shadow-[0_2px_12px_0_rgba(0,0,0,0.03)] sm:mt-10 sm:rounded-[2.1875rem] sm:p-7"
+            >
+              <div className="flex flex-col items-start gap-4 sm:flex-row sm:gap-6">
+                <div className="h-24 w-24 flex-shrink-0 sm:h-[8.75rem] sm:w-[8.75rem]">
+                  <Image
+                    src={review.extra?.image?.path || "/images/product-404.jpg"}
+                    className="block h-full w-full rounded-[1.125rem] object-cover"
+                    width={140}
+                    height={140}
+                    alt="리뷰 상품 이미지"
+                  />
                 </div>
 
-                <div className="mt-[0.625rem] text-xs font-medium leading-[1.42188rem] text-[#646468] sm:text-sm">
-                  <p>{review.content}</p>
+                <div className="w-full flex-1">
+                  <div className="flex flex-wrap items-start gap-2 sm:gap-3">
+                    <Link href="#" className="flex flex-col gap-1 hover:opacity-80">
+                      <StarRating rating={review.rating} />
+                      <p className="text-sm sm:text-base">{review.extra?.title}</p>
+                      <p className="text-xs text-gray-500 sm:text-sm">
+                        {review.user.name} | {review.createdAt}
+                      </p>
+                    </Link>
+                  </div>
+
+                  <div className="mt-[0.625rem] text-xs font-medium leading-[1.42188rem] text-[#646468] sm:text-sm">
+                    <p>{review.content}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          </article>
+            </article>
           ))
         )}
       </section>
@@ -490,68 +490,157 @@ export default function ProductDetail({
             </div>
           ) : (
             qna.map((item) => (
-            <section
-              key={item._id}
-              className="border-b border-black/[0.06]"
-              onClick={() => setOpenQnaId(openQnaId === item._id ? null : item._id)}
-            >
-              <button
-                type="button"
-                className="flex w-full flex-col gap-2 border-0 bg-transparent py-4 text-left text-inherit sm:grid sm:grid-cols-[auto_1fr_auto_auto] sm:items-center sm:gap-[18px] sm:py-[26px]"
+              <section
+                key={item._id}
+                className="border-b border-black/[0.06]"
+                onClick={() => setOpenQnaId(openQnaId === item._id ? null : item._id)}
               >
-                <span
-                  className={`inline-flex h-7 w-fit items-center justify-center whitespace-nowrap rounded-[6.5px] border px-3 text-xs font-bold ${
-                    item.replies && item.replies.length > 0
-                      ? "border-[#F0FDF4] bg-[#DCFCE7] text-[#16A34A]"
-                      : "border-[#E4E4E7] bg-[#F0F0F3] text-[#646468]"
-                  }`}
+                <button
+                  type="button"
+                  className="flex w-full flex-col gap-2 border-0 bg-transparent py-4 text-left text-inherit sm:grid sm:grid-cols-[auto_1fr_auto_auto] sm:items-center sm:gap-[18px] sm:py-[26px]"
                 >
-                  {item.replies && item.replies.length > 0 ? "답변완료" : "답변대기"}
-                </span>
-                <p className="m-0 text-sm font-extrabold tracking-[-0.01em] sm:text-lg">
-                  {item.title}
-                </p>
-                <p className="m-0 whitespace-nowrap text-xs font-semibold text-[#909094] sm:text-sm">
-                  {item.user.name} | {item.createdAt.slice(0, 10)}
-                </p>
-                <span
-                  className={`hidden text-lg leading-none text-[#909094] origin-center sm:block ${openQnaId === item._id ? "rotate-180" : ""}`}
-                >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 18 18"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
+                  <span
+                    className={`inline-flex h-7 w-fit items-center justify-center whitespace-nowrap rounded-[6.5px] border px-3 text-xs font-bold ${
+                      item.replies && item.replies.length > 0
+                        ? "border-[#F0FDF4] bg-[#DCFCE7] text-[#16A34A]"
+                        : "border-[#E4E4E7] bg-[#F0F0F3] text-[#646468]"
+                    }`}
                   >
-                    <path
-                      d="M13.8529 6.5625L8.7487 11.6667L3.6445 6.5625"
-                      stroke="#909094"
-                      strokeWidth="2.1875"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </span>
-              </button>
+                    {item.replies && item.replies.length > 0 ? "답변완료" : "답변대기"}
+                  </span>
+                  <p className="m-0 text-sm font-extrabold tracking-[-0.01em] sm:text-lg">
+                    {item.title}
+                  </p>
+                  <p className="m-0 whitespace-nowrap text-xs font-semibold text-[#909094] sm:text-sm">
+                    {item.user.name} | {item.createdAt.slice(0, 20)}
+                  </p>
+                  <span
+                    className={`hidden text-lg leading-none text-[#909094] origin-center sm:block ${openQnaId === item._id ? "rotate-180" : ""}`}
+                  >
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 18 18"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M13.8529 6.5625L8.7487 11.6667L3.6445 6.5625"
+                        stroke="#909094"
+                        strokeWidth="2.1875"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
+                </button>
 
-              {/* 아코디언 답변 */}
-              <div
-                className={`overflow-hidden bg-gray-200 ${openQnaId === item._id ? "max-h-96 px-7 py-7" : "max-h-0 px-0 py-0"}`}
-              >
-                <p className="text-sm text-[#646468]">{item.content}</p>
-                {item.replies && item.replies.length > 0 && (
-                  <div className="mt-4 rounded-xl bg-gray-100 p-4">
-                    <p className="text-sm font-bold text-[#fba613]">답변</p>
-                    {item.replies.map((reply) => (
-                      <p key={reply._id} className="mt-2 text-sm text-[#646468]">
-                        {reply.content}
-                      </p>
-                    ))}
+                {/* 아코디언 답변 */}
+                <div
+                  className={`flex flex-col overflow-hidden bg-gray-100 ${openQnaId === item._id ? "max-h-90 px-7 py-7" : "max-h-0 px-0 py-0"}`}
+                >
+                  <div className="rounded-xl bg-gray-200 p-8">
+                    <p className="text-s text-[black]">{item.content}</p>
                   </div>
-                )}
-              </div>
-            </section>
+                  {item.replies && item.replies.length > 0 && (
+                    <div className="mt-6 ml-8 flex">
+                      {/* ㄴ자 연결선 */}
+                      <div className="mr-2 mt-1 h-6 w-4 border-b border-l border-[#d1d1d6]" />
+                      <div className="flex-1 flex items-center gap-3 rounded-xl bg-gray-200 p-4">
+                        <div className="flex-shrink-0">
+                          <svg
+                            width="45"
+                            height="45"
+                            viewBox="0 0 66 66"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <g filter="url(#filter0_d_131_30784)">
+                              <rect
+                                x="12"
+                                y="10"
+                                width="42"
+                                height="42"
+                                rx="14"
+                                fill="white"
+                                shapeRendering="crispEdges"
+                              />
+                              <circle
+                                cx="33"
+                                cy="31"
+                                r="7.875"
+                                stroke="#FBA613"
+                                strokeWidth="2.1875"
+                              />
+                              <text
+                                x="33"
+                                y="31"
+                                textAnchor="middle"
+                                dominantBaseline="middle"
+                                fill="#FBA613"
+                                fontSize="12"
+                                fontWeight="bold"
+                              >
+                                A
+                              </text>
+                            </g>
+                            <defs>
+                              <filter
+                                id="filter0_d_131_30784"
+                                x="0"
+                                y="0"
+                                width="66"
+                                height="66"
+                                filterUnits="userSpaceOnUse"
+                                colorInterpolationFilters="sRGB"
+                              >
+                                <feFlood floodOpacity="0" result="BackgroundImageFix" />
+                                <feColorMatrix
+                                  in="SourceAlpha"
+                                  type="matrix"
+                                  values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                                  result="hardAlpha"
+                                />
+                                <feOffset dy="2" />
+                                <feGaussianBlur stdDeviation="6" />
+                                <feComposite in2="hardAlpha" operator="out" />
+                                <feColorMatrix
+                                  type="matrix"
+                                  values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.03 0"
+                                />
+                                <feBlend
+                                  mode="normal"
+                                  in2="BackgroundImageFix"
+                                  result="effect1_dropShadow_131_30784"
+                                />
+                                <feBlend
+                                  mode="normal"
+                                  in="SourceGraphic"
+                                  in2="effect1_dropShadow_131_30784"
+                                  result="shape"
+                                />
+                              </filter>
+                            </defs>
+                          </svg>
+                        </div>
+                        <div className="flex flex-1 flex-col gap-1">
+                          {item.replies.map((reply) => (
+                            <div
+                              key={reply._id}
+                              className="flex items-center justify-between gap-4"
+                            >
+                              <p className="text-sm text-[black]">{reply.content}</p>
+                              <p className="shrink-0 text-xs text-[#808084]">
+                                {reply.createdAt.slice(0, 20)}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </section>
             ))
           )}
         </div>

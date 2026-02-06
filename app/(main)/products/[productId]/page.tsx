@@ -1,5 +1,5 @@
 import ProductDetail from "@/app/(main)/products/_components/ProductDetail";
-import { getPosts } from "@/lib/post";
+import { getPosts, getReplies } from "@/lib/post";
 import { getProduct } from "@/lib/product";
 
 interface Props {
@@ -49,7 +49,19 @@ export default async function ProductPage({ params, searchParams }: Props) {
     custom: { product_id: Number(productId) },
   });
 
-  const qna = qnaData.ok === 1 ? qnaData.item : [];
+  const qnaList = qnaData.ok === 1 ? qnaData.item : [];
+
+  // 각 QnA의 replies를 가져옴
+  const qna = await Promise.all(
+    qnaList.map(async (post) => {
+      const repliesData = await getReplies({ _id: post._id });
+      return {
+        ...post,
+        replies: repliesData.ok === 1 ? repliesData.item : [],
+      };
+    }),
+  );
+
   const qnaTotalPages = Math.max(1, Math.ceil(qna.length / QNA_PER_PAGE));
 
   return (
