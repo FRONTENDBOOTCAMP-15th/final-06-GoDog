@@ -35,6 +35,7 @@ export default function SignupForm() {
     }
 
     const { passwordConfirm, ...signupData } = formData;
+
     const result = await signup(signupData);
 
     if (result.ok === 1) {

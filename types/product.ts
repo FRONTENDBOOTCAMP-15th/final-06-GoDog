@@ -178,6 +178,7 @@ export interface Product {
   active: boolean;
   name: string;
   mainImages: ProductImage[];
+  content: string;
   extra: ProductExtra;
   createdAt: string;
   updatedAt: string;
