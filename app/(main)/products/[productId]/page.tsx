@@ -22,7 +22,7 @@ export default async function ProductPage({ params, searchParams }: Props) {
 
   // 리뷰,qna 목록 갯수
   const REVIEW_PER_PAGE = 5;
-  const QNA_PER_PAGE = 3;
+  const QNA_PER_PAGE = 5;
 
   const data = await getProduct(Number(productId));
   if (data.ok === 0) {

@@ -497,7 +497,7 @@ export default function ProductDetail({
               >
                 <button
                   type="button"
-                  className="flex w-full flex-col gap-2 border-0 bg-transparent py-4 text-left text-inherit sm:grid sm:grid-cols-[auto_1fr_auto_auto] sm:items-center sm:gap-[18px] sm:py-[26px]"
+                  className="relative flex w-full flex-col gap-2 border-0 bg-transparent py-4 pr-8 text-left text-inherit sm:grid sm:grid-cols-[auto_1fr_auto_auto] sm:items-center sm:gap-[18px] sm:py-[26px] sm:pr-0"
                 >
                   <span
                     className={`inline-flex h-7 w-fit items-center justify-center whitespace-nowrap rounded-[6.5px] border px-3 text-xs font-bold ${
@@ -515,7 +515,7 @@ export default function ProductDetail({
                     {item.user.name} | {item.createdAt.slice(0, 20)}
                   </p>
                   <span
-                    className={`hidden text-lg leading-none text-[#909094] origin-center sm:block ${openQnaId === item._id ? "rotate-180" : ""}`}
+                    className={`absolute right-0 top-1/2 -translate-y-1/2 text-lg leading-none text-[#909094] origin-center sm:static sm:translate-y-0 ${openQnaId === item._id ? "rotate-180" : ""}`}
                   >
                     <svg
                       width="18"
@@ -537,7 +537,7 @@ export default function ProductDetail({
 
                 {/* 아코디언 답변 */}
                 <div
-                  className={`flex flex-col overflow-hidden bg-gray-100 ${openQnaId === item._id ? "max-h-90 px-7 py-7" : "max-h-0 px-0 py-0"}`}
+                  className={`flex flex-col bg-gray-100 ${openQnaId === item._id ? "max-h-90 overflow-y-auto px-7 py-7" : "max-h-0 overflow-hidden px-0 py-0"}`}
                 >
                   <div className="rounded-xl bg-gray-200 p-8">
                     <p className="text-s text-[black]">{item.content}</p>
@@ -546,8 +546,8 @@ export default function ProductDetail({
                     <div className="mt-6 ml-8 flex">
                       {/* ㄴ자 연결선 */}
                       <div className="mr-2 mt-1 h-6 w-4 border-b border-l border-[#d1d1d6]" />
-                      <div className="flex-1 flex items-center gap-3 rounded-xl bg-gray-200 p-4">
-                        <div className="flex-shrink-0">
+                      <div className="flex-1 flex items-start gap-3 rounded-xl bg-gray-200 p-4">
+                        <div className="flex-shrink-0 self-start">
                           <svg
                             width="45"
                             height="45"
@@ -625,12 +625,9 @@ export default function ProductDetail({
                         </div>
                         <div className="flex flex-1 flex-col gap-1">
                           {item.replies.map((reply) => (
-                            <div
-                              key={reply._id}
-                              className="flex items-center justify-between gap-4"
-                            >
+                            <div key={reply._id} className="flex flex-col gap-2">
                               <p className="text-sm text-[black]">{reply.content}</p>
-                              <p className="shrink-0 text-xs text-[#808084]">
+                              <p className="self-end text-xs text-[#808084]">
                                 {reply.createdAt.slice(0, 20)}
                               </p>
                             </div>
