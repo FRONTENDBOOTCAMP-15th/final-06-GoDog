@@ -5,13 +5,14 @@ meta {
 }
 
 get {
-  url: {{url}}/replies/all?sort={ "extra.likeCount": -1 }
+  url: {{url}}/replies/all?sort={ "extra.likeCount": -1 }&rating=3
   body: none
   auth: inherit
 }
 
 params:query {
   sort: { "extra.likeCount": -1 }
+  rating: 3
 }
 
 settings {

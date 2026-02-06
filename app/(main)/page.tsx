@@ -15,7 +15,7 @@ export default async function Home() {
 
   console.log("Home");
   const bestProducts = bestProductsRes.item;
-  console.log(bestProducts);
+  // console.log(bestProducts);
 
   return (
     <>

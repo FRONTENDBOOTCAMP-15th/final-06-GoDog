@@ -1,6 +1,6 @@
-import useUserStore from "@/zustand/useStore";
 import { Reply } from "@/types/post";
 import { PostInfoRes, ReplyListRes, ResData } from "@/types/response";
+import useUserStore from "@/zustand/useStore";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || "";
