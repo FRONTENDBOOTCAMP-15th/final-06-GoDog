@@ -183,4 +183,5 @@ export interface Product {
   createdAt: string;
   updatedAt: string;
   replies?: Review[];
+  content?: string;
 }

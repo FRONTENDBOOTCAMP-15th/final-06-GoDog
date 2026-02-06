@@ -109,7 +109,7 @@ export default async function Home() {
                   image={`${product.mainImages[0]?.path}`}
                   title={product.name}
                   kcal={totalKcal ? `${totalKcal.toLocaleString()} kcal` : ""}
-                  description={product.content}
+                  description={product.content ? product.content : ""}
                   tag={product.extra?.category?.[0] ?? ""}
                   href={`/products/${product._id}`}
                 />

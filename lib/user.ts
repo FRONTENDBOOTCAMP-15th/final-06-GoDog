@@ -185,7 +185,7 @@ interface SignupOptions {
  * name: "백강록"
  * });
  */
-export async function signup(data: SignupOptions): Promise<UserInfoRes | ErrorRes> {
+export async function signup(data: SignupOptions): Promise<ResData<UserInfoRes>> {
   try {
     const res = await fetch(`${API_URL}/users`, {
       method: "POST",
