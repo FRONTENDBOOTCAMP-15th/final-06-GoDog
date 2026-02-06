@@ -34,7 +34,7 @@ export default async function Home() {
             }
             description="단순한 설문이 아닙니다. 아이의 생체 리듬과 활동량, 알러지 정보까지 모두 통합하여 가장
               과학적인 한 그릇을 설계합니다."
-         />
+          />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-100 lg:max-w-300 mx-auto">
             <FeatureCard
               icon={
@@ -109,7 +109,7 @@ export default async function Home() {
                   image={`${product.mainImages[0]?.path}`}
                   title={product.name}
                   kcal={totalKcal ? `${totalKcal.toLocaleString()} kcal` : ""}
-                  description={product.content}
+                  description={product.content ? product.content : ""}
                   tag={product.extra?.category?.[0] ?? ""}
                   href={`/products/${product._id}`}
                 />
