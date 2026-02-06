@@ -410,13 +410,13 @@ export default function ProductDetail({
 
                 <div className="w-full flex-1">
                   <div className="flex flex-wrap items-start gap-2 sm:gap-3">
-                    <Link href="#" className="flex flex-col gap-1 hover:opacity-80">
+                    <div className="flex flex-col gap-1 hover:opacity-80">
                       <StarRating rating={review.rating} />
                       <p className="text-sm sm:text-base">{review.extra?.title}</p>
                       <p className="text-xs text-gray-500 sm:text-sm">
                         {review.user.name} | {review.createdAt}
                       </p>
-                    </Link>
+                    </div>
                   </div>
 
                   <div className="mt-[0.625rem] text-xs font-medium leading-[1.42188rem] text-[#646468] sm:text-sm">
@@ -540,7 +540,7 @@ export default function ProductDetail({
                   className={`flex flex-col bg-gray-100 ${openQnaId === item._id ? "max-h-90 overflow-y-auto px-7 py-7" : "max-h-0 overflow-hidden px-0 py-0"}`}
                 >
                   <div className="rounded-xl bg-gray-200 p-8">
-                    <p className="text-s text-[black]">{item.content}</p>
+                    <p className="text-sm text-[black]">{item.content}</p>
                   </div>
                   {item.replies && item.replies.length > 0 && (
                     <div className="mt-6 ml-8 flex">
