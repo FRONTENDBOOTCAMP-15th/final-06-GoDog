@@ -7,6 +7,7 @@ interface GetAllRepliesOptions {
   sort?: Record<string, 1 | -1>;
   page?: number;
   limit?: number;
+  revalidate?: number;
 }
 
 /**
@@ -17,6 +18,7 @@ interface GetAllRepliesOptions {
  * @param {Record<string, 1 | -1>} [options.sort] - 정렬 조건 (예: { rating: -1 })
  * @param {number} [options.page] - 페이지 번호
  * @param {number} [options.limit] - 한 페이지당 항목 수
+ * @param {number} [options.revalidate] - 캐쉬 지속시간
  * @returns {Promise<ResData<ReplyListRes>>} - 구매 후기 목록 응답 객체
  * @example
  * // 기본 조회
@@ -35,7 +37,7 @@ export async function getAllReplies(
   options: GetAllRepliesOptions = {},
 ): Promise<ResData<ReviewListRes>> {
   try {
-    const { rating, full_name, sort, page, limit } = options;
+    const { rating, full_name, sort, page, limit, revalidate } = options;
 
     const params = new URLSearchParams();
 
@@ -63,5 +65,38 @@ export async function getAllReplies(
       ok: 0,
       message: "일시적인 네트워크 문제로 구매 후기 목록 조회에 실패했습니다.",
     };
+  }
+}
+
+// 후기 평균 평점 함수
+export async function getReviewStats(): Promise<{ average: number; total: number }> {
+  try {
+    const res = await fetch(`${API_URL}/replies/all?limit=9999`, {
+      headers: {
+        "Client-Id": CLIENT_ID,
+      },
+      cache: "force-cache",
+      next: {
+        // revalidate: 60 * 60 * 24,
+        revalidate: 60,
+      },
+    });
+
+    const data = await res.json();
+
+    if (!data.ok || !data.item?.length) {
+      return { average: 0, total: 0 };
+    }
+
+    const reviews = data.item;
+    const total = reviews.length;
+    const average =
+      Math.round(
+        (reviews.reduce((sum: number, r: { rating: number }) => sum + r.rating, 0) / total) * 10,
+      ) / 10;
+
+    return { average, total };
+  } catch {
+    return { average: 0, total: 0 }; // 에러 시 기본값
   }
 }
