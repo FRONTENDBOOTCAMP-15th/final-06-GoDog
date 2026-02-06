@@ -13,12 +13,6 @@ import { Post } from "@/types/post";
 import Cookies from "js-cookie";
 import useUserStore from "@/zustand/useStore";
 import { addBookmark, getWishlist, deleteWishlist } from "@/lib/bookmark";
-import {
-  getReplyBookmarks,
-  addReplyBookmark,
-  removeReplyBookmark,
-  updateReplyLikeCount,
-} from "@/lib/product";
 
 function StarRating({ rating, size = 16 }: { rating: number; size?: number }) {
   return (
@@ -128,75 +122,6 @@ export default function ProductDetail({
   const [activeTab, setActiveTab] = useState<"detail" | "review" | "qna">("detail");
   const [isDetailExpanded, setIsDetailExpanded] = useState(false);
   const [openQnaId, setOpenQnaId] = useState<number | null>(null);
-  // 도움돼요를 누른 리뷰 ID → 북마크 ID 매핑
-  const [helpfulMap, setHelpfulMap] = useState<Record<number, number>>({});
-  const [helpfulLoading, setHelpfulLoading] = useState<number | null>(null);
-  // 리뷰별 도움돼요 카운트 (리뷰 ID → 카운트)
-  const [helpfulCounts, setHelpfulCounts] = useState<Record<number, number>>({});
-
-  // 페이지 로드 시 내가 누른 도움돼요 목록 조회 + 리뷰별 기본 카운트 세팅
-  useEffect(() => {
-    // 리뷰의 extra.likeCount 기본값 세팅
-    const counts: Record<number, number> = {};
-    reviews.forEach((r) => {
-      counts[r._id] = Number(r.extra?.likeCount) || 0;
-    });
-    setHelpfulCounts(counts);
-
-    const fetchHelpful = async () => {
-      if (!token) return;
-      const data = await getReplyBookmarks(token);
-      if (data.ok === 1) {
-        const map: Record<number, number> = {};
-        data.item.forEach((b) => {
-          map[b.target_id] = b._id;
-        });
-        setHelpfulMap(map);
-      }
-    };
-    fetchHelpful();
-  }, [user, reviews]);
-
-  const toggleHelpful = async (reviewId: number) => {
-    if (!token) {
-      alert("로그인이 필요합니다.");
-      router.push("/login");
-      return;
-    }
-    if (helpfulLoading !== null) return;
-    setHelpfulLoading(reviewId);
-
-    const review = reviews.find((r) => r._id === reviewId);
-    const reviewContent = review?.content || "";
-
-    try {
-      if (helpfulMap[reviewId]) {
-        // 이미 누른 도움돼요 → 해제
-        const res = await removeReplyBookmark(token, helpfulMap[reviewId]);
-        if (res.ok === 1) {
-          const newCount = Math.max(0, (helpfulCounts[reviewId] || 0) - 1);
-          setHelpfulMap((prev) => {
-            const next = { ...prev };
-            delete next[reviewId];
-            return next;
-          });
-          setHelpfulCounts((prev) => ({ ...prev, [reviewId]: newCount }));
-          await updateReplyLikeCount(token, reviewId, newCount, reviewContent);
-        }
-      } else {
-        // 처음 누른 도움돼요 → 등록
-        const res = await addReplyBookmark(token, reviewId);
-        if (res.ok === 1) {
-          const newCount = (helpfulCounts[reviewId] || 0) + 1;
-          setHelpfulMap((prev) => ({ ...prev, [reviewId]: res.item._id }));
-          setHelpfulCounts((prev) => ({ ...prev, [reviewId]: newCount }));
-          await updateReplyLikeCount(token, reviewId, newCount, reviewContent);
-        }
-      }
-    } finally {
-      setHelpfulLoading(null);
-    }
-  };
 
   // 모달
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -487,43 +412,6 @@ export default function ProductDetail({
                       {review.user.name} | {review.createdAt}
                     </p>
                   </Link>
-
-                  <div className="ml-auto self-start">
-                    <button
-                      type="button"
-                      onClick={() => toggleHelpful(review._id)}
-                      disabled={helpfulLoading === review._id}
-                      className={`inline-flex items-center rounded-[0.5rem] border px-2 py-1 text-[11px] font-bold transition-colors ${
-                        helpfulMap[review._id]
-                          ? "border-[#fba613] bg-[#fff5e6] text-[#fba613]"
-                          : "border-black/[0.06] bg-[#f5f5f7] text-[#646468]"
-                      } ${helpfulLoading === review._id ? "opacity-50 cursor-not-allowed" : ""}`}
-                    >
-                      <svg
-                        width="20"
-                        height="14"
-                        viewBox="0 0 20 14"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <svg clipPath="url(#clip0_131_26598)">
-                          <path
-                            d="M8.16667 5.83317H10.9416C11.251 5.83317 11.5477 5.95609 11.7665 6.17488C11.9853 6.39367 12.1082 6.69042 12.1082 6.99984C12.1082 7.30926 11.9853 7.606 11.7665 7.82479C11.5477 8.04359 11.251 8.1665 10.9416 8.1665H10.1716L10.535 10.0962C10.5661 10.2634 10.5603 10.4354 10.518 10.6002C10.4756 10.7649 10.3978 10.9185 10.2898 11.0499C10.1819 11.1814 10.0465 11.2877 9.8932 11.3614C9.73986 11.435 9.57227 11.4743 9.40217 11.4763H5.50083C5.23666 11.4759 4.98045 11.3858 4.77413 11.2208C4.56781 11.0558 4.4236 10.8257 4.36508 10.5681L3.5 5.90434V2.33317C3.5 2.02375 3.62292 1.72701 3.84171 1.50821C4.0605 1.28942 4.35725 1.1665 4.66667 1.1665H7.58333C7.89275 1.1665 8.1895 1.28942 8.40829 1.50821C8.62708 1.72701 8.75 2.02375 8.75 2.33317V5.83317H8.16667Z"
-                            stroke={helpfulMap[review._id] ? "#fba613" : "#646468"}
-                            strokeWidth="1.45833"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                        <defs>
-                          <clipPath id="clip0_131_26598">
-                            <rect width="14" height="14" fill="white" />
-                          </clipPath>
-                        </defs>
-                      </svg>
-                      도움돼요 {helpfulCounts[review._id] || 0}
-                    </button>
-                  </div>
                 </div>
 
                 <div className="mt-[0.625rem] text-xs font-medium leading-[1.42188rem] text-[#646468] sm:text-sm">
