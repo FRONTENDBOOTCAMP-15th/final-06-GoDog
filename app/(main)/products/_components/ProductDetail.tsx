@@ -387,7 +387,12 @@ export default function ProductDetail({
       </section>
 
       <section className="mt-[1.75rem]">
-        {reviews.map((review) => (
+        {reviews.length === 0 ? (
+          <div className="flex items-center justify-center py-16 text-[#909094]">
+            등록된 리뷰가 없습니다.
+          </div>
+        ) : (
+          reviews.map((review) => (
           <article
             key={review._id}
             className="mt-6 rounded-[1.5rem] border border-black/[0.06] bg-white p-4 shadow-[0_2px_12px_0_rgba(0,0,0,0.03)] sm:mt-10 sm:rounded-[2.1875rem] sm:p-7"
@@ -420,7 +425,8 @@ export default function ProductDetail({
               </div>
             </div>
           </article>
-        ))}
+          ))
+        )}
       </section>
 
       {/* 리뷰 페이지네이션 */}
@@ -478,7 +484,12 @@ export default function ProductDetail({
         </section>
 
         <div className="flex flex-col">
-          {qna.map((item) => (
+          {qna.length === 0 ? (
+            <div className="flex items-center justify-center py-16 text-[#909094]">
+              등록된 Q&A가 없습니다.
+            </div>
+          ) : (
+            qna.map((item) => (
             <section
               key={item._id}
               className="border-b border-black/[0.06]"
@@ -541,7 +552,8 @@ export default function ProductDetail({
                 )}
               </div>
             </section>
-          ))}
+            ))
+          )}
         </div>
       </div>
 
