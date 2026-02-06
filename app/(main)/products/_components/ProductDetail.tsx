@@ -149,9 +149,11 @@ export default function ProductDetail({
           </div>
 
           <div className="flex w-full flex-col items-start lg:max-w-[34rem]">
-            <span className="flex items-center rounded-[0.4375rem] border border-[rgba(251,166,19,0.2)] bg-[#fff5e6] px-[0.65625rem] py-[0.21875rem] text-[0.625rem] font-extrabold uppercase leading-[0.9375rem] tracking-[0.03125rem] text-[#fba613]">
-              {product.extra?.lifeStage?.[0] || ""}
-            </span>
+            {product.extra?.type === "사료" && (
+              <span className="flex items-center rounded-[0.4375rem] border border-[rgba(251,166,19,0.2)] bg-[#fff5e6] px-[0.65625rem] py-[0.21875rem] text-[0.625rem] font-extrabold uppercase leading-[0.9375rem] tracking-[0.03125rem] text-[#fba613]">
+                {product.extra?.lifeStage?.[0] || ""}
+              </span>
+            )}
             <div>
               <h1 className="mb-6 text-2xl font-bold sm:mb-12.5 sm:text-[2.625rem]">
                 {product.name}
@@ -434,6 +436,7 @@ export default function ProductDetail({
         currentPage={currentReviewPage}
         totalPages={reviewTotalPages}
         paramKey="reviewPage"
+        scrollTop={false}
       />
 
       {/* QnA */}
@@ -537,7 +540,7 @@ export default function ProductDetail({
 
                 {/* 아코디언 답변 */}
                 <div
-                  className={`flex flex-col bg-gray-100 ${openQnaId === item._id ? "max-h-90 overflow-y-auto px-7 py-7" : "max-h-0 overflow-hidden px-0 py-0"}`}
+                  className={`flex flex-col bg-gray-100 ${openQnaId === item._id ? "px-7 py-7" : "hidden px-0 py-0"}`}
                 >
                   <div className="rounded-xl bg-gray-200 p-8">
                     <p className="text-sm text-[black]">{item.content}</p>
@@ -648,6 +651,7 @@ export default function ProductDetail({
         currentPage={currentQnaPage}
         totalPages={qnaTotalPages}
         paramKey="qnaPage"
+        scrollTop={false}
       />
 
       {/* 구매 모달 */}
