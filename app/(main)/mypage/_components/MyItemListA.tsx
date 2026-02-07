@@ -37,7 +37,6 @@ export default function MyItemList({
   productid,
   isReviewed = false,
 }: MyItemListProps) {
-  console.log(productid, "프로덕트아이디");
   const router = useRouter();
 
   const getHref = () => {
