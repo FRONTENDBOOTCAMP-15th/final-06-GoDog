@@ -31,7 +31,6 @@ export default function Orders() {
         type: "user",
       }),
   });
-  console.log(resOrderlist, "진짜?");
   const getPeriodText = (color: string, size?: string) => {
     if (color === "subscription") {
       return size === "2w" ? "2주 주기 배송" : "4주 주기 배송";
