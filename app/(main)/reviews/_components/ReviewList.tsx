@@ -58,8 +58,6 @@ export default function ReviewList() {
         limit: ITEMS_PER_PAGE,
       });
 
-      console.log(res);
-
       if (!res.ok) {
         throw new Error(res.message || "리뷰를 불러오는데 실패했습니다.");
       }
