@@ -7,8 +7,8 @@ import { OrderStateCode } from "@/types/codes";
 
 interface MyReviewListProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "className"> {
   name: string;
-  content: string;
-  image: React.ReactElement;
+  content?: string;
+  image: string;
   href?: string;
   price: string;
   mark?: React.ReactElement | null;

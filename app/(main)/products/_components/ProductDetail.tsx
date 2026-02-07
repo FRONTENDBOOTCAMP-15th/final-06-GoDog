@@ -10,14 +10,9 @@ import PurchaseModal from "@/app/(main)/products/_components/Modal";
 import { Product } from "@/types/product";
 import { Review } from "@/types/review";
 import { Post } from "@/types/post";
+import Cookies from "js-cookie";
 import useUserStore from "@/zustand/useStore";
-import { addBookmark, getBookmarks, removeBookmark } from "@/lib/bookmar";
-import {
-  getReplyBookmarks,
-  addReplyBookmark,
-  removeReplyBookmark,
-  updateReplyLikeCount,
-} from "@/lib/product";
+import { addBookmark, getWishlist, deleteWishlist } from "@/lib/bookmark";
 
 function StarRating({ rating, size = 16 }: { rating: number; size?: number }) {
   return (
@@ -75,12 +70,13 @@ export default function ProductDetail({
   const [isLiked, setIsLiked] = useState(false);
   const [bookmarkId, setBookmarkId] = useState<number | null>(null);
   const user = useUserStore((state) => state.user);
+  const token = user?.token?.accessToken || Cookies.get("accessToken");
 
   // 페이지 로드 시 이 상품이 북마크되어 있는지 확인
   useEffect(() => {
     const checkBookmark = async () => {
-      if (!user?.token?.accessToken) return;
-      const data = await getBookmarks(user.token.accessToken);
+      if (!token) return;
+      const data = await getWishlist(token);
       if (data.ok === 1) {
         const found = data.item.find((b) => b.product?._id === productId);
         if (found) {
@@ -94,24 +90,24 @@ export default function ProductDetail({
 
   // 하트 클릭
   const handleToggleBookmark = async () => {
-    if (!user?.token?.accessToken) {
+    if (!token) {
       alert("로그인이 필요합니다.");
       router.push("/login");
       return;
     }
     if (isLiked && bookmarkId) {
-      const res = await removeBookmark(user.token.accessToken, bookmarkId);
+      const res = await deleteWishlist(token, bookmarkId);
       if (res.ok === 1) {
         setIsLiked(false);
         setBookmarkId(null);
       }
     } else {
-      const res = await addBookmark(user.token.accessToken, productId);
+      const res = await addBookmark(token, productId);
       if (res.ok === 1) {
         setIsLiked(true);
         setBookmarkId(res.item._id);
       } else {
-        const bookmarks = await getBookmarks(user.token.accessToken);
+        const bookmarks = await getWishlist(token);
         if (bookmarks.ok === 1) {
           const existing = bookmarks.item.find((b) => b.product?._id === productId);
           if (existing) {
@@ -126,75 +122,6 @@ export default function ProductDetail({
   const [activeTab, setActiveTab] = useState<"detail" | "review" | "qna">("detail");
   const [isDetailExpanded, setIsDetailExpanded] = useState(false);
   const [openQnaId, setOpenQnaId] = useState<number | null>(null);
-  // 도움돼요를 누른 리뷰 ID → 북마크 ID 매핑
-  const [helpfulMap, setHelpfulMap] = useState<Record<number, number>>({});
-  const [helpfulLoading, setHelpfulLoading] = useState<number | null>(null);
-  // 리뷰별 도움돼요 카운트 (리뷰 ID → 카운트)
-  const [helpfulCounts, setHelpfulCounts] = useState<Record<number, number>>({});
-
-  // 페이지 로드 시 내가 누른 도움돼요 목록 조회 + 리뷰별 기본 카운트 세팅
-  useEffect(() => {
-    // 리뷰의 extra.likeCount 기본값 세팅
-    const counts: Record<number, number> = {};
-    reviews.forEach((r) => {
-      counts[r._id] = Number(r.extra?.likeCount) || 0;
-    });
-    setHelpfulCounts(counts);
-
-    const fetchHelpful = async () => {
-      if (!user?.token?.accessToken) return;
-      const data = await getReplyBookmarks(user.token.accessToken);
-      if (data.ok === 1) {
-        const map: Record<number, number> = {};
-        data.item.forEach((b) => {
-          map[b.target_id] = b._id;
-        });
-        setHelpfulMap(map);
-      }
-    };
-    fetchHelpful();
-  }, [user, reviews]);
-
-  const toggleHelpful = async (reviewId: number) => {
-    if (!user?.token?.accessToken) {
-      alert("로그인이 필요합니다.");
-      router.push("/login");
-      return;
-    }
-    if (helpfulLoading !== null) return;
-    setHelpfulLoading(reviewId);
-
-    const review = reviews.find((r) => r._id === reviewId);
-    const reviewContent = review?.content || "";
-
-    try {
-      if (helpfulMap[reviewId]) {
-        // 이미 누른 도움돼요 → 해제
-        const res = await removeReplyBookmark(user.token.accessToken, helpfulMap[reviewId]);
-        if (res.ok === 1) {
-          const newCount = Math.max(0, (helpfulCounts[reviewId] || 0) - 1);
-          setHelpfulMap((prev) => {
-            const next = { ...prev };
-            delete next[reviewId];
-            return next;
-          });
-          setHelpfulCounts((prev) => ({ ...prev, [reviewId]: newCount }));
-          await updateReplyLikeCount(user.token.accessToken, reviewId, newCount, reviewContent);
-        }
-      } else {
-        // 처음 누른 도움돼요 → 등록
-        const res = await addReplyBookmark(user.token.accessToken, reviewId);
-        if (res.ok === 1) {
-          const newCount = (helpfulCounts[reviewId] || 0) + 1;
-          setHelpfulMap((prev) => ({ ...prev, [reviewId]: res.item._id }));
-          setHelpfulCounts((prev) => ({ ...prev, [reviewId]: newCount }));
-          await updateReplyLikeCount(user.token.accessToken, reviewId, newCount, reviewContent);
-        }
-      }
-    } finally {
-      setHelpfulLoading(null);
-    }
-  };
 
   // 모달
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -222,9 +149,11 @@ export default function ProductDetail({
           </div>
 
           <div className="flex w-full flex-col items-start lg:max-w-[34rem]">
-            <span className="flex items-center rounded-[0.4375rem] border border-[rgba(251,166,19,0.2)] bg-[#fff5e6] px-[0.65625rem] py-[0.21875rem] text-[0.625rem] font-extrabold uppercase leading-[0.9375rem] tracking-[0.03125rem] text-[#fba613]">
-              {product.extra?.lifeStage?.[0] || ""}
-            </span>
+            {product.extra?.type === "사료" && (
+              <span className="flex items-center rounded-[0.4375rem] border border-[rgba(251,166,19,0.2)] bg-[#fff5e6] px-[0.65625rem] py-[0.21875rem] text-[0.625rem] font-extrabold uppercase leading-[0.9375rem] tracking-[0.03125rem] text-[#fba613]">
+                {product.extra?.lifeStage?.[0] || ""}
+              </span>
+            )}
             <div>
               <h1 className="mb-6 text-2xl font-bold sm:mb-12.5 sm:text-[2.625rem]">
                 {product.name}
@@ -237,7 +166,7 @@ export default function ProductDetail({
                 <div className="flex min-h-[1.5625rem] w-full items-center justify-between self-stretch py-4 sm:py-7">
                   <dt className="font-medium">판매가격</dt>
                   <dd className="text-xl font-bold sm:text-[1.625rem]">
-                    {product.price.toLocaleString()}원
+                    {product.price.toLocaleString("ko-KR")}원
                   </dd>
                 </div>
 
@@ -265,11 +194,16 @@ export default function ProductDetail({
             {/* 구매하기 버튼 */}
             <div className="flex w-full flex-row items-start gap-3.5">
               <button
-                className="flex h-[3.25rem] flex-1 items-center justify-center rounded-[0.875rem] bg-[#fba613] text-white px-4 py-[1.09375rem] shadow-[0_0.5rem_2rem_0_rgba(251,166,19,0.2)] sm:px-[1.3125rem]"
+                className={`flex h-[3.25rem] flex-1 items-center justify-center rounded-[0.875rem] px-4 py-[1.09375rem] sm:px-[1.3125rem] ${
+                  product.quantity <= 0
+                    ? "cursor-not-allowed bg-[#d1d1d6] text-white"
+                    : "bg-[#fba613] text-white shadow-[0_0.5rem_2rem_0_rgba(251,166,19,0.2)]"
+                }`}
                 type="button"
+                disabled={product.quantity <= 0}
                 onClick={() => setIsModalOpen(true)}
               >
-                구매하기
+                {product.quantity <= 0 ? "Sold Out" : "구매하기"}
               </button>
 
               {/* 관심상품 버튼 */}
@@ -344,20 +278,35 @@ export default function ProductDetail({
             isDetailExpanded ? "max-h-none" : "max-h-[400px]"
           }`}
         >
-          <Image
-            src="/images/image 27.png"
-            width={1200}
-            height={800}
-            alt="상품 상세 이미지 1"
-            className="h-auto w-full"
-          />
-          <Image
-            src="/images/image 28.png"
-            width={1200}
-            height={800}
-            alt="상품 상세 이미지 2"
-            className="h-auto w-full"
-          />
+          {product.extra?.detailImages && product.extra.detailImages.length > 0 ? (
+            product.extra.detailImages.map((img, idx) => (
+              <Image
+                key={idx}
+                src={img.path}
+                width={1200}
+                height={800}
+                alt={img.name || `상품 상세 이미지 ${idx + 1}`}
+                className="h-auto w-full"
+              />
+            ))
+          ) : (
+            <>
+              <Image
+                src="/images/image 27.png"
+                width={1200}
+                height={800}
+                alt="상품 상세 이미지 1"
+                className="h-auto w-full"
+              />
+              <Image
+                src="/images/image 28.png"
+                width={1200}
+                height={800}
+                alt="상품 상세 이미지 2"
+                className="h-auto w-full"
+              />
+            </>
+          )}
           {!isDetailExpanded && (
             <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent" />
           )}
@@ -440,77 +389,46 @@ export default function ProductDetail({
       </section>
 
       <section className="mt-[1.75rem]">
-        {reviews.map((review) => (
-          <article
-            key={review._id}
-            className="mt-6 rounded-[1.5rem] border border-black/[0.06] bg-white p-4 shadow-[0_2px_12px_0_rgba(0,0,0,0.03)] sm:mt-10 sm:rounded-[2.1875rem] sm:p-7"
-          >
-            <div className="flex flex-col items-start gap-4 sm:flex-row sm:gap-6">
-              <div className="h-24 w-24 flex-shrink-0 sm:h-[8.75rem] sm:w-[8.75rem]">
-                <Image
-                  src={review.extra?.image?.path || "/images/product-404.jpg"}
-                  className="block h-full w-full rounded-[1.125rem] object-cover"
-                  width={140}
-                  height={140}
-                  alt="리뷰 상품 이미지"
-                />
-              </div>
+        {reviews.length === 0 ? (
+          <div className="flex items-center justify-center py-16 text-[#909094]">
+            등록된 리뷰가 없습니다.
+          </div>
+        ) : (
+          reviews.map((review) => (
+            <article
+              key={review._id}
+              className="mt-6 rounded-[1.5rem] border border-black/[0.06] bg-white p-4 shadow-[0_2px_12px_0_rgba(0,0,0,0.03)] sm:mt-10 sm:rounded-[2.1875rem] sm:p-7"
+            >
+              <div className="flex flex-col items-start gap-4 sm:flex-row sm:gap-6">
+                <div className="h-24 w-24 flex-shrink-0 sm:h-[8.75rem] sm:w-[8.75rem]">
+                  <Image
+                    src={review.extra?.image?.path || "/images/product-404.jpg"}
+                    className="block h-full w-full rounded-[1.125rem] object-cover"
+                    width={140}
+                    height={140}
+                    alt="리뷰 상품 이미지"
+                  />
+                </div>
 
-              <div className="w-full flex-1">
-                <div className="flex flex-wrap items-start gap-2 sm:gap-3">
-                  <Link href="#" className="flex flex-col gap-1 hover:opacity-80">
-                    <StarRating rating={review.rating} />
-                    <p className="text-sm sm:text-base">{review.extra?.title}</p>
-                    <p className="text-xs text-gray-500 sm:text-sm">
-                      {review.user.name} | {review.createdAt}
-                    </p>
-                  </Link>
+                <div className="w-full flex-1">
+                  <div className="flex flex-wrap items-start gap-2 sm:gap-3">
+                    <div className="flex flex-col gap-1 hover:opacity-80">
+                      <StarRating rating={review.rating} />
+                      <p className="text-sm sm:text-base">{review.extra?.title}</p>
+                      <p className="text-xs text-gray-500 sm:text-sm">
+                        {review.user.name} | {review.createdAt}
+                      </p>
+                    </div>
+                  </div>
 
-                  <div className="ml-auto self-start">
-                    <button
-                      type="button"
-                      onClick={() => toggleHelpful(review._id)}
-                      disabled={helpfulLoading === review._id}
-                      className={`inline-flex items-center rounded-[0.5rem] border px-2 py-1 text-[11px] font-bold transition-colors ${
-                        helpfulMap[review._id]
-                          ? "border-[#fba613] bg-[#fff5e6] text-[#fba613]"
-                          : "border-black/[0.06] bg-[#f5f5f7] text-[#646468]"
-                      } ${helpfulLoading === review._id ? "opacity-50 cursor-not-allowed" : ""}`}
-                    >
-                      <svg
-                        width="20"
-                        height="14"
-                        viewBox="0 0 20 14"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <svg clipPath="url(#clip0_131_26598)">
-                          <path
-                            d="M8.16667 5.83317H10.9416C11.251 5.83317 11.5477 5.95609 11.7665 6.17488C11.9853 6.39367 12.1082 6.69042 12.1082 6.99984C12.1082 7.30926 11.9853 7.606 11.7665 7.82479C11.5477 8.04359 11.251 8.1665 10.9416 8.1665H10.1716L10.535 10.0962C10.5661 10.2634 10.5603 10.4354 10.518 10.6002C10.4756 10.7649 10.3978 10.9185 10.2898 11.0499C10.1819 11.1814 10.0465 11.2877 9.8932 11.3614C9.73986 11.435 9.57227 11.4743 9.40217 11.4763H5.50083C5.23666 11.4759 4.98045 11.3858 4.77413 11.2208C4.56781 11.0558 4.4236 10.8257 4.36508 10.5681L3.5 5.90434V2.33317C3.5 2.02375 3.62292 1.72701 3.84171 1.50821C4.0605 1.28942 4.35725 1.1665 4.66667 1.1665H7.58333C7.89275 1.1665 8.1895 1.28942 8.40829 1.50821C8.62708 1.72701 8.75 2.02375 8.75 2.33317V5.83317H8.16667Z"
-                            stroke={helpfulMap[review._id] ? "#fba613" : "#646468"}
-                            strokeWidth="1.45833"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                        <defs>
-                          <clipPath id="clip0_131_26598">
-                            <rect width="14" height="14" fill="white" />
-                          </clipPath>
-                        </defs>
-                      </svg>
-                      도움돼요 {helpfulCounts[review._id] || 0}
-                    </button>
+                  <div className="mt-[0.625rem] text-xs font-medium leading-[1.42188rem] text-[#646468] sm:text-sm">
+                    <p>{review.content}</p>
                   </div>
                 </div>
-
-                <div className="mt-[0.625rem] text-xs font-medium leading-[1.42188rem] text-[#646468] sm:text-sm">
-                  <p>{review.content}</p>
-                </div>
               </div>
-            </div>
-          </article>
-        ))}
+            </article>
+          ))
+        )}
       </section>
 
       {/* 리뷰 페이지네이션 */}
@@ -518,6 +436,7 @@ export default function ProductDetail({
         currentPage={currentReviewPage}
         totalPages={reviewTotalPages}
         paramKey="reviewPage"
+        scrollTop={false}
       />
 
       {/* QnA */}
@@ -556,76 +475,174 @@ export default function ProductDetail({
             variant="primary"
             size="sm"
             className="h-11 w-fit cursor-pointer self-start whitespace-nowrap rounded-[0.875rem] border-0 bg-[#fba613] px-[1.125rem] text-center text-[0.76875rem] font-bold leading-[1.09375rem] text-white shadow-[0_8px_32px_rgba(251,166,19,0.2)] sm:self-center"
+            onClick={() => {
+              const params = new URLSearchParams();
+              params.set("productName", product.name);
+              params.set("productImage", product.mainImages[0]?.path || "");
+              router.push(`/products/${productId}/qna?${params.toString()}`);
+            }}
           >
             문의 작성하기
           </Button>
         </section>
 
         <div className="flex flex-col">
-          {qna.map((item) => (
-            <section
-              key={item._id}
-              className="border-b border-black/[0.06]"
-              onClick={() => setOpenQnaId(openQnaId === item._id ? null : item._id)}
-            >
-              <button
-                type="button"
-                className="flex w-full flex-col gap-2 border-0 bg-transparent py-4 text-left text-inherit sm:grid sm:grid-cols-[auto_1fr_auto_auto] sm:items-center sm:gap-[18px] sm:py-[26px]"
+          {qna.length === 0 ? (
+            <div className="flex items-center justify-center py-16 text-[#909094]">
+              등록된 Q&A가 없습니다.
+            </div>
+          ) : (
+            qna.map((item) => (
+              <section
+                key={item._id}
+                className="border-b border-black/[0.06]"
+                onClick={() => setOpenQnaId(openQnaId === item._id ? null : item._id)}
               >
-                <span
-                  className={`inline-flex h-7 w-fit items-center justify-center whitespace-nowrap rounded-[6.5px] border px-3 text-xs font-bold ${
-                    item.replies && item.replies.length > 0
-                      ? "border-[#F0FDF4] bg-[#DCFCE7] text-[#16A34A]"
-                      : "border-[#E4E4E7] bg-[#F0F0F3] text-[#646468]"
-                  }`}
+                <button
+                  type="button"
+                  className="relative flex w-full flex-col gap-2 border-0 bg-transparent py-4 pr-8 text-left text-inherit sm:grid sm:grid-cols-[auto_1fr_auto_auto] sm:items-center sm:gap-[18px] sm:py-[26px] sm:pr-0"
                 >
-                  {item.replies && item.replies.length > 0 ? "답변완료" : "답변대기"}
-                </span>
-                <p className="m-0 text-sm font-extrabold tracking-[-0.01em] sm:text-lg">
-                  {item.title}
-                </p>
-                <p className="m-0 whitespace-nowrap text-xs font-semibold text-[#909094] sm:text-sm">
-                  {item.user.name} | {item.createdAt.slice(0, 10)}
-                </p>
-                <span
-                  className={`hidden text-lg leading-none text-[#909094] origin-center sm:block ${openQnaId === item._id ? "rotate-180" : ""}`}
-                >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 18 18"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
+                  <span
+                    className={`inline-flex h-7 w-fit items-center justify-center whitespace-nowrap rounded-[6.5px] border px-3 text-xs font-bold ${
+                      item.replies && item.replies.length > 0
+                        ? "border-[#F0FDF4] bg-[#DCFCE7] text-[#16A34A]"
+                        : "border-[#E4E4E7] bg-[#F0F0F3] text-[#646468]"
+                    }`}
                   >
-                    <path
-                      d="M13.8529 6.5625L8.7487 11.6667L3.6445 6.5625"
-                      stroke="#909094"
-                      strokeWidth="2.1875"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </span>
-              </button>
+                    {item.replies && item.replies.length > 0 ? "답변완료" : "답변대기"}
+                  </span>
+                  <p className="m-0 text-sm font-extrabold tracking-[-0.01em] sm:text-lg">
+                    {item.title}
+                  </p>
+                  <p className="m-0 whitespace-nowrap text-xs font-semibold text-[#909094] sm:text-sm">
+                    {item.user.name} | {item.createdAt.slice(0, 20)}
+                  </p>
+                  <span
+                    className={`absolute right-0 top-1/2 -translate-y-1/2 text-lg leading-none text-[#909094] origin-center sm:static sm:translate-y-0 ${openQnaId === item._id ? "rotate-180" : ""}`}
+                  >
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 18 18"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M13.8529 6.5625L8.7487 11.6667L3.6445 6.5625"
+                        stroke="#909094"
+                        strokeWidth="2.1875"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
+                </button>
 
-              {/* 아코디언 답변 */}
-              <div
-                className={`overflow-hidden bg-gray-200 ${openQnaId === item._id ? "max-h-96 px-7 py-7" : "max-h-0 px-0 py-0"}`}
-              >
-                <p className="text-sm text-[#646468]">{item.content}</p>
-                {item.replies && item.replies.length > 0 && (
-                  <div className="mt-4 rounded-xl bg-gray-100 p-4">
-                    <p className="text-sm font-bold text-[#fba613]">답변</p>
-                    {item.replies.map((reply) => (
-                      <p key={reply._id} className="mt-2 text-sm text-[#646468]">
-                        {reply.content}
-                      </p>
-                    ))}
+                {/* 아코디언 답변 */}
+                <div
+                  className={`flex flex-col bg-gray-100 ${openQnaId === item._id ? "px-7 py-7" : "hidden px-0 py-0"}`}
+                >
+                  <div className="rounded-xl bg-gray-200 p-8">
+                    <p className="text-sm text-[black]">{item.content}</p>
                   </div>
-                )}
-              </div>
-            </section>
-          ))}
+                  {item.replies && item.replies.length > 0 && (
+                    <div className="mt-6 ml-8 flex">
+                      {/* ㄴ자 연결선 */}
+                      <div className="mr-2 mt-1 h-6 w-4 border-b border-l border-[#d1d1d6]" />
+                      <div className="flex-1 flex items-start gap-3 rounded-xl bg-gray-200 p-4">
+                        <div className="flex-shrink-0 self-start">
+                          <svg
+                            width="45"
+                            height="45"
+                            viewBox="0 0 66 66"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <g filter="url(#filter0_d_131_30784)">
+                              <rect
+                                x="12"
+                                y="10"
+                                width="42"
+                                height="42"
+                                rx="14"
+                                fill="white"
+                                shapeRendering="crispEdges"
+                              />
+                              <circle
+                                cx="33"
+                                cy="31"
+                                r="7.875"
+                                stroke="#FBA613"
+                                strokeWidth="2.1875"
+                              />
+                              <text
+                                x="33"
+                                y="31"
+                                textAnchor="middle"
+                                dominantBaseline="middle"
+                                fill="#FBA613"
+                                fontSize="12"
+                                fontWeight="bold"
+                              >
+                                A
+                              </text>
+                            </g>
+                            <defs>
+                              <filter
+                                id="filter0_d_131_30784"
+                                x="0"
+                                y="0"
+                                width="66"
+                                height="66"
+                                filterUnits="userSpaceOnUse"
+                                colorInterpolationFilters="sRGB"
+                              >
+                                <feFlood floodOpacity="0" result="BackgroundImageFix" />
+                                <feColorMatrix
+                                  in="SourceAlpha"
+                                  type="matrix"
+                                  values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                                  result="hardAlpha"
+                                />
+                                <feOffset dy="2" />
+                                <feGaussianBlur stdDeviation="6" />
+                                <feComposite in2="hardAlpha" operator="out" />
+                                <feColorMatrix
+                                  type="matrix"
+                                  values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.03 0"
+                                />
+                                <feBlend
+                                  mode="normal"
+                                  in2="BackgroundImageFix"
+                                  result="effect1_dropShadow_131_30784"
+                                />
+                                <feBlend
+                                  mode="normal"
+                                  in="SourceGraphic"
+                                  in2="effect1_dropShadow_131_30784"
+                                  result="shape"
+                                />
+                              </filter>
+                            </defs>
+                          </svg>
+                        </div>
+                        <div className="flex flex-1 flex-col gap-1">
+                          {item.replies.map((reply) => (
+                            <div key={reply._id} className="flex flex-col gap-2">
+                              <p className="text-sm text-[black]">{reply.content}</p>
+                              <p className="self-end text-xs text-[#808084]">
+                                {reply.createdAt.slice(0, 20)}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </section>
+            ))
+          )}
         </div>
       </div>
 
@@ -634,6 +651,7 @@ export default function ProductDetail({
         currentPage={currentQnaPage}
         totalPages={qnaTotalPages}
         paramKey="qnaPage"
+        scrollTop={false}
       />
 
       {/* 구매 모달 */}

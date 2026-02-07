@@ -1,3 +1,5 @@
+import type { Review } from "./review";
+
 // ============================================================
 // OPTIONS (단일 소스 - UI 렌더링 + 타입 파생)
 // ============================================================
@@ -176,7 +178,9 @@ export interface Product {
   active: boolean;
   name: string;
   mainImages: ProductImage[];
+  content: string;
   extra: ProductExtra;
   createdAt: string;
   updatedAt: string;
+  replies?: Review[];
 }

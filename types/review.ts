@@ -8,6 +8,7 @@ export interface ReviewExtra {
   title?: string;
   createdAt?: string;
   likeCount?: string | number;
+  helpfulVoters?: number[];
   price?: string | number;
   reviewId?: string | number;
   image?: { path: string; name: string };
@@ -29,7 +30,6 @@ export interface Review {
   rating: number;
   content: string;
   extra?: ReviewExtra;
-  user: ReviewUser;
   createdAt: string;
   product: ReviewProduct;
   updatedAt?: string;

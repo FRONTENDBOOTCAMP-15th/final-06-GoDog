@@ -1,16 +1,15 @@
 meta {
-  name: 상품 상세 조회
+  name: 구매 후기 수정
   type: http
   seq: 2
 }
 
-get {
-  url: {{url}}/products/3
+patch {
+  url: {{url}}/replies/{_id}
   body: none
   auth: inherit
 }
 
 settings {
   encodeUrl: true
-  timeout: 0
 }

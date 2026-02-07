@@ -161,3 +161,48 @@ export async function updateUser(
     };
   }
 }
+
+// 회원가입 요청 데이터 인터페이스
+interface SignupOptions {
+  type: "user" | "seller";
+  email: string;
+  password: string;
+  name: string;
+  phone?: string; // 선택 사항이 있다면 추가
+  address?: string; // 선택 사항이 있다면 추가
+}
+
+/**
+ * 회원가입
+ * @param {SignupOptions} data - 회원가입 정보 (type, email, password, name 필수)
+ * @returns {Promise<UserInfoRes | ErrorRes>} - 가입된 회원 정보 또는 에러 객체
+ * @example
+ * // 일반 회원가입
+ * signup({
+ * type: "user",
+ * email: "gangrock@gmail.com",
+ * password: "123123",
+ * name: "백강록"
+ * });
+ */
+export async function signup(data: SignupOptions): Promise<ResData<UserInfoRes>> {
+  try {
+    const res = await fetch(`${API_URL}/users`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Client-Id": CLIENT_ID,
+      },
+      body: JSON.stringify(data),
+    });
+
+    const result = await res.json();
+    return result;
+  } catch (error) {
+    console.error("Signup Error:", error);
+    return {
+      ok: 0,
+      message: "일시적인 네트워크 문제로 회원가입에 실패했습니다.",
+    };
+  }
+}
