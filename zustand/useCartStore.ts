@@ -51,6 +51,10 @@ interface CartStoreState {
     discount: number;
     selectCount: number;
   };
+
+  // 결제 예정 상품
+  checkoutItems: CartListRes["item"];
+  setCheckoutItems: (items: CartListRes["item"]) => void;
 }
 
 const useCartStore = create<CartStoreState>((set, get) => ({
@@ -58,6 +62,8 @@ const useCartStore = create<CartStoreState>((set, get) => ({
   isLoading: false,
   error: null,
   deliveryCycles: {}, // 초기값
+  checkoutItems: [],
+  setCheckoutItems: (items) => set({ checkoutItems: items }),
 
   setError: (error) => set({ error }),
 

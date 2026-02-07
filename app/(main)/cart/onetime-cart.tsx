@@ -6,8 +6,11 @@ import Checkbox from "@/components/common/Checkbox";
 import useUserStore from "@/zustand/useStore";
 import Image from "next/image";
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function OnetimeCart() {
+  const router = useRouter();
+
   // 토큰 가져오기
   const { user } = useUserStore();
   const accessToken = user?.token?.accessToken;
@@ -19,6 +22,9 @@ export default function OnetimeCart() {
     getCartTotal,
     getOnetimeItems,
     getSelectCartTotal,
+    setCheckoutItems,
+    isSoldOut,
+    cartData,
   } = useCartStore();
 
   // 체크박스 선택된 상품 ID
@@ -42,7 +48,7 @@ export default function OnetimeCart() {
         selectCount: 0, // 기본값 설정
       };
     }
-  }, [selectIds, getSelectCartTotal, getCartTotal]);
+  }, [cartData, selectIds, getSelectCartTotal, getCartTotal]);
 
   // 한건 삭제 핸들러
   const handleDelete = async (cartId: number) => {
@@ -117,6 +123,31 @@ export default function OnetimeCart() {
     }
   };
 
+  // 구매하기 버튼
+  const handlePurchase = () => {
+    const onetimeItems = getOnetimeItems();
+
+    let itemsToPurchase;
+    if (selectIds.length > 0) {
+      // 선택 상품(품절 제외)
+      itemsToPurchase = onetimeItems.filter(
+        (item) => selectIds.includes(item._id) && !isSoldOut(item._id)
+      );
+    } else {
+      // 전체 상품(품절 제외)
+      itemsToPurchase = onetimeItems.filter((item) => !isSoldOut(item._id));
+    }
+
+    if (itemsToPurchase.length === 0) {
+      alert("구매 가능한 상품이 없습니다.");
+      return;
+    }
+
+    // zustand 저장 후 이동
+    setCheckoutItems(itemsToPurchase);
+    router.push("/checkout");
+  };
+
   return (
     <div className="flex flex-col xl:flex-row gap-9 justify-center">
       {/* 장바구니 목록 */}
@@ -185,7 +216,7 @@ export default function OnetimeCart() {
 
             {/* 구매하기 버튼 */}
             <Button
-              href="/checkout"
+              onClick={handlePurchase}
               disabled={selectIds.length > 0 ? selectCount === 0 : availableCount === 0}
             >
               {selectIds.length > 0
