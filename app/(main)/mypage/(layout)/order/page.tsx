@@ -12,6 +12,7 @@ import { getOrders } from "@/lib/order";
 import { useQuery } from "@tanstack/react-query";
 import useUserStore from "@/zustand/useStore";
 import { useEffect } from "react";
+import { OrderListRes, ResData } from "@/types/response";
 
 export default function Orders() {
   const user = useUserStore((state) => state.user);
@@ -21,7 +22,7 @@ export default function Orders() {
   const searchParams = useSearchParams();
   const page = Number(searchParams.get("page")) || 1;
 
-  const { data: resOrderlist, isLoading } = useQuery({
+  const { data: resOrderlist, isLoading } = useQuery<ResData<OrderListRes>>({
     queryKey: ["orders", page],
     queryFn: () =>
       getOrders(token ?? "", {
@@ -30,7 +31,7 @@ export default function Orders() {
         type: "user",
       }),
   });
-
+  console.log(resOrderlist, "진짜?");
   const getPeriodText = (color: string, size?: string) => {
     if (color === "subscription") {
       return size === "2w" ? "2주 주기 배송" : "4주 주기 배송";
@@ -87,7 +88,10 @@ export default function Orders() {
                     }
                     content={hasReview ? "리뷰 작성 완료" : "리뷰 작성"}
                     date={item.createdAt.split(" ")[0]}
-                    period={getPeriodText(item.color ?? "oneTime", item.size)}
+                    period={getPeriodText(
+                      item.products[0]?.color ?? "oneTime",
+                      item.products[0].size,
+                    )}
                     quantity={item.products[0].quantity}
                     price={`${item.products[0].price.toLocaleString()}원`}
                     mark={hasReview ? null : <Pencil />}

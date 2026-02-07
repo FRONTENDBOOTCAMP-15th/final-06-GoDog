@@ -19,21 +19,23 @@ export default function Subscription() {
   const searchParams = useSearchParams();
   const page = Number(searchParams.get("page")) || 1;
 
-  const { data: resSublist, isLoading } = useQuery({
-    queryKey: ["subscriptions", page],
+  const { data: resOrderlist, isLoading } = useQuery({
+    queryKey: ["orders", page],
     queryFn: () =>
       getOrders(token ?? "", {
         page,
         limit: 4,
         path: params,
+        type: "user",
       }),
-    enabled: !!token,
+    // enabled: !!token,
   });
 
-  const getPeriodText = (size: string) => {
-    if (size === "2w") return "2주 주기 배송";
-    if (size === "4w") return "4주 주기 배송";
-    return "";
+  console.log(resOrderlist, "레스");
+  const getPeriodText = (color: string, size?: string) => {
+    if (color === "subscription") {
+      return size === "2w" ? "2주 주기 배송" : "4주 주기 배송";
+    }
   };
 
   return (
@@ -52,8 +54,8 @@ export default function Subscription() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 md:gap-x-10 lg:gap-x-7 gap-y-10 justify-items-center max-w-[500px] md:max-w-[700px] lg:max-w-none mx-auto">
           {isLoading ? (
             <div className="col-span-full py-20 text-center">불러오는 중...</div>
-          ) : resSublist?.ok === 1 && resSublist.item.length > 0 ? (
-            resSublist.item.map((item) => (
+          ) : resOrderlist?.ok === 1 && resOrderlist.item.length > 0 ? (
+            resOrderlist.item.map((item) => (
               <div key={item._id} className="w-full max-w-[280px]">
                 <MyItemList
                   subscriptionId={String(item._id)}
@@ -75,7 +77,10 @@ export default function Subscription() {
                   }
                   content="상세 보기"
                   date={item.createdAt.split(" ")[0]}
-                  period={getPeriodText(item.size)}
+                  period={getPeriodText(
+                    item.products[0]?.color ?? "oneTime",
+                    item.products[0].size,
+                  )}
                   quantity={item.products[0].quantity}
                   price={`${item.products[0].price.toLocaleString()}원`}
                   mark={<RigthMark />}
@@ -93,7 +98,7 @@ export default function Subscription() {
       <div className="flex justify-center">
         <PaginationWrapper
           currentPage={page}
-          totalPages={resSublist?.ok === 1 ? resSublist.pagination.totalPages : 1}
+          totalPages={resOrderlist?.ok === 1 ? resOrderlist.pagination.totalPages : 1}
         />
       </div>
     </div>
