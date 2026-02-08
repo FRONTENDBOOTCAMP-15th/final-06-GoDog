@@ -1,19 +1,49 @@
 "use client";
 
+import * as PortOne from "@portone/browser-sdk/v2";
+import { createOrder, OrderRequestProduct } from "@/app/(main)/checkout/actions/checkout";
 import Badge from "@/components/common/Badge";
 import Button from "@/components/common/Button";
 import Checkbox from "@/components/common/Checkbox";
 import Input from "@/components/common/Input";
 import ProductImage from "@/components/common/ProductImage";
 import useCartStore from "@/zustand/useCartStore";
+import useUserStore from "@/zustand/useStore";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { deleteCartItems } from "@/app/(main)/cart/action/cart";
+
+// 다음 주소 데이터 타입
+interface DaumPostcodeData {
+  zonecode: string;
+  roadAddress: string;
+  jibunAddress: string;
+  bname: string;
+  buildingName: string;
+  apartment: string;
+  autoRoadAddress?: string;
+  autoJibunAddress?: string;
+}
+
+declare global {
+  interface Window {
+    daum: {
+      Postcode: new (options: { oncomplete: (data: DaumPostcodeData) => void }) => {
+        open: () => void;
+      };
+    };
+  }
+}
 
 export default function Checkout() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { checkoutItems, getSelectCartTotal } = useCartStore();
+  const { checkoutItems, getSelectCartTotal, clearPurchasedItems, fetchCart } = useCartStore();
+
+  // 토큰 가져오기
+  const { user } = useUserStore();
+  const accessToken = user?.token?.accessToken;
 
   // 체크박스 상태 관리 (주문동의, 정기결제동의, 제3자제공동의)
   const [checkedList, setCheckedList] = useState({
@@ -22,9 +52,76 @@ export default function Checkout() {
     thirdParty: false,
   });
 
+  // 배송 정보 상태
+  const [shippingInfo, setShippingInfo] = useState({
+    recipient: "",
+    phone: "",
+    zipcode: "",
+    address: "",
+    detailAddress: "",
+    request: "",
+  });
+
   // 단건 구매(쿼리 파라미터)
   const productId = searchParams.get("product_id");
 
+  // 다음 주소 검색 스크립트
+  useEffect(() => {
+    if (document.getElementById("daum-postcode-script")) return;
+
+    const script = document.createElement("script");
+    script.id = "daum-postcode-script";
+    script.src = "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      const target = document.getElementById("daum-postcode-script");
+      if (target) document.body.removeChild(target);
+    };
+  }, []);
+
+  // 주소 검색 핸들러
+  const handleAddressSearch = () => {
+    if (!window.daum) {
+      alert("주소 검색 서비스를 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
+      return;
+    }
+
+    new window.daum.Postcode({
+      oncomplete: (data: DaumPostcodeData) => {
+        const roadAddr = data.roadAddress;
+
+        let extraRoadAddr = "";
+
+        if (data.bname !== "" && /[동|로|가]$/g.test(data.bname)) {
+          extraRoadAddr += data.bname;
+        }
+
+        if (data.buildingName !== "" && data.apartment === "Y") {
+          extraRoadAddr += extraRoadAddr !== "" ? `, ${data.buildingName}` : data.buildingName;
+        }
+
+        if (extraRoadAddr !== "") {
+          extraRoadAddr = ` (${extraRoadAddr})`;
+        }
+
+        setShippingInfo((prev) => ({
+          ...prev,
+          zipcode: data.zonecode,
+          address: roadAddr + extraRoadAddr,
+        }));
+
+        // 상세주소 입력으로 포커스 이동
+        const detailInput = document.querySelector<HTMLInputElement>(
+          'input[placeholder="상세 주소를 입력해주세요"]'
+        );
+        detailInput?.focus();
+      },
+    }).open();
+  };
+
+  // 결제 상품 리스트
   const finalCheckoutItems = useMemo(() => {
     // 쿼리 파라미터에 상품 id가 있으면 바로 구매
     if (productId) {
@@ -32,6 +129,7 @@ export default function Checkout() {
         {
           _id: Number(productId),
           product: {
+            _id: Number(productId),
             name: searchParams.get("name") || "",
             price: Number(searchParams.get("price") || 0),
             image: { path: searchParams.get("image") || "" },
@@ -49,12 +147,18 @@ export default function Checkout() {
   }, [productId, searchParams, checkoutItems]);
 
   const firstItem = finalCheckoutItems[0];
-  const isSubscribe = firstItem.color?.includes("subscription");
-  const cycleLabel = firstItem.size === "2w" ? "격주 배송" : "매월 배송";
-  const displayProductName =
-    finalCheckoutItems.length > 1
+  const isSubscribe = firstItem?.color === "subscription";
+  const cycleLabel = firstItem?.size === "2w" ? "격주 배송" : "매월 배송";
+  const displayProductName = firstItem
+    ? finalCheckoutItems.length > 1
       ? `${firstItem.product.name} 외 ${finalCheckoutItems.length - 1}건`
-      : firstItem.product.name;
+      : firstItem.product.name
+    : "주문 상품 없음";
+
+  // 모든 상품의 수량 합계
+  const totalQuantity = useMemo(() => {
+    return finalCheckoutItems.reduce((acc, item) => acc + item.quantity, 0);
+  }, [finalCheckoutItems]);
 
   // 결제하기 버튼 활성화 조건 계산
   const isAllChecked = useMemo(() => {
@@ -92,6 +196,95 @@ export default function Checkout() {
     return getSelectCartTotal(selectIds, type);
   }, [productId, finalCheckoutItems, isSubscribe, getSelectCartTotal]);
 
+  const finalAmount = totalPrice - discount;
+
+  // 결제 요청 핸들러
+  const handlePayment = async () => {
+    if (!accessToken) return alert("로그인이 필요합니다.");
+
+    try {
+      // 포트원 결제창 호출
+      const response = await PortOne.requestPayment({
+        storeId: "store-02600244-0316-4a81-b1aa-b0ebce842ce4",
+        channelKey: "channel-key-25183f67-0b75-4ddc-b57d-16e66e74d008",
+        paymentId: `payment-${crypto.randomUUID()}`,
+        orderName: isSubscribe ? `${displayProductName} (정기구독)` : displayProductName,
+        totalAmount: finalAmount, // 우리가 계산한 최종 금액 연결
+        currency: "KRW",
+        payMethod: "CARD",
+      });
+
+      // 결제 결과 확인
+      if (!response || response.code !== undefined) {
+        //결제 취소, 오류 발생 시
+        console.error("결제 실패:", response?.message || "결제창이 닫혔습니다.");
+        return alert(`결제 실패: ${response?.message || "결제 중 오류가 발생했습니다."}`);
+      }
+
+      // 결제 성공 시 주문 생성 api 호출
+      await createServerOrder(accessToken);
+    } catch (err) {
+      console.error("결제 오류", err);
+      alert("결제 중 오류가 발생했습니다.");
+    }
+  };
+
+  // 주문 생성 및 장바구니 정리
+  const createServerOrder = async (token: string) => {
+    const individualOrders: OrderRequestProduct[] = finalCheckoutItems.map((item) => {
+      const colorValue = item.color === "subscription" ? "subscription" : "oneTime";
+      const sizeValue = colorValue === "subscription" ? item.size || "2w" : "";
+
+      return {
+        _id: item.product._id,
+        quantity: item.quantity,
+        size: sizeValue,
+        color: colorValue,
+      };
+    });
+
+    const results = await Promise.all(
+      individualOrders.map((orderItem) => createOrder([orderItem], token))
+    );
+
+    const allSuccess = results.every((res) => res.ok === 1);
+
+    if (allSuccess) {
+      alert("주문이 완료되었습니다.");
+      router.push("/mypage/order");
+
+      // 장바구니 정리
+      if (!productId && finalCheckoutItems.length > 0) {
+        const purchasedIds = finalCheckoutItems.map((item) => item._id);
+
+        (async () => {
+          try {
+            // 서버에서 삭제
+            const formData = new FormData();
+            formData.append("cartIds", JSON.stringify(purchasedIds));
+            formData.append("accessToken", token);
+
+            const deleteResult = await deleteCartItems(null, formData);
+
+            if (deleteResult === null) {
+              console.log("서버 삭제 성공");
+            }
+
+            // Zustand 업데이트
+            clearPurchasedItems(purchasedIds);
+
+            // 최신 데이터 가져오기
+            await fetchCart(token);
+          } catch (error) {
+            console.error("백그라운드 정리 실패:", error);
+          }
+        })();
+      }
+    } else {
+      alert("주문 데이터 처리에 실패했습니다.");
+    }
+  };
+
   if (finalCheckoutItems.length === 0) {
     return (
       <div className="flex flex-col items-center py-40 gap-4">
@@ -102,8 +295,6 @@ export default function Checkout() {
       </div>
     );
   }
-
-  const finalAmount = totalPrice - discount;
 
   return (
     <div className="bg-(--color-bg-secondary)">
@@ -134,11 +325,15 @@ export default function Checkout() {
                   <div className="flex flex-col gap-0.5 sm:gap-1 mt-2.5">
                     <p className="text-[1rem] text-(--color-text-primary) font-black">
                       {displayProductName}
+                      {/* 정기구독일 때 텍스트 추가 */}
+                      {isSubscribe && (
+                        <span className="text-sm text-accent-primary ml-1">(정기구독)</span>
+                      )}
                     </p>
                     <p className="text-xs text-(--color-text-tertiary) font-bold">
                       {isSubscribe
-                        ? `정기배송 (${cycleLabel}) | 수량 ${finalCheckoutItems.length}개`
-                        : `수량 ${finalCheckoutItems.length}개`}
+                        ? `정기배송 (${cycleLabel}) | 구매 총 수량 ${totalQuantity}개`
+                        : `구매 총 수량 ${totalQuantity}개`}
                     </p>
                   </div>
                 </div>
@@ -151,20 +346,62 @@ export default function Checkout() {
                 <h2 className="text-lg text-(--color-text-primary) font-black mb-7">배송 정보</h2>
                 <div className="flex flex-col gap-5">
                   <div className="flex gap-5">
-                    <Input label="수령인" placeholder="" className="w-full" />
-                    <Input label="연락처" placeholder="" className="w-full" />
+                    <Input
+                      label="수령인"
+                      placeholder=""
+                      className="w-full"
+                      value={shippingInfo.recipient}
+                      onChange={(e) =>
+                        setShippingInfo((prev) => ({ ...prev, recipient: e.target.value }))
+                      }
+                    />
+                    <Input
+                      label="연락처"
+                      placeholder=""
+                      className="w-full"
+                      value={shippingInfo.phone}
+                      onChange={(e) =>
+                        setShippingInfo((prev) => ({ ...prev, phone: e.target.value }))
+                      }
+                    />
                   </div>
                   <div className="flex flex-col">
                     <div className="flex gap-2.5 items-end">
-                      <Input label="배송지 주소" placeholder="" />
-                      <Button variant="outline" size="md" className="">
+                      <Input
+                        label="배송지 주소"
+                        placeholder="우편번호"
+                        value={shippingInfo.zipcode}
+                        readOnly
+                        className="w-32"
+                      />
+                      <Button variant="primary" size="md" onClick={handleAddressSearch}>
                         주소 찾기
                       </Button>
                     </div>
-                    <Input label="" placeholder="" />
-                    <Input label="" placeholder="상세 주소를 입력해주세요" />
+                    <Input
+                      label=""
+                      placeholder="기본 주소"
+                      value={shippingInfo.address}
+                      readOnly
+                      className="mb-2"
+                    />
+                    <Input
+                      label=""
+                      placeholder="상세 주소를 입력해주세요"
+                      value={shippingInfo.detailAddress}
+                      onChange={(e) =>
+                        setShippingInfo((prev) => ({ ...prev, detailAddress: e.target.value }))
+                      }
+                    />
                   </div>
-                  <Input label="배송 요청사항" placeholder="" />
+                  <Input
+                    label="배송 요청사항"
+                    placeholder=""
+                    value={shippingInfo.request}
+                    onChange={(e) =>
+                      setShippingInfo((prev) => ({ ...prev, request: e.target.value }))
+                    }
+                  />
                 </div>
               </div>
             </section>
@@ -242,7 +479,7 @@ export default function Checkout() {
                       />
                     </li>
                   </ul>
-                  <Button disabled={!isAllChecked}>
+                  <Button disabled={!isAllChecked} onClick={handlePayment}>
                     {finalAmount.toLocaleString()}원 결제하기
                   </Button>
                   <Button

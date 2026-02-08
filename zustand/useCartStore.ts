@@ -30,6 +30,9 @@ interface CartStoreState {
   // 품절 여부 확인
   isSoldOut: (cartId: number) => boolean;
 
+  // 구매된 상품 제거
+  clearPurchasedItems: (purchasedIds: number[]) => void;
+
   // 각 탭별 총 금액 계산
   getCartTotal: (type?: "oneTime" | "subscription") => {
     productsPrice: number;
@@ -77,7 +80,7 @@ const useCartStore = create<CartStoreState>((set, get) => ({
       } else {
         const initialCycles: Record<number, DeliveryCycle> = {};
         data.item.forEach((cart) => {
-          if (cart.color?.includes("subscription")) {
+          if (cart.color === "subscription") {
             initialCycles[cart._id] = (cart.size as DeliveryCycle) || "2w";
           }
         });
@@ -165,13 +168,13 @@ const useCartStore = create<CartStoreState>((set, get) => ({
   // 1회구매 상품
   getOnetimeItems: () => {
     const items = get().cartData?.item || [];
-    return items.filter((cart) => cart.color?.includes("oneTime"));
+    return items.filter((cart) => cart.color === "oneTime");
   },
 
   // 정기구독 상품
   getSubscriptionItems: () => {
     const items = get().cartData?.item || [];
-    return items.filter((cart) => cart.color?.includes("subscription"));
+    return items.filter((cart) => cart.color === "subscription");
   },
 
   // 품절 여부 확인
@@ -190,9 +193,9 @@ const useCartStore = create<CartStoreState>((set, get) => ({
 
     // 타입별 필터링
     if (type === "oneTime") {
-      items = items.filter((cart) => cart.color?.includes("oneTime"));
+      items = items.filter((cart) => cart.color === "oneTime");
     } else if (type === "subscription") {
-      items = items.filter((cart) => cart.color?.includes("subscription"));
+      items = items.filter((cart) => cart.color === "subscription");
     }
 
     // 구매 가능한 상품
@@ -225,9 +228,9 @@ const useCartStore = create<CartStoreState>((set, get) => ({
 
     // 타입별 필터링
     if (type === "oneTime") {
-      items = items.filter((cart) => cart.color?.includes("oneTime"));
+      items = items.filter((cart) => cart.color === "oneTime");
     } else if (type === "subscription") {
-      items = items.filter((cart) => cart.color?.includes("subscription"));
+      items = items.filter((cart) => cart.color === "subscription");
     }
 
     // 선택된 상품 필터링
@@ -254,6 +257,32 @@ const useCartStore = create<CartStoreState>((set, get) => ({
       discount,
       selectCount: availableSelectItems.length,
     };
+  },
+
+  // 주문 완료된 아이템을 장바구니에서 제거
+  clearPurchasedItems: (purchasedIds: number[]) => {
+    set((state) => {
+      if (!state.cartData) return state;
+
+      const idsToRemove = new Set(purchasedIds);
+
+      const newCycles = { ...state.deliveryCycles };
+      idsToRemove.forEach((id) => delete newCycles[Number(id)]);
+
+      const newItems = state.cartData.item.filter((item) => {
+        const shouldKeep = !idsToRemove.has(item._id);
+        return shouldKeep;
+      });
+
+      return {
+        cartData: {
+          ...state.cartData,
+          item: newItems,
+        },
+        deliveryCycles: newCycles,
+        checkoutItems: [],
+      };
+    });
   },
 }));
 

@@ -7,10 +7,12 @@ import Badge from "@/components/common/Badge";
 import Tab from "@/components/common/Tab";
 import useUserStore from "@/zustand/useStore";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 type TabType = "oneTime" | "subscription";
 
 export default function Cart() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabType>("oneTime");
 
   // 토큰 가져오기
@@ -37,7 +39,7 @@ export default function Cart() {
   ];
 
   // 로딩
-  if (isLoading && !cartData) {
+  if (isLoading || !cartData) {
     return (
       <div className="bg-[#F9F9FB]">
         <div className="xl:max-w-300 min-w-90 mx-auto px-4 pt-8 pb-[8.75rem]">
