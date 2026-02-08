@@ -13,6 +13,8 @@ export interface OrderProduct {
   quantity: number;
   price: number;
   review_id?: number;
+  color?: string;
+  size?: string;
 }
 
 // 결제 금액 상세 정보

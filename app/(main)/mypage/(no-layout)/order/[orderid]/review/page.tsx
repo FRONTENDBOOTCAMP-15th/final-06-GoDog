@@ -30,11 +30,9 @@ export default function Review() {
   const params = useParams();
   const searchParams = useSearchParams();
 
-  console.log(params);
   const order_id = Number(params.orderid);
   // const product_id = searchParams.get("productid");
   const product_id = Number(searchParams.get("productid"));
-  console.log(product_id, "마늘");
 
   const [preview, setPreview] = useState("/images/galary.png");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -55,11 +53,8 @@ export default function Review() {
       }),
     enabled: !!order_id && !!token,
   });
-  console.log(resOrderlist, "resOrderlist");
-  console.log(token, "토큰");
 
   const order = resOrderlist?.ok === 1 ? resOrderlist.item[0] : null;
-  console.log(order, "오더가뭔가");
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -81,9 +76,6 @@ export default function Review() {
   const handleSubmit = async () => {
     if (rating === 0) return alert("만족도를 선택해 주세요.");
     if (!reviewContent.trim()) return alert("후기 내용을 입력해 주세요.");
-
-    console.log(order_id, "조기");
-    console.log(product_id, "요기");
 
     if (!order_id || !product_id) return alert("주문 정보를 확인할 수 없습니다.");
 

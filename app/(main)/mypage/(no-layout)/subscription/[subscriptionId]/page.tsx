@@ -9,8 +9,6 @@ export default async function SubscriptionEditPage({ params }: Props) {
   const { subscriptionId } = await params;
   const response = await getOrderDetail(subscriptionId);
 
-  console.log(response, "res");
-
   if (!response || response.ok !== 1) {
     return <div className="py-40 text-center text-[#909094]">주문 내역을 불러올 수 없습니다.</div>;
   }
