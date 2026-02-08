@@ -29,7 +29,10 @@ interface DaumPostcodeData {
 declare global {
   interface Window {
     daum: {
-      Postcode: new (options: { oncomplete: (data: DaumPostcodeData) => void }) => {
+      Postcode: new (options: {
+        oncomplete: (data: DaumPostcodeData) => void;
+        onclose?: () => void;
+      }) => {
         open: () => void;
       };
     };
@@ -40,6 +43,7 @@ export default function Checkout() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { checkoutItems, getSelectCartTotal, clearPurchasedItems, fetchCart } = useCartStore();
+  const [isSearching, setIsSearching] = useState(false);
 
   // 토큰 가져오기
   const { user } = useUserStore();
@@ -83,10 +87,14 @@ export default function Checkout() {
 
   // 주소 검색 핸들러
   const handleAddressSearch = () => {
+    if (isSearching) return;
+
     if (!window.daum) {
       alert("주소 검색 서비스를 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
       return;
     }
+
+    setIsSearching(true);
 
     new window.daum.Postcode({
       oncomplete: (data: DaumPostcodeData) => {
@@ -112,11 +120,16 @@ export default function Checkout() {
           address: roadAddr + extraRoadAddr,
         }));
 
+        setIsSearching(false);
+
         // 상세주소 입력으로 포커스 이동
         const detailInput = document.querySelector<HTMLInputElement>(
           'input[placeholder="상세 주소를 입력해주세요"]'
         );
         detailInput?.focus();
+      },
+      onclose: () => {
+        setIsSearching(false);
       },
     }).open();
   };
@@ -374,7 +387,12 @@ export default function Checkout() {
                         readOnly
                         className="w-32"
                       />
-                      <Button variant="primary" size="md" onClick={handleAddressSearch}>
+                      <Button
+                        variant="primary"
+                        size="md"
+                        onClick={handleAddressSearch}
+                        disabled={isSearching}
+                      >
                         주소 찾기
                       </Button>
                     </div>

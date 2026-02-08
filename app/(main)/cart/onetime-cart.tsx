@@ -205,7 +205,7 @@ export default function OnetimeCart() {
             <div className="flex justify-between">
               <p className="text-[0.75rem] text-text-secondary font-bold">배송비</p>
               <p className="text-[0.75rem] text-[#1A1A1C] font-black">
-                +{shippingFees.toLocaleString()}원
+                {shippingFees.toLocaleString()}원
               </p>
             </div>
 

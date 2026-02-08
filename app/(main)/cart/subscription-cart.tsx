@@ -204,13 +204,13 @@ export default function SubscriptionCart() {
             <div className="flex justify-between">
               <p className="text-[0.75rem] text-text-secondary font-bold">배송비</p>
               <p className="text-[0.75rem] text-[#1A1A1C] font-black">
-                +{shippingFees.toLocaleString()}원
+                {shippingFees.toLocaleString()}원
               </p>
             </div>
             <div className="flex justify-between">
               <p className="text-[0.75rem] text-text-secondary font-bold">정기구독 할인</p>
-              <p className="text-[0.75rem] text-[#1A1A1C] font-black">
-                {discount.toLocaleString()}원
+              <p className="text-[0.75rem] text-(--color-accent-primary) font-black">
+                -{discount.toLocaleString()}원
               </p>
             </div>
 
