@@ -57,8 +57,8 @@ export default async function Mypagelayout({ children }: Readonly<{ children: Re
       </div>
 
       {/* 회색 영역 (탭 버튼) */}
-      <div className="w-full bg-[#F9F9FB]">
-        <div className="flex justify-center gap-[14px] pb-4 relative z-20 -mt-[50px] max-lg:flex max-lg:flex-wrap max-lg:ml-[20px] max-lg:mr-[20px]">
+      <div className="w-full bg-[#F9F9FB] ">
+        <div className="pr-[30px] pl-[30px] flex justify-center gap-[14px] pb-4 relative z-20 -mt-[50px] max-lg:flex max-lg:flex-wrap ">
           <MyTapButton
             content="회원 정보"
             href="/mypage/profile"
