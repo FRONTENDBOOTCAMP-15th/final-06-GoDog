@@ -10,12 +10,12 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://final-06-gu-dog-release.vercel.app"),
 
   title: {
-    default: "9DOG - 반려견 건강 식단 정기구독",
+    default: "9DOG - 반려견 건강 식단 정기 구독",
     template: "%s - 9DOG",
   },
   description: "건강한 반려견 사료와 간식을 정기구독으로 만나보세요.",
   openGraph: {
-    title: "9DOG - 반려견 건강 식단 정기구독",
+    title: "9DOG - 반려견 건강 식단 정기 구독",
     description: "건강한 반려견 사료와 간식을 정기구독으로 만나보세요.",
     images: {
       url: "",
