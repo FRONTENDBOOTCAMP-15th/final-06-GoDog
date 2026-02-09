@@ -36,10 +36,16 @@ export default function WishlistComponent({ bookmarkId, Product, token }: Wishli
 
   return (
     <>
-      <ProductCardSkeleton />
       <div className="rounded-[42px] border border-[rgba(0,0,0,0.06)] bg-[#FFFFFF] shadow-[0_2px_12px_0_rgba(0,0,0,0.03)] overflow-hidden">
-        <div className="mt-[30px] ml-[30px] mr-[30px] w-[211px] h-[211px] rounded-[24px] overflow-hidden relative border border-black/5">
-          <Image src={Product.mainImages[0].path} className="object-cover" alt="상품 이미지" fill />
+        <div className="pt-[30px] pl-[30px] pr-[30px] w-full  h-auto   overflow-hidden relative ">
+          <Image
+            src={Product.mainImages[0].path}
+            className="object-cover rounded-[24px]"
+            alt="상품 이미지"
+            // fill
+            width={211}
+            height={211}
+          />
         </div>
 
         <div className="flex justify-between items-center mt-[27px] px-[29px] pb-[14.5px]">

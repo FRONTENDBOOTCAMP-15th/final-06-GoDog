@@ -13,6 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 import useUserStore from "@/zustand/useStore";
 import { useEffect } from "react";
 import { OrderListRes, ResData } from "@/types/response";
+import { MyItemListSkeleton } from "@/app/(main)/mypage/(layout)/order/skeleton";
 
 export default function Orders() {
   const user = useUserStore((state) => state.user);
@@ -22,7 +23,11 @@ export default function Orders() {
   const searchParams = useSearchParams();
   const page = Number(searchParams.get("page")) || 1;
 
-  const { data: resOrderlist, isLoading } = useQuery<ResData<OrderListRes>>({
+  const {
+    data: resOrderlist,
+    isLoading,
+    isFetching,
+  } = useQuery<ResData<OrderListRes>>({
     queryKey: ["orders", page],
     queryFn: () =>
       getOrders(token ?? "", {
@@ -39,7 +44,7 @@ export default function Orders() {
   };
 
   const pagination = resOrderlist?.ok === 1 ? resOrderlist.pagination : undefined;
-
+  const showSkeleton = isLoading || isFetching;
   return (
     <div className="w-full pb-[70px]">
       <div className="mt-[108px]">
@@ -61,7 +66,15 @@ export default function Orders() {
           justify-items-center
           max-w-[500px] md:max-w-[700px] lg:max-w-none mx-auto"
         >
-          {resOrderlist?.ok && resOrderlist.item.length > 0 ? (
+          {/* 1. 로딩 중일 때 스켈레톤 UI를 보여줍니다. */}
+          {showSkeleton ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <div key={`skeleton-${i}`} className="w-full">
+                <MyItemListSkeleton />
+              </div>
+            ))
+          ) : resOrderlist?.ok && resOrderlist.item.length > 0 ? (
+            /* 2. 로딩 완료 후 데이터 렌더링 */
             resOrderlist.item.map((item) => {
               const hasReview = !!item.products[0].review_id;
               return (
