@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import useUserStore from "@/zustand/useStore";
 import { usePathname, useRouter } from "next/navigation";
 import Cookies from "js-cookie";
