@@ -1,7 +1,21 @@
+import { Metadata } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import ProfileClient from "@/app/(main)/mypage/(layout)/profile/actions/profile";
 import { getUser } from "@/lib/user";
+
+export const metadata: Metadata = {
+  title: "회원 정보",
+  description: "9DOG 회원 정보 페이지입니다.",
+  openGraph: {
+    title: "회원 정보",
+    description: "9DOG 회원 정보 페이지입니다.",
+    url: "/mypage/profile",
+    images: {
+      url: "",
+    },
+  },
+};
 
 export default async function ProfilePage() {
   const cookieStore = await cookies();

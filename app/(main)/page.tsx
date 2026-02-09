@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import FeatureCard from "@/app/(main)/_components/FeatureCard";
 import FeatureItem from "@/app/(main)/_components/FeatureItem";
 import HeroSwiper from "@/app/(main)/_components/HeroSwiper";
@@ -5,6 +6,21 @@ import ProductCard from "@/app/(main)/_components/ProductCard";
 import SectionTitle from "@/app/(main)/_components/SectionTitle";
 import { getProducts } from "@/lib/product";
 import Image from "next/image";
+
+export const metadata: Metadata = {
+  title: "9DOG - 반려견 맞춤형 건강 식단 구독 서비스",
+  description:
+    "데이터로 그리는 가장 정밀한 건강 지도. 반려견의 생체 리듬과 활동량, 알러지 정보까지 모두 통합하여 가장 과학적인 한 그릇을 설계합니다.",
+  openGraph: {
+    title: "9DOG - 반려견 맞춤형 건강 식단 구독 서비스",
+    description:
+      "데이터로 그리는 가장 정밀한 건강 지도. 반려견의 생체 리듬과 활동량, 알러지 정보까지 모두 통합하여 가장 과학적인 한 그릇을 설계합니다.",
+    url: "/",
+    images: {
+      url: "",
+    },
+  },
+};
 
 export default async function Home() {
   const bestProductsRes = await getProducts({ sort: { rating: -1 }, limit: 3 });

@@ -1,5 +1,19 @@
 import SubscriptionEditClient from "@/app/(main)/mypage/(no-layout)/subscription/[subscriptionId]/SubscriptionEditClient";
 import { getOrderDetail } from "./getOrderDetail";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "구독 관리",
+  description: "9DOG 구독 상세 정보 및 관리 페이지입니다.",
+  openGraph: {
+    title: "구독 관리",
+    description: "9DOG 구독 상세 정보 및 관리 페이지입니다.",
+    url: "/mypage/subscription",
+    images: {
+      url: "",
+    },
+  },
+};
 
 interface Props {
   params: { subscriptionId: string };

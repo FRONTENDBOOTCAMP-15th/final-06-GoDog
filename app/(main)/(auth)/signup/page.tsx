@@ -8,7 +8,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function SignupForm() {
+export default function Signup() {
   const router = useRouter();
   const [formData, setFormData] = useState({
     type: "user" as "user" | "seller",

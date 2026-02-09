@@ -54,7 +54,11 @@ function ProductsContent() {
     "extra.type": type || "사료",
   };
 
-  const { data: resProducts, isLoading, isError } = useQuery({
+  const {
+    data: resProducts,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["products", lifeStage, category, type, currentPage],
     queryFn: () => getProducts({ custom, page: currentPage, limit: 10 }),
   });

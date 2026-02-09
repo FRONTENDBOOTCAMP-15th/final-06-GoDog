@@ -10,7 +10,7 @@ import { useState } from "react";
 import useUserStore from "@/zustand/useStore";
 import { createQnaPost } from "@/actions/qna";
 
-export default function ProductQna() {
+export default function ProductQnaForm() {
   const user = useUserStore((state) => state.user);
   const router = useRouter();
   const params = useParams();
