@@ -10,6 +10,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { getOrders } from "@/lib/order";
 import Cookies from "js-cookie";
+import { MyItemListSkeleton } from "@/app/(main)/mypage/(layout)/order/skeleton";
 
 export default function Subscription() {
   const user = useUserStore((state) => state.user);
@@ -19,7 +20,11 @@ export default function Subscription() {
   const searchParams = useSearchParams();
   const page = Number(searchParams.get("page")) || 1;
 
-  const { data: resOrderlist, isLoading } = useQuery({
+  const {
+    data: resOrderlist,
+    isLoading,
+    isFetching,
+  } = useQuery({
     queryKey: ["orders", page],
     queryFn: () =>
       getOrders(token ?? "", {
@@ -37,6 +42,8 @@ export default function Subscription() {
     }
   };
 
+  const showSkeleton = isLoading || isFetching;
+
   return (
     <div className="w-full pb-[70px]">
       <div className="mt-[108px]">
@@ -51,8 +58,12 @@ export default function Subscription() {
 
       <div className="max-w-[1280px] mx-auto pt-[57px] pb-[110px] px-[20px] lg:px-0">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 md:gap-x-10 lg:gap-x-7 gap-y-10 justify-items-center max-w-[500px] md:max-w-[700px] lg:max-w-none mx-auto">
-          {isLoading ? (
-            <div className="col-span-full py-20 text-center">불러오는 중...</div>
+          {showSkeleton ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <div key={`skeleton-${i}`} className="w-full">
+                <MyItemListSkeleton />
+              </div>
+            ))
           ) : resOrderlist?.ok === 1 && resOrderlist.item.length > 0 ? (
             resOrderlist.item.map((item) => (
               <div key={item._id} className="w-full max-w-[280px]">

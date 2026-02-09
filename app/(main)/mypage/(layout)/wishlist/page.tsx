@@ -1,3 +1,4 @@
+import { ProductCardSkeleton } from "@/app/(main)/mypage/(layout)/wishlist/skeleton";
 import { Product404 } from "@/app/(main)/mypage/_components/DogFoodImage";
 import WishlistComponent from "@/app/(main)/mypage/_components/wishlist";
 import PaginationWrapper from "@/components/common/PaginationWrapper";
@@ -7,6 +8,7 @@ import { Product } from "@/types/product";
 import { BookmarkListRes, ResData } from "@/types/response";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
+import { Suspense } from "react";
 
 interface BookmarkItem {
   _id: number;
@@ -25,9 +27,10 @@ export async function generateWishlist({
 
 interface Props {
   searchParams: Promise<{ page?: string }>;
+  token: string;
 }
 
-export default async function Wishlist({ searchParams }: Props) {
+export async function Wishlist({ searchParams }: Props) {
   const { page } = await searchParams;
   const currentPage = Number(page) || 1;
 
@@ -60,17 +63,17 @@ export default async function Wishlist({ searchParams }: Props) {
   const totalPages = (response?.ok === 1 && response?.pagination?.totalPages) || 1;
 
   return (
-    <div className="w-full pb-[70px] ">
-      <div className="mt-[108px]">
+    <div className="w-full pb-[70px]">
+      {/* <div className="mt-[108px]">
         <p className="text-[#1A1A1C] text-center text-[26.3px] font-[900]">{userName}님이 저장한</p>
         <div className="flex flex-row justify-center">
           <p className="text-[#FBA613] text-center text-[26.3px] font-[900]">관심 상품</p>
           <p className="text-[#1A1A1C] text-center text-[26.3px] font-[900]">목록입니다</p>
         </div>
-      </div>
+      </div> */}
 
       <div className="max-w-[1280px] lg:pl-[30px] lg:pr-[30px] pr-[10px] pl-[10px]  mx-auto pt-[57px] pb-[100px] px-[20px] lg:px-0">
-        <div className="  grid grid-cols-2 lg:grid-cols-4 gap-x-4 md:gap-x-10 lg:gap-x-7 gap-y-10 justify-items-center max-w-[500px] md:max-w-[700px] lg:max-w-none mx-auto">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 md:gap-x-10 lg:gap-x-7 gap-y-10 justify-items-center max-w-[500px] md:max-w-[700px] lg:max-w-none mx-auto">
           {wishlistItems.length > 0 ? (
             wishlistItems.map((item: BookmarkItem) => (
               <div key={item._id} className="w-full max-w-[280px]">
@@ -87,6 +90,50 @@ export default async function Wishlist({ searchParams }: Props) {
 
       <div className="flex justify-center">
         <PaginationWrapper currentPage={currentPage} totalPages={totalPages} />
+      </div>
+    </div>
+  );
+}
+
+export default async function WishlistMain({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("accessToken")?.value || "";
+
+  let userName = "회원";
+  if (token) {
+    try {
+      const payload = JSON.parse(Buffer.from(token.split(".")[1], "base64").toString());
+      const userRes = await getUser(payload._id || payload.id);
+      if (userRes && "item" in userRes) userName = userRes.item.name;
+    } catch (e) {}
+  }
+
+  return (
+    <div className="w-full pb-[70px]">
+      <div className="mt-[108px]">
+        <p className="text-[#1A1A1C] text-center text-[26px] font-[900]">{userName}님이 저장한</p>
+        <div className="flex flex-row justify-center">
+          <p className="text-[#FBA613] text-center text-[26px] font-[900]">관심 상품</p>
+          <p className="text-[#1A1A1C] text-center text-[26px] font-[900]">목록입니다</p>
+        </div>
+      </div>
+
+      <div className="max-w-[1280px] lg:pl-[30px] lg:pr-[30px] pr-[10px] pl-[10px]  mx-auto pt-[57px] pb-[100px] px-[20px] lg:px-0">
+        <Suspense
+          fallback={
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-7 justify-items-center">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <ProductCardSkeleton key={i} />
+              ))}
+            </div>
+          }
+        >
+          <Wishlist searchParams={searchParams} token={token} />
+        </Suspense>
       </div>
     </div>
   );

@@ -6,6 +6,7 @@ import { TrashIcon } from "@/app/(main)/mypage/_components/Icons";
 import Image from "next/image";
 import { deleteWishlist } from "@/lib/bookmark";
 import { useRouter } from "next/navigation";
+import { ProductCardSkeleton } from "@/app/(main)/mypage/(layout)/wishlist/skeleton";
 
 interface WishlistComponentProps {
   bookmarkId: number;
@@ -34,40 +35,44 @@ export default function WishlistComponent({ bookmarkId, Product, token }: Wishli
   };
 
   return (
-    <div className=" rounded-[42px] border border-[rgba(0,0,0,0.06)] bg-[#FFFFFF] shadow-[0_2px_12px_0_rgba(0,0,0,0.03)] overflow-hidden">
-      <div className="pt-[30px] pl-[30px] pr-[30px] w-full  h-auto   overflow-hidden relative border border-black/5">
-        <Image
-          src={Product.mainImages[0].path}
-          className="object-cover rounded-[24px]"
-          alt="상품 이미지"
-          // fill
-          width={211}
-          height={211}
-        />
+    <>
+      <div className="rounded-[42px] border border-[rgba(0,0,0,0.06)] bg-[#FFFFFF] shadow-[0_2px_12px_0_rgba(0,0,0,0.03)] overflow-hidden">
+        <div className="pt-[30px] pl-[30px] pr-[30px] w-full  h-auto   overflow-hidden relative ">
+          <Image
+            src={Product.mainImages[0].path}
+            className="object-cover rounded-[24px]"
+            alt="상품 이미지"
+            // fill
+            width={211}
+            height={211}
+          />
+        </div>
+
+        <div className="flex justify-between items-center mt-[27px] px-[29px] pb-[14.5px]">
+          <div className="text-[#1A1A1C] text-[18px] font-black truncate mr-2">{Product.name}</div>
+
+          <button
+            type="button"
+            onClick={handleDelete}
+            className="hover:scale-110 transition-transform active:opacity-70"
+          >
+            <TrashIcon className="text-[#909094] hover:text-red-500 transition-colors" />
+          </button>
+        </div>
+
+        <hr className="w-[calc(100%-58px)] h-px mx-auto border-0 bg-[rgba(0,0,0,0.06)] " />
+        <div className="pb-[36px] pt-[15px] flex pl-[29px] justify-between pr-[29px] ">
+          <p className="text-[#1A1A1C] text-[12px] font-black">판매 가격</p>
+          <p className="text-[#FBA613] text-[12px] font-black ">
+            {Product.price.toLocaleString()}원
+          </p>
+        </div>
+
+        <Link
+          className="pt-[20px] flex flex-row pl-[29px] justify-center gap-[12px]"
+          href={`/products/${Product._id}`}
+        ></Link>
       </div>
-
-      <div className="flex justify-between items-center mt-[27px] px-[29px] pb-[14.5px]">
-        <div className="text-[#1A1A1C] text-[18px] font-black truncate mr-2">{Product.name}</div>
-
-        <button
-          type="button"
-          onClick={handleDelete}
-          className="hover:scale-110 transition-transform active:opacity-70"
-        >
-          <TrashIcon className="text-[#909094] hover:text-red-500 transition-colors" />
-        </button>
-      </div>
-
-      <hr className="w-[calc(100%-58px)] h-px mx-auto border-0 bg-[rgba(0,0,0,0.06)] " />
-      <div className="pb-[36px] pt-[15px] flex pl-[29px] justify-between pr-[29px] ">
-        <p className="text-[#1A1A1C] text-[12px] font-black">판매 가격</p>
-        <p className="text-[#FBA613] text-[12px] font-black ">{Product.price.toLocaleString()}원</p>
-      </div>
-
-      <Link
-        className="pt-[20px] flex flex-row pl-[29px] justify-center gap-[12px]"
-        href={`/products/${Product._id}`}
-      ></Link>
-    </div>
+    </>
   );
 }
