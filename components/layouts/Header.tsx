@@ -15,8 +15,8 @@ const Header: React.FC = () => {
   const router = useRouter();
   const { user, resetUser, cartCount, fetchCartCount, resetCart } = useUserStore();
 
-  // const isLoggedIn = !!user?.token?.accessToken;
-  const isLoggedIn = Cookies.get("accessToken");
+  // zustand 에서 토큰 끌어오기 - hydration 에러 수정
+  const isLoggedIn = !!user?.token?.accessToken;
 
   // 로그인 상태일 때 장바구니 수량 조회
   useEffect(() => {
