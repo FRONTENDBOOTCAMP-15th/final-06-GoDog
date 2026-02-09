@@ -5,7 +5,7 @@ import Button from "@/components/common/Button";
 import Checkbox from "@/components/common/Checkbox";
 import useUserStore from "@/zustand/useStore";
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function OnetimeCart() {
@@ -33,21 +33,32 @@ export default function OnetimeCart() {
   // 1회구매 상품 가져오기
   const items = getOnetimeItems();
 
+  // 컴포넌트 최초 로드 시 전체 선택 처리
+  useEffect(() => {
+    if (items.length > 0) {
+      // 모든 상품의 ID를 추출하여 선택 상태로 설정
+      const allIds = items.map((item) => item._id);
+      setSelectIds(allIds);
+    }
+  }, [items.length]);
+
   // 1회구매 총액 계산 (선택 || 전체)
   const { productsPrice, shippingFees, totalPrice, selectCount, availableCount } = useMemo(() => {
-    if (selectIds.length > 0) {
-      // 선택된 상품만 계산
+    if (selectIds.length === 0) {
       return {
-        ...getSelectCartTotal(selectIds, "oneTime"),
-        availableCount: getCartTotal("oneTime").availableCount, // 전체 개수 유지
-      };
-    } else {
-      // 전체 상품 계산
-      return {
-        ...getCartTotal("oneTime"),
-        selectCount: 0, // 기본값 설정
+        productsPrice: 0,
+        shippingFees: 0,
+        totalPrice: 0,
+        selectCount: 0,
+        availableCount: getCartTotal("oneTime").availableCount,
       };
     }
+
+    // 선택된 상품이 있는 경우 계산
+    return {
+      ...getSelectCartTotal(selectIds, "oneTime"),
+      availableCount: getCartTotal("oneTime").availableCount,
+    };
   }, [cartData, selectIds, getSelectCartTotal, getCartTotal]);
 
   // 한건 삭제 핸들러
@@ -215,10 +226,7 @@ export default function OnetimeCart() {
             </div>
 
             {/* 구매하기 버튼 */}
-            <Button
-              onClick={handlePurchase}
-              disabled={selectIds.length > 0 ? selectCount === 0 : availableCount === 0}
-            >
+            <Button onClick={handlePurchase} disabled={selectIds.length === 0 || selectCount === 0}>
               {selectIds.length > 0
                 ? selectCount > 0
                   ? `${selectCount}개 상품 구매하기`

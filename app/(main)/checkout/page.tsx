@@ -14,31 +14,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { deleteCartItems } from "@/app/(main)/cart/action/cart";
 
-// 다음 주소 데이터 타입
-interface DaumPostcodeData {
-  zonecode: string;
-  roadAddress: string;
-  jibunAddress: string;
-  bname: string;
-  buildingName: string;
-  apartment: string;
-  autoRoadAddress?: string;
-  autoJibunAddress?: string;
-}
-
-declare global {
-  interface Window {
-    daum: {
-      Postcode: new (options: {
-        oncomplete: (data: DaumPostcodeData) => void;
-        onclose?: () => void;
-      }) => {
-        open: () => void;
-      };
-    };
-  }
-}
-
 export default function Checkout() {
   const router = useRouter();
   const searchParams = useSearchParams();

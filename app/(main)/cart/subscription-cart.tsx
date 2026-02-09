@@ -5,7 +5,7 @@ import Button from "@/components/common/Button";
 import Checkbox from "@/components/common/Checkbox";
 import useUserStore from "@/zustand/useStore";
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function SubscriptionCart() {
@@ -30,25 +30,36 @@ export default function SubscriptionCart() {
   // 체크박스 선택된 상품 ID
   const [selectIds, setSelectIds] = useState<number[]>([]);
 
+  // 컴포넌트 최초 로드 시 전체 선택 처리
+  useEffect(() => {
+    const subItems = getSubscriptionItems();
+    if (subItems.length > 0) {
+      const allIds = subItems.map((item) => item._id);
+      setSelectIds(allIds);
+    }
+  }, [getSubscriptionItems().length]);
+
   // 정기구독 상품 가져오기
   const items = getSubscriptionItems();
 
   // 정기구독 총액 계산
   const { productsPrice, shippingFees, totalPrice, availableCount, discount, selectCount } =
     useMemo(() => {
-      if (selectIds.length > 0) {
-        // 선택된 상품만 계산
+      if (selectIds.length === 0) {
         return {
-          ...getSelectCartTotal(selectIds, "subscription"),
-          availableCount: getCartTotal("subscription").availableCount, // 전체 개수 유지
-        };
-      } else {
-        // 전체 상품 계산
-        return {
-          ...getCartTotal("subscription"),
-          selectCount: 0, // 기본값 설정
+          productsPrice: 0,
+          shippingFees: 0,
+          discount: 0,
+          totalPrice: 0,
+          selectCount: 0,
+          availableCount: getCartTotal("subscription").availableCount,
         };
       }
+      // 선택된 상품이 있을 때 계산
+      return {
+        ...getSelectCartTotal(selectIds, "subscription"),
+        availableCount: getCartTotal("subscription").availableCount,
+      };
     }, [cartData, selectIds, getSelectCartTotal, getCartTotal]);
 
   // 한건 삭제 핸들러
@@ -222,17 +233,12 @@ export default function SubscriptionCart() {
             </div>
 
             {/* 구매하기 버튼 */}
-            <Button
-              onClick={handlePurchase}
-              disabled={selectIds.length > 0 ? selectCount === 0 : availableCount === 0}
-            >
-              {selectIds.length > 0
-                ? selectCount > 0
-                  ? `${selectCount}개 상품 구매하기`
-                  : "선택한 상품 중 구매 가능한 상품이 없습니다."
-                : availableCount > 0
-                ? `${availableCount}개 상품 구매하기`
-                : "구매 가능한 상품이 없습니다."}
+            <Button onClick={handlePurchase} disabled={selectIds.length === 0 || selectCount === 0}>
+              {selectIds.length === 0
+                ? "구매할 상품을 선택해주세요"
+                : selectCount > 0
+                ? `${selectCount}개 상품 구독하기`
+                : "구독 가능한 상품이 없습니다."}
             </Button>
 
             <div className="flex items-center justify-center gap-2">
