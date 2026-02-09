@@ -22,6 +22,7 @@ import { getUsers } from "@/lib/user";
 import { getOrderStatistics } from "@/lib/statistics";
 import useUserStore from "@/zustand/useStore";
 import Link from "next/link";
+import { showWarning } from "@/lib/sweetalert";
 
 // 가격 포맷
 const formatPrice = (price: number) => {
@@ -111,7 +112,8 @@ export default function AdminDashboardPage() {
     setLoading(true);
 
     if (!token) {
-      return alert("재로그인이 필요합니다");
+      showWarning("재로그인 필요", "재로그인이 필요합니다");
+      return;
     }
 
     // 1. 주문 통계 (총 판매금액 + 총 주문건수)

@@ -9,6 +9,7 @@ import QuantityControl from "@/components/common/Quantitycontrol";
 import { Product } from "@/types/product";
 import { addToCart } from "@/lib/cart";
 import useUserStore from "@/zustand/useStore";
+import { showWarning, showSuccess, showError, showConfirm } from "@/lib/sweetalert";
 
 type PurchaseType = "oneTime" | "subscription";
 
@@ -52,7 +53,7 @@ export default function PurchaseModal({ isOpen, onClose, product }: Props) {
 
   const handleAddToCart = async () => {
     if (!user?.token?.accessToken) {
-      alert("로그인이 필요합니다. 로그인 페이지로 이동합니다.");
+      showWarning("로그인이 필요합니다. 로그인 페이지로 이동합니다.");
       router.push("/login");
       return;
     }
@@ -67,13 +68,13 @@ export default function PurchaseModal({ isOpen, onClose, product }: Props) {
 
     if (res.ok === 1) {
       incrementCart(1);
-      const goToCart = confirm("장바구니에 담았습니다.\n장바구니로 이동하시겠습니까?");
-      if (goToCart) {
+      const result = await showConfirm("장바구니에 담았습니다.", "장바구니로 이동하시겠습니까?", "확인", "취소");
+      if (result.isConfirmed) {
         onClose();
         router.push(purchaseType === "subscription" ? "/cart?tab=subscription" : "/cart");
       }
     } else {
-      alert("장바구니 담기에 실패했습니다.");
+      showError("장바구니 담기에 실패했습니다.");
     }
   };
 
@@ -221,7 +222,7 @@ export default function PurchaseModal({ isOpen, onClose, product }: Props) {
             variant="primary"
             onClick={() => {
               if (!user?.token?.accessToken) {
-                alert("로그인이 필요합니다. 로그인 페이지로 이동합니다.");
+                showWarning("로그인이 필요합니다. 로그인 페이지로 이동합니다.");
                 router.push("/login");
                 return;
               }

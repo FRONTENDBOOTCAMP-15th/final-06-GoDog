@@ -7,6 +7,7 @@ import useUserStore from "@/zustand/useStore";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { showWarning, showError, showDeleteConfirm } from "@/lib/sweetalert";
 
 export default function OnetimeCart() {
   const router = useRouter();
@@ -63,17 +64,18 @@ export default function OnetimeCart() {
 
   // 한건 삭제 핸들러
   const handleDelete = async (cartId: number) => {
-    if (!confirm("삭제하시겠습니까?")) return;
+    const result = await showDeleteConfirm();
+    if (!result.isConfirmed) return;
 
     try {
-      const result = await deleteCartItem(cartId, accessToken as string);
+      const deleteResult = await deleteCartItem(cartId, accessToken as string);
 
-      if (result?.ok !== 0) {
+      if (deleteResult?.ok !== 0) {
         deleteStoreItem(cartId);
         setSelectIds((prev) => prev.filter((id) => id !== cartId));
       }
     } catch {
-      alert("삭제에 실패했습니다. 다시 시도해 주세요.");
+      showError("삭제에 실패했습니다. 다시 시도해 주세요.");
     }
   };
 
@@ -99,36 +101,35 @@ export default function OnetimeCart() {
   // 여러 건 삭제 핸들러
   const handleDeleteMultiple = async () => {
     if (selectIds.length === 0) {
-      alert("삭제할 상품을 선택해주세요.");
+      showWarning("삭제할 상품을 선택해주세요.");
       return;
     }
 
     // 헤더 에러 방지
     if (!accessToken) {
-      alert("로그인이 필요합니다.");
+      showWarning("로그인이 필요합니다.");
       return;
     }
 
-    if (!confirm(`선택한 ${selectIds.length}개 상품을 삭제하시겠습니까?`)) {
-      return;
-    }
+    const result = await showDeleteConfirm(`선택한 ${selectIds.length}개 상품을 삭제하시겠습니까?`);
+    if (!result.isConfirmed) return;
 
     setIsDeleting(true);
     try {
       const formData = new FormData();
       formData.append("cartIds", JSON.stringify(selectIds));
       formData.append("accessToken", accessToken);
-      const result = await deleteCartItems(null, formData);
+      const deleteApiResult = await deleteCartItems(null, formData);
 
-      if (result === null) {
+      if (deleteApiResult === null) {
         deleteStoreItems(selectIds);
 
         setSelectIds([]); // 선택 목록 초기화
       } else {
-        alert(result.message);
+        showError(deleteApiResult.message);
       }
     } catch {
-      alert("삭제에 실패했습니다. 다시 시도해 주세요.");
+      showError("삭제에 실패했습니다. 다시 시도해 주세요.");
     } finally {
       setIsDeleting(false);
     }
@@ -150,7 +151,7 @@ export default function OnetimeCart() {
     }
 
     if (itemsToPurchase.length === 0) {
-      alert("구매 가능한 상품이 없습니다.");
+      showWarning("구매 가능한 상품이 없습니다.");
       return;
     }
 

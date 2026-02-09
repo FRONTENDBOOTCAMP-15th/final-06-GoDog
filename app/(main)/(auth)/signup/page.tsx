@@ -7,6 +7,7 @@ import { signup } from "@/lib/user";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { showError, showSuccess } from "@/lib/sweetalert";
 
 export default function SignupForm() {
   const router = useRouter();
@@ -30,7 +31,7 @@ export default function SignupForm() {
     e.preventDefault();
 
     if (formData.password !== formData.passwordConfirm) {
-      alert("비밀번호가 일치하지 않습니다.");
+      showError("비밀번호가 일치하지 않습니다.");
       return;
     }
 
@@ -39,10 +40,10 @@ export default function SignupForm() {
     const result = await signup(signupData);
 
     if (result.ok === 1) {
-      alert(`${result.item.name}님, 가입을 환영합니다!`);
+      showSuccess(`${result.item.name}님, 가입을 환영합니다!`);
       router.push("/login");
     } else {
-      alert(result.message || "회원가입에 실패했습니다.");
+      showError(result.message || "회원가입에 실패했습니다.");
     }
   };
 

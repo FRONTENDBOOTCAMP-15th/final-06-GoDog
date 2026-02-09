@@ -9,6 +9,7 @@ import { updateUser } from "@/lib/user";
 import { uploadFile } from "@/app/(main)/mypage/(no-layout)/order/[orderid]/review/postreview";
 import { UserInfoRes } from "@/types/response";
 import Image from "next/image";
+import { showError, showSuccess } from "@/lib/sweetalert";
 
 export default function ProfileClient({
   token,
@@ -77,7 +78,7 @@ export default function ProfileClient({
       const serverPath = fileData.item?.[0]?.path || fileData.path || fileData.name;
       setPreview(serverPath);
     } catch (error) {
-      alert("이미지 업로드에 실패했습니다.");
+      showError("이미지 업로드에 실패했습니다.");
     } finally {
       setIsPending(false);
     }
@@ -100,12 +101,12 @@ export default function ProfileClient({
     try {
       const result = await updateUser(user._id, updateData);
       if (result.ok) {
-        alert("회원 정보가 수정되었습니다.");
+        showSuccess("회원 정보가 수정되었습니다.");
       } else {
-        alert("수정에 실패했습니다.");
+        showError("수정에 실패했습니다.");
       }
     } catch (error) {
-      alert("오류가 발생했습니다.");
+      showError("오류가 발생했습니다.");
     } finally {
       setIsPending(false);
     }

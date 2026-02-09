@@ -12,6 +12,7 @@ import {
 import CheckButton from "@/components/common/CheckButton";
 import ChoiceButton from "@/components/common/ChoiceButton";
 import InfoBox from "@/components/common/InfoBox";
+import { showWarning, showError } from "@/lib/sweetalert";
 
 // 설문조사 4단계
 const TOTAL_STEPS = 4;
@@ -46,7 +47,7 @@ export default function SurveyPage() {
         const results = await recommendProducts(formData);
 
         if (!results || results.length === 0) {
-          alert("조건에 맞는 제품을 찾지 못했습니다. 조건을 변경해 주세요.");
+          showWarning("조건에 맞는 제품을 찾지 못했습니다. 조건을 변경해 주세요.");
           setIsSubmitting(false);
           return;
         }
@@ -56,7 +57,7 @@ export default function SurveyPage() {
         router.push(resultUrl);
       } catch (error) {
         console.error("추천 처리 중 오류:", error);
-        alert("추천 처리 중 오류가 발생했습니다. 다시 시도해 주세요.");
+        showError("추천 처리 중 오류가 발생했습니다. 다시 시도해 주세요.");
         setIsSubmitting(false);
       }
     }

@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import useUserStore from "@/zustand/useStore";
 import { createQnaPost } from "@/actions/qna";
+import { showWarning, showSuccess, showError } from "@/lib/sweetalert";
 
 export default function ProductQna() {
   const user = useUserStore((state) => state.user);
@@ -27,11 +28,17 @@ export default function ProductQna() {
   const MAX_LEN = 200;
 
   const handleSubmit = async () => {
-    if (!title.trim()) return alert("제목을 입력해 주세요.");
-    if (!content.trim()) return alert("문의 내용을 입력해 주세요.");
+    if (!title.trim()) {
+      showWarning("제목을 입력해 주세요.");
+      return;
+    }
+    if (!content.trim()) {
+      showWarning("문의 내용을 입력해 주세요.");
+      return;
+    }
 
     if (!user?.token?.accessToken) {
-      alert("로그인이 필요합니다.");
+      showWarning("로그인이 필요합니다.");
       router.push("/login");
       return;
     }
@@ -48,10 +55,10 @@ export default function ProductQna() {
         product_img: productImage,
       });
 
-      alert("문의가 등록되었습니다!");
+      showSuccess("문의가 등록되었습니다!");
       router.push(`/products/${productId}`);
     } catch {
-      alert("문의 등록 중 오류가 발생했습니다.");
+      showError("문의 등록 중 오류가 발생했습니다.");
     } finally {
       setIsSubmitting(false);
     }

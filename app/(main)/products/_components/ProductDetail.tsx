@@ -13,6 +13,7 @@ import { Post } from "@/types/post";
 import Cookies from "js-cookie";
 import useUserStore from "@/zustand/useStore";
 import { addBookmark, getWishlist, deleteWishlist } from "@/lib/bookmark";
+import { showWarning } from "@/lib/sweetalert";
 
 function StarRating({ rating, size = 16 }: { rating: number; size?: number }) {
   return (
@@ -91,7 +92,7 @@ export default function ProductDetail({
   // 하트 클릭
   const handleToggleBookmark = async () => {
     if (!token) {
-      alert("로그인이 필요합니다.");
+      showWarning("로그인이 필요합니다.");
       router.push("/login");
       return;
     }

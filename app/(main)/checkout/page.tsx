@@ -13,6 +13,7 @@ import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { deleteCartItems } from "@/app/(main)/cart/action/cart";
+import { showWarning, showSuccess, showError } from "@/lib/sweetalert";
 
 function CheckoutContent() {
   const router = useRouter();
@@ -65,7 +66,7 @@ function CheckoutContent() {
     if (isSearching) return;
 
     if (!window.daum) {
-      alert("주소 검색 서비스를 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
+      showWarning("주소 검색 서비스를 불러오는 중입니다. 잠시 후 다시 시도해주세요.");
       return;
     }
 
@@ -188,7 +189,10 @@ function CheckoutContent() {
 
   // 결제 요청 핸들러
   const handlePayment = async () => {
-    if (!accessToken) return alert("로그인이 필요합니다.");
+    if (!accessToken) {
+      showWarning("로그인이 필요합니다.");
+      return;
+    }
 
     try {
       // 포트원 결제창 호출
@@ -212,7 +216,7 @@ function CheckoutContent() {
       await createServerOrder(accessToken);
     } catch (err) {
       console.error("결제 오류", err);
-      alert("결제 중 오류가 발생했습니다.");
+      showError("결제 중 오류가 발생했습니다.");
     }
   };
 
@@ -237,7 +241,7 @@ function CheckoutContent() {
     const allSuccess = results.every((res) => res.ok === 1);
 
     if (allSuccess) {
-      alert("주문이 완료되었습니다.");
+      showSuccess("주문이 완료되었습니다.");
       router.push("/mypage/order");
 
       // 장바구니 정리
@@ -267,7 +271,7 @@ function CheckoutContent() {
         })();
       }
     } else {
-      alert("주문 데이터 처리에 실패했습니다.");
+      showError("주문 데이터 처리에 실패했습니다.");
     }
   };
 

@@ -20,6 +20,7 @@ import useUserStore from "@/zustand/useStore";
 import { useQuery } from "@tanstack/react-query";
 import Cookies from "js-cookie";
 import { OrderStateCode } from "@/types/codes";
+import { showWarning, showSuccess, showError } from "@/lib/sweetalert";
 
 export default function Review() {
   const user = useUserStore((state) => state.user);
@@ -74,10 +75,19 @@ export default function Review() {
   };
 
   const handleSubmit = async () => {
-    if (rating === 0) return alert("만족도를 선택해 주세요.");
-    if (!reviewContent.trim()) return alert("후기 내용을 입력해 주세요.");
+    if (rating === 0) {
+      showWarning("만족도를 선택해 주세요.");
+      return;
+    }
+    if (!reviewContent.trim()) {
+      showWarning("후기 내용을 입력해 주세요.");
+      return;
+    }
 
-    if (!order_id || !product_id) return alert("주문 정보를 확인할 수 없습니다.");
+    if (!order_id || !product_id) {
+      showWarning("주문 정보를 확인할 수 없습니다.");
+      return;
+    }
 
     try {
       setIsSubmitting(true);
@@ -101,10 +111,10 @@ export default function Review() {
         },
       });
 
-      alert("소중한 후기가 등록되었습니다!");
+      showSuccess("소중한 후기가 등록되었습니다!");
       router.push("/mypage/order");
     } catch (error) {
-      alert("리뷰 등록 중 오류가 발생했습니다.");
+      showError("리뷰 등록 중 오류가 발생했습니다.");
     } finally {
       setIsSubmitting(false);
     }

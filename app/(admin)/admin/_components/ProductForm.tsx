@@ -21,6 +21,7 @@ import {
 } from "@/types/product";
 import { createProduct, updateProduct } from "@/actions/product";
 import { useRouter } from "next/navigation";
+import { showSuccess } from "@/lib/sweetalert";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -471,7 +472,7 @@ export default function ProductForm({ formType, initialData }: ProductFormProps)
 
         const result = await createProduct(submitForm, newThumbnailFile, newDetailFiles);
         console.log("등록 완료:", result);
-        alert("상품이 등록되었습니다.");
+        await showSuccess("등록 완료", "상품이 등록되었습니다.");
       } else {
         if (!initialData?._id) throw new Error("상품 ID가 없습니다.");
 
@@ -484,7 +485,7 @@ export default function ProductForm({ formType, initialData }: ProductFormProps)
           existingDetailImages,
         );
         console.log("수정 완료:", result);
-        alert("상품이 수정되었습니다.");
+        await showSuccess("수정 완료", "상품이 수정되었습니다.");
       }
       router.push("/admin/products");
     } catch (e) {

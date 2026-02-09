@@ -10,6 +10,7 @@ import Link from "next/link";
 import { redirect, useRouter } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
 import { createJSONStorage } from "zustand/middleware";
+import { showSuccess } from "@/lib/sweetalert";
 
 export default function Login() {
   const [userState, formAction, isPending] = useActionState(login, null);
@@ -47,13 +48,16 @@ export default function Login() {
       });
       console.log(userState.item._id);
       console.log("setUser 후:", useUserStore.getState());
-      alert(`${userState.item.name}님 로그인이 완료되었습니다.`);
+      showSuccess(`${userState.item.name}님 로그인이 완료되었습니다.`);
       router.push("/");
     }
     // else {
     //   // 서버에서 보내주는 에러 메시지가 있다면 userState.message 등을 사용하고,
     //   // 없다면 기본 문구를 출력합니다.
-    //   alert(userState?.message || "아이디 또는 비밀번호를 다시 확인해주세요.");
+    //   Swal.fire({
+    //     icon: "error",
+    //     title: userState?.message || "아이디 또는 비밀번호를 다시 확인해주세요.",
+    //   });
     // }
   }, [userState, router, redirect, setUser, checkedState]);
 
