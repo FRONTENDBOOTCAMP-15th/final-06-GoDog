@@ -41,7 +41,7 @@ export default function ProfileClient({
   user: UserInfoRes["item"];
 }) {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
-  console.log(user, "유저");
+ 
 
   const [isPending, setIsPending] = useState(false);
   const [preview, setPreview] = useState(user?.image || "");

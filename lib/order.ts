@@ -44,7 +44,7 @@ export async function getOrders(
     const params = new URLSearchParams();
     const mypagesubscription = options?.path === "/mypage/subscription";
     if (options) {
-      const { user_id, state, custom, page, limit, sort, path } = options;
+      const { user_id, state, custom, page, limit, sort } = options;
 
       if (user_id) params.append("user_id", String(user_id));
       if (state) params.append("state", state);
@@ -52,13 +52,9 @@ export async function getOrders(
       if (page) params.append("page", String(page));
       if (limit) params.append("limit", String(limit));
       if (sort) params.append("sort", JSON.stringify(sort));
-      const finalCustom = {
-        ...(custom || {}),
-        ...(path === "/mypage/subscription" ? { color: "subscription" } : {}),
-      };
-
-      if (Object.keys(finalCustom).length > 0) {
-        params.append("custom", JSON.stringify(finalCustom));
+      if (mypagesubscription) {
+        const customQuery = { "products.color": "subscription" };
+        params.append("custom", JSON.stringify(customQuery));
       }
     }
 

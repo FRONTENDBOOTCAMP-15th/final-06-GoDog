@@ -19,7 +19,7 @@ export default async function Products({ searchParams }: Props) {
   const custom = {
     ...(lifeStage && { "extra.lifeStage": lifeStage }),
     ...(category && { "extra.category": category }),
-    ...(type && { "extra.type": type }),
+    "extra.type": type || "사료",
   };
 
   const resProducts = await getProducts({
@@ -45,42 +45,44 @@ export default async function Products({ searchParams }: Props) {
           </p>
         </section>
 
-        {/* 필터 태그 */}
-        <nav className="w-full flex justify-center">
-          {/* 바깥 캡슐 */}
-          <div className="flex flex-col sm:flex-row items-center rounded-3xl sm:rounded-[2.25rem] border border-black/10 bg-white p-2 sm:p-1.75 shadow-[0_20px_60px_rgba(0,0,0,0.08)] w-full max-w-70 sm:max-w-none sm:w-auto gap-1 sm:gap-0">
-            {[
-              { label: "전체보기", value: "" },
-              { label: "퍼피 (Puppy)", value: "퍼피" },
-              { label: "성견 (Adult)", value: "성견" },
-              { label: "시니어 (Senior)", value: "시니어" },
-            ].map((filter) => {
-              const isActive = lifeStage === filter.value || (!lifeStage && filter.value === "");
-              const params = new URLSearchParams();
-              if (filter.value) params.set("lifeStage", filter.value);
-              if (category) params.set("category", category);
-              if (type) params.set("type", type);
-              const href = params.toString() ? `/products?${params.toString()}` : "/products";
+        {/* 필터 태그 - 사료일 때만 표시 */}
+        {(!type || type === "사료") && (
+          <nav className="w-full flex justify-center">
+            {/* 바깥 캡슐 */}
+            <div className="flex flex-col sm:flex-row items-center rounded-3xl sm:rounded-[2.25rem] border border-black/10 bg-white p-2 sm:p-1.75 shadow-[0_20px_60px_rgba(0,0,0,0.08)] w-full max-w-70 sm:max-w-none sm:w-auto gap-1 sm:gap-0">
+              {[
+                { label: "전체보기", value: "" },
+                { label: "퍼피 (Puppy)", value: "퍼피" },
+                { label: "성견 (Adult)", value: "성견" },
+                { label: "시니어 (Senior)", value: "시니어" },
+              ].map((filter) => {
+                const isActive = lifeStage === filter.value || (!lifeStage && filter.value === "");
+                const params = new URLSearchParams();
+                if (filter.value) params.set("lifeStage", filter.value);
+                if (category) params.set("category", category);
+                if (type) params.set("type", type);
+                const href = params.toString() ? `/products?${params.toString()}` : "/products";
 
-              return (
-                <Link
-                  key={filter.label}
-                  href={href}
-                  className={`relative h-10 sm:h-12.5 w-full sm:w-28 md:w-32 lg:w-38 rounded-[1.25rem] sm:rounded-[1.75rem] text-xs sm:text-sm text-center flex items-center justify-center ${
-                    isActive
-                      ? "bg-accent-primary text-white font-extrabold"
-                      : "bg-transparent text-text-tertiary font-bold hover:text-text-primary"
-                  }`}
-                >
-                  {filter.label}
-                  {isActive && (
-                    <span className="pointer-events-none absolute -bottom-6 left-1/2 h-10 w-40 -translate-x-1/2 rounded-full bg-accent-primary/40 blur-2xl hidden sm:block" />
-                  )}
-                </Link>
-              );
-            })}
-          </div>
-        </nav>
+                return (
+                  <Link
+                    key={filter.label}
+                    href={href}
+                    className={`relative h-10 sm:h-12.5 w-full sm:w-28 md:w-32 lg:w-38 rounded-[1.25rem] sm:rounded-[1.75rem] text-xs sm:text-sm text-center flex items-center justify-center ${
+                      isActive
+                        ? "bg-accent-primary text-white font-extrabold"
+                        : "bg-transparent text-text-tertiary font-bold hover:text-text-primary"
+                    }`}
+                  >
+                    {filter.label}
+                    {isActive && (
+                      <span className="pointer-events-none absolute -bottom-6 left-1/2 h-10 w-40 -translate-x-1/2 rounded-full bg-accent-primary/40 blur-2xl hidden sm:block" />
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
+          </nav>
+        )}
 
         {/* 상품 목록 그리드 */}
         <section className="w-full">
