@@ -205,8 +205,7 @@ function CheckoutContent() {
       // 결제 결과 확인
       if (!response || response.code !== undefined) {
         //결제 취소, 오류 발생 시
-        console.error("결제 실패:", response?.message || "결제창이 닫혔습니다.");
-        return alert(`결제 실패: ${response?.message || "결제 중 오류가 발생했습니다."}`);
+        return;
       }
 
       // 결제 성공 시 주문 생성 api 호출

@@ -1,7 +1,7 @@
 "use client";
 
-import OnetimeCart from "@/app/(main)/cart/onetime-cart";
-import SubscriptionCart from "@/app/(main)/cart/subscription-cart";
+import OnetimeCart from "@/app/(main)/cart/onetimeCart";
+import SubscriptionCart from "@/app/(main)/cart/subscriptionCart";
 import useCartStore from "@/zustand/useCartStore";
 import Badge from "@/components/common/Badge";
 import Tab from "@/components/common/Tab";

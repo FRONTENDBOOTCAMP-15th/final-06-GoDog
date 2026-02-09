@@ -1,4 +1,4 @@
-import OnetimeItemList from "@/app/(main)/cart/_components/onetime-item-list";
+import SubscriptionItemList from "@/app/(main)/cart/_components/subscriptionItemList";
 import { deleteCartItem, deleteCartItems } from "@/app/(main)/cart/action/cart";
 import useCartStore from "@/zustand/useCartStore";
 import Button from "@/components/common/Button";
@@ -8,7 +8,7 @@ import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function OnetimeCart() {
+export default function SubscriptionCart() {
   const router = useRouter();
 
   // 토큰 가져오기
@@ -20,7 +20,7 @@ export default function OnetimeCart() {
     handleDeleteMultiple: deleteStoreItems,
     handleDeleteSuccess: deleteStoreItem,
     getCartTotal,
-    getOnetimeItems,
+    getSubscriptionItems,
     getSelectCartTotal,
     setCheckoutItems,
     isSoldOut,
@@ -30,36 +30,37 @@ export default function OnetimeCart() {
   // 체크박스 선택된 상품 ID
   const [selectIds, setSelectIds] = useState<number[]>([]);
 
-  // 1회구매 상품 가져오기
-  const items = getOnetimeItems();
-
   // 컴포넌트 최초 로드 시 전체 선택 처리
   useEffect(() => {
-    if (items.length > 0) {
-      // 모든 상품의 ID를 추출하여 선택 상태로 설정
-      const allIds = items.map((item) => item._id);
+    const subItems = getSubscriptionItems();
+    if (subItems.length > 0) {
+      const allIds = subItems.map((item) => item._id);
       setSelectIds(allIds);
     }
-  }, [items.length]);
+  }, [getSubscriptionItems().length]);
 
-  // 1회구매 총액 계산 (선택 || 전체)
-  const { productsPrice, shippingFees, totalPrice, selectCount, availableCount } = useMemo(() => {
-    if (selectIds.length === 0) {
+  // 정기구독 상품 가져오기
+  const items = getSubscriptionItems();
+
+  // 정기구독 총액 계산
+  const { productsPrice, shippingFees, totalPrice, availableCount, discount, selectCount } =
+    useMemo(() => {
+      if (selectIds.length === 0) {
+        return {
+          productsPrice: 0,
+          shippingFees: 0,
+          discount: 0,
+          totalPrice: 0,
+          selectCount: 0,
+          availableCount: getCartTotal("subscription").availableCount,
+        };
+      }
+      // 선택된 상품이 있을 때 계산
       return {
-        productsPrice: 0,
-        shippingFees: 0,
-        totalPrice: 0,
-        selectCount: 0,
-        availableCount: getCartTotal("oneTime").availableCount,
+        ...getSelectCartTotal(selectIds, "subscription"),
+        availableCount: getCartTotal("subscription").availableCount,
       };
-    }
-
-    // 선택된 상품이 있는 경우 계산
-    return {
-      ...getSelectCartTotal(selectIds, "oneTime"),
-      availableCount: getCartTotal("oneTime").availableCount,
-    };
-  }, [cartData, selectIds, getSelectCartTotal, getCartTotal]);
+    }, [cartData, selectIds, getSelectCartTotal, getCartTotal]);
 
   // 한건 삭제 핸들러
   const handleDelete = async (cartId: number) => {
@@ -123,7 +124,7 @@ export default function OnetimeCart() {
       if (result === null) {
         deleteStoreItems(selectIds);
 
-        setSelectIds([]); // 선택 목록 초기화
+        setSelectIds([]);
       } else {
         alert(result.message);
       }
@@ -136,17 +137,16 @@ export default function OnetimeCart() {
 
   // 구매하기 버튼
   const handlePurchase = () => {
-    const onetimeItems = getOnetimeItems();
+    const subscriptionItems = getSubscriptionItems();
 
     let itemsToPurchase;
     if (selectIds.length > 0) {
       // 선택 상품(품절 제외)
-      itemsToPurchase = onetimeItems.filter(
+      itemsToPurchase = subscriptionItems.filter(
         (item) => selectIds.includes(item._id) && !isSoldOut(item._id)
       );
     } else {
-      // 전체 상품(품절 제외)
-      itemsToPurchase = onetimeItems.filter((item) => !isSoldOut(item._id));
+      itemsToPurchase = subscriptionItems.filter((item) => !isSoldOut(item._id));
     }
 
     if (itemsToPurchase.length === 0) {
@@ -172,7 +172,6 @@ export default function OnetimeCart() {
                 onChange={handleSelectAll}
                 className="text-[#1A1A1C] text-[0.75rem] font-black"
               />
-
               <button
                 onClick={handleDeleteMultiple}
                 disabled={selectIds.length === 0 || isDeleting}
@@ -183,20 +182,22 @@ export default function OnetimeCart() {
             </section>
 
             {/* 상품 목록 */}
-            {items.map((cart) => (
-              <OnetimeItemList
-                key={cart._id}
-                cart={cart}
-                isSelect={selectIds.includes(cart._id)}
-                onSelect={() => handleSelect(cart._id)}
-                onDelete={handleDelete}
-              />
-            ))}
+            <div className="flex flex-col gap-3.5">
+              {items.map((cart) => (
+                <SubscriptionItemList
+                  key={cart._id}
+                  cart={cart}
+                  isSelect={selectIds.includes(cart._id)}
+                  onSelect={() => handleSelect(cart._id)}
+                  onDelete={handleDelete}
+                />
+              ))}
+            </div>
           </>
         ) : (
-          <div className="border border-[#F9F9FB] rounded-[0.875rem] px-7 py-7 sm:px-7 sm:py-7 bg-white shadow-(--shadow-card)">
+          <div className="border border-[#F9F9FB] rounded-[0.875rem] px-7 py-7 xl:px-7 xl:py-26 bg-white shadow-(--shadow-card)">
             <p className="text-[0.75rem] text-[#1A1A1C] font-bold text-center">
-              장바구니에 담긴 상품이 없습니다.
+              구독 중인 상품이 없습니다.
             </p>
           </div>
         )}
@@ -219,21 +220,27 @@ export default function OnetimeCart() {
                 {shippingFees.toLocaleString()}원
               </p>
             </div>
+            <div className="flex justify-between">
+              <p className="text-[0.75rem] text-text-secondary font-bold">정기구독 할인</p>
+              <p className="text-[0.75rem] text-(--color-accent-primary) font-black">
+                -{discount.toLocaleString()}원
+              </p>
+            </div>
 
             <div className="flex justify-between border-t border-border-primary py-7">
               <h2 className="text-[1rem] text-[#1A1A1C] font-black">총 결제 예정액</h2>
-              <p className="text-2xl text-[#FBA613] font-black">{totalPrice.toLocaleString()}원</p>
+              <p className="text-2xl text-[#FBA613] font-black">
+                {(totalPrice - discount).toLocaleString()}원
+              </p>
             </div>
 
             {/* 구매하기 버튼 */}
             <Button onClick={handlePurchase} disabled={selectIds.length === 0 || selectCount === 0}>
-              {selectIds.length > 0
-                ? selectCount > 0
-                  ? `${selectCount}개 상품 구매하기`
-                  : "선택한 상품 중 구매 가능한 상품이 없습니다."
-                : availableCount > 0
-                ? `${availableCount}개 상품 구매하기`
-                : "구매 가능한 상품이 없습니다."}
+              {selectIds.length === 0
+                ? "구매할 상품을 선택해주세요"
+                : selectCount > 0
+                ? `${selectCount}개 상품 구독하기`
+                : "구독 가능한 상품이 없습니다."}
             </Button>
 
             <div className="flex items-center justify-center gap-2">
@@ -245,12 +252,15 @@ export default function OnetimeCart() {
           </section>
 
           {/* 정기 구독 혜택 */}
-          <section className="flex flex-col bg-[#FFF9F2] p-5 rounded-[0.875rem] gap-3 border border-[#FFF5E6]">
+          <section className="flex flex-col bg-[#FFF9F2] px-5 py-5 rounded-[0.875rem] gap-3 border border-[#FFF5E6]">
             <div className="flex items-center gap-2.5">
               <Image src="/images/cart/구독혜택.svg" alt="" width={28} height={28} />
               <h3 className="text-[0.75rem] text-[#1A1A1C] font-black">나만의 정기 구독 혜택</h3>
             </div>
             <ul className="flex flex-col gap-1.5 ml-4">
+              <li className="text-[0.75rem] text-text-tertiary font-bold list-disc ml-2 pl-1">
+                배송비 무료 혜택
+              </li>
               <li className="text-[0.75rem] text-text-tertiary font-bold list-disc ml-2 pl-1">
                 전 상품 10% 자동 상시 할인
               </li>
