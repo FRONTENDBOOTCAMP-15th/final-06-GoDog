@@ -8,7 +8,10 @@ interface CheckButtonProps {
 export default function CheckButton({ selected, onClick, label, desc }: CheckButtonProps) {
   return (
     <button
+      type="button"
       onClick={onClick}
+      role="checkbox"
+      aria-checked={selected}
       className={`p-6 rounded-[1.8rem] border-2 transition-all font-bold text-left flex items-center justify-between ${
         selected
           ? "border-accent-primary bg-accent-soft text-accent-primary shadow-glow"
@@ -25,6 +28,7 @@ export default function CheckButton({ selected, onClick, label, desc }: CheckBut
             ? "bg-accent-primary border-accent-primary text-white"
             : "border-border-secondary"
         }`}
+        aria-hidden="true"
       >
         {selected && (
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">

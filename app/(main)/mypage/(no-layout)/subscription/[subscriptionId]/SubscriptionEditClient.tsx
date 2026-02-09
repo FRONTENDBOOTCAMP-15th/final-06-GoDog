@@ -13,6 +13,7 @@ import DetailSub from "@/app/(main)/mypage/_components/DetailSub";
 import DeliveryPeri from "@/app/(main)/mypage/_components/DeliveryPeri";
 import Adjustdelivery from "@/app/(main)/mypage/_components/adjustdelivery";
 import { updateSubscriptionPlan } from "@/app/(main)/mypage/(no-layout)/subscription/[subscriptionId]/editSub";
+import { showSuccess, showError } from "@/lib/sweetalert";
 
 interface Props {
   initialData: OrderDetailItem;
@@ -31,20 +32,20 @@ export default function SubscriptionEditClient({ initialData, orderId }: Props) 
   const onDelete = async () => {
     try {
       await updateSubscriptionPlan(orderId, { period: "", date: "" });
-      alert("변경 사항이 성공적으로 저장되었습니다.");
+      showSuccess("변경 사항이 성공적으로 저장되었습니다.");
       router.push("/mypage/subscription");
     } catch (error) {
-      alert("저장 중 오류가 발생했습니다. 다시 시도해 주세요.");
+      showError("저장 중 오류가 발생했습니다. 다시 시도해 주세요.");
     }
   };
 
   const handleSave = async () => {
     try {
       await updateSubscriptionPlan(orderId, { period: selectedPeriod, date: selectedDate });
-      alert("변경 사항이 성공적으로 저장되었습니다.");
+      showSuccess("변경 사항이 성공적으로 저장되었습니다.");
       router.push("/mypage/subscription");
     } catch (error) {
-      alert("저장 중 오류가 발생했습니다. 다시 시도해 주세요.");
+      showError("저장 중 오류가 발생했습니다. 다시 시도해 주세요.");
     }
   };
 

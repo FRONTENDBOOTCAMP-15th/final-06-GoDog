@@ -7,6 +7,7 @@ import useUserStore from "@/zustand/useStore";
 import { usePathname, useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import useCartStore from "@/zustand/useCartStore";
+import { showLoading, showInfo } from "@/lib/sweetalert";
 
 const Header: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
@@ -50,7 +51,7 @@ const Header: React.FC = () => {
 
     Cookies.remove("accessToken");
 
-    alert("로그아웃 되었습니다.");
+    showLoading("로그아웃", "로그아웃 되었습니다.", 1500);
     router.push("/");
   };
 
@@ -58,8 +59,9 @@ const Header: React.FC = () => {
   const handleCartClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (!isLoggedIn) {
       e.preventDefault();
-      alert("로그인이 필요합니다. 로그인 페이지로 이동합니다.");
-      router.push("/login");
+      showInfo("로그인 필요", "로그인이 필요합니다. 로그인 페이지로 이동합니다.").then(() => {
+        router.push("/login");
+      });
     }
   };
 

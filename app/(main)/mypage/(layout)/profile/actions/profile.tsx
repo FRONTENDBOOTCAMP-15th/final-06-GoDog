@@ -9,6 +9,7 @@ import { updateUser } from "@/lib/user";
 import { uploadFile } from "@/app/(main)/mypage/(no-layout)/order/[orderid]/review/postreview";
 import { UserInfoRes } from "@/types/response";
 import Image from "next/image";
+import { showError, showSuccess } from "@/lib/sweetalert";
 
 export default function ProfileClient({
   token,
@@ -77,7 +78,7 @@ export default function ProfileClient({
       const serverPath = fileData.item?.[0]?.path || fileData.path || fileData.name;
       setPreview(serverPath);
     } catch (error) {
-      alert("이미지 업로드에 실패했습니다.");
+      showError("이미지 업로드에 실패했습니다.");
     } finally {
       setIsPending(false);
     }
@@ -100,25 +101,27 @@ export default function ProfileClient({
     try {
       const result = await updateUser(user._id, updateData);
       if (result.ok) {
-        alert("회원 정보가 수정되었습니다.");
+        showSuccess("회원 정보가 수정되었습니다.");
       } else {
-        alert("수정에 실패했습니다.");
+        showError("수정에 실패했습니다.");
       }
     } catch (error) {
-      alert("오류가 발생했습니다.");
+      showError("오류가 발생했습니다.");
     } finally {
       setIsPending(false);
     }
   };
 
   return (
-    <div className="flex flex-col items-center pt-[75px]">
-      <Badge variant="accent">{"ACCOUNT EDIT"}</Badge>
+    <main className="flex flex-col items-center pt-[75px]">
+      <Badge variant="accent" aria-hidden="true">
+        {"ACCOUNT EDIT"}
+      </Badge>
       <h1 className="pt-[14px] text-[#1A1A1C] font-['Pretendard'] text-[26px] font-black">
         회원정보 수정
       </h1>
 
-      <form className="w-full max-w-[672px] mt-10" onSubmit={handleSubmit}>
+      <form className="w-full max-w-[672px] mt-10" onSubmit={handleSubmit} aria-label="회원정보 수정 폼">
         <div className="mb-[161px] pr-[55px] pl-[57px] pt-[56px] pb-[70px] rounded-[49px] border border-black/[0.06] bg-[#FFF] shadow-sm">
           <div className="flex flex-col items-center mb-10">
             <div className="relative">
@@ -133,19 +136,22 @@ export default function ProfileClient({
                       : `${API_URL}${preview}`
                     : "/images/userImage.jpg"
                 }
-                alt="프로필"
+                alt="프로필 이미지"
               />
               <label
                 htmlFor="profileImageUpload"
                 className="absolute bottom-0 right-0 w-[30px] h-[30px] bg-[#FBA613] rounded-full flex justify-center items-center cursor-pointer border-2 border-white"
+                aria-label="프로필 이미지 변경"
               >
-                <CameraIcon className="text-white w-4 h-4" />
+                <CameraIcon className="text-white w-4 h-4" aria-hidden="true" />
               </label>
               <input
                 type="file"
                 id="profileImageUpload"
                 className="hidden"
                 onChange={handleImageChange}
+                accept="image/*"
+                aria-label="프로필 이미지 업로드"
               />
             </div>
           </div>
@@ -182,7 +188,13 @@ export default function ProfileClient({
           />
 
           <div className="flex gap-4">
-            <Button type="submit" variant="primary" className="flex-1" disabled={isPending}>
+            <Button
+              type="submit"
+              variant="primary"
+              className="flex-1"
+              disabled={isPending}
+              aria-label={isPending ? "정보 저장 중" : "정보 저장하기"}
+            >
               {isPending ? "저장 중..." : "정보 저장하기"}
             </Button>
             <Button
@@ -190,12 +202,13 @@ export default function ProfileClient({
               variant="outline"
               className="flex-1"
               onClick={() => window.history.back()}
+              aria-label="취소하고 이전 페이지로 돌아가기"
             >
               취소
             </Button>
           </div>
         </div>
       </form>
-    </div>
+    </main>
   );
 }

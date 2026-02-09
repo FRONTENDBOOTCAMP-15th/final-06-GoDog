@@ -116,7 +116,7 @@ export default function ProductListContent() {
   ];
 
   return (
-    <>
+    <main>
       {/* 타이틀 */}
       <div className="mb-6">
         <div className="flex items-center mb-4">
@@ -172,27 +172,28 @@ export default function ProductListContent() {
         {/* 테이블 */}
         <div className="overflow-x-auto">
           <table className="w-full">
+            <caption className="sr-only">상품 목록</caption>
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   번호
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   상품명
                 </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                   종류
                 </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                   코드명
                 </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                   재고
                 </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                   등록일
                 </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                   작업
                 </th>
               </tr>
@@ -262,8 +263,9 @@ export default function ProductListContent() {
                         <Link
                           href={`/admin/products/${item._id}/modify`}
                           className="text-blue-600 hover:text-blue-800 inline-flex items-center px-3 py-1.5 border border-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
+                          aria-label={`${item.name} 상품 수정`}
                         >
-                          <Pencil className="w-4 h-4 mr-1" />
+                          <Pencil className="w-4 h-4 mr-1" aria-hidden="true" />
                           <span>수정</span>
                         </Link>
                       </td>
@@ -284,6 +286,6 @@ export default function ProductListContent() {
           label="개의 상품"
         />
       </div>
-    </>
+    </main>
   );
 }

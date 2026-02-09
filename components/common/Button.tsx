@@ -108,9 +108,9 @@ export default function Button(props: ButtonProps) {
 
   const content = (
     <>
-      {renderLeftIcon() && <span className="shrink-0">{renderLeftIcon()}</span>}
+      {renderLeftIcon() && <span className="shrink-0" aria-hidden="true">{renderLeftIcon()}</span>}
       {children}
-      {renderRightIcon() && <span className="shrink-0">{renderRightIcon()}</span>}
+      {renderRightIcon() && <span className="shrink-0" aria-hidden="true">{renderRightIcon()}</span>}
     </>
   );
 

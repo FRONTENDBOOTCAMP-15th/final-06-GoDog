@@ -7,6 +7,7 @@ import Image from "next/image";
 import { deleteWishlist } from "@/lib/bookmark";
 import { useRouter } from "next/navigation";
 import { ProductCardSkeleton } from "@/app/(main)/mypage/(layout)/wishlist/skeleton";
+import { showDeleteConfirm, showError } from "@/lib/sweetalert";
 
 interface WishlistComponentProps {
   bookmarkId: number;
@@ -18,7 +19,8 @@ export default function WishlistComponent({ bookmarkId, Product, token }: Wishli
   const router = useRouter();
 
   const handleDelete = async () => {
-    if (!confirm("관심 상품에서 삭제하시겠습니까?")) return;
+    const result = await showDeleteConfirm("관심 상품에서 삭제하시겠습니까?");
+    if (!result.isConfirmed) return;
 
     try {
       const res = await deleteWishlist(token, bookmarkId);
@@ -26,11 +28,11 @@ export default function WishlistComponent({ bookmarkId, Product, token }: Wishli
       if (res.ok === 1) {
         router.refresh();
       } else {
-        alert(res.message || "삭제에 실패했습니다.");
+        showError(res.message || "삭제에 실패했습니다.");
       }
     } catch (error) {
       console.error("삭제 중 오류 발생:", error);
-      alert("삭제 도중 오류가 발생했습니다.");
+      showError("삭제 도중 오류가 발생했습니다.");
     }
   };
 
