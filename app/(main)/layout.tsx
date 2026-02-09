@@ -4,7 +4,6 @@ import "../globals.css";
 import Header from "@/components/layouts/Header";
 import Footer from "@/components/layouts/Footer";
 import "pretendard/dist/web/variable/pretendardvariable.css";
-import { useState } from "react";
 import "pretendard/dist/web/static/pretendard.css";
 import Providers from "@/app/provider";
 
@@ -19,12 +18,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
-      <body>
-        <Header />
-        <Providers>{children}</Providers>
-        <Footer />
-      </body>
-    </html>
+    <>
+      <Header />
+      {children}
+      <Footer />
+    </>
   );
 }
