@@ -1,10 +1,7 @@
 "use client";
 
-import "../globals.css";
 import { AdminLayoutClient } from "@/components/layouts/AdminLayoutClient";
 import { ReactNode, useEffect } from "react";
-import "pretendard/dist/web/variable/pretendardvariable.css";
-import Providers from "@/app/provider";
 import useUserStore from "@/zustand/useStore";
 import { useRouter } from "next/navigation";
 
@@ -20,12 +17,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   }, [userType, router]);
 
   return (
-    <html lang="ko">
-      <body className="flex min-h-screen bg-gray-100">
-        <Providers>
-          <AdminLayoutClient>{children}</AdminLayoutClient>
-        </Providers>
-      </body>
-    </html>
+    <div className="flex min-h-screen bg-gray-100">
+      <AdminLayoutClient>{children}</AdminLayoutClient>
+    </div>
   );
 }

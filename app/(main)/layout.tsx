@@ -29,12 +29,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
-      <body>
-        <Header />
-        <Providers>{children}</Providers>
-        <Footer />
-      </body>
-    </html>
+    <>
+      <Header />
+      {children}
+      <Footer />
+    </>
   );
 }
