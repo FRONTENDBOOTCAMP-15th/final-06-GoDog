@@ -60,7 +60,7 @@ export default async function Wishlist({ searchParams }: Props) {
   const totalPages = (response?.ok === 1 && response?.pagination?.totalPages) || 1;
 
   return (
-    <div className="w-full pb-[70px]">
+    <div className="w-full pb-[70px] ">
       <div className="mt-[108px]">
         <p className="text-[#1A1A1C] text-center text-[26.3px] font-[900]">{userName}님이 저장한</p>
         <div className="flex flex-row justify-center">
@@ -69,8 +69,8 @@ export default async function Wishlist({ searchParams }: Props) {
         </div>
       </div>
 
-      <div className="max-w-[1280px] mx-auto pt-[57px] pb-[100px] px-[20px] lg:px-0">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 md:gap-x-10 lg:gap-x-7 gap-y-10 justify-items-center max-w-[500px] md:max-w-[700px] lg:max-w-none mx-auto">
+      <div className="max-w-[1280px] lg:pl-[30px] lg:pr-[30px] pr-[10px] pl-[10px]  mx-auto pt-[57px] pb-[100px] px-[20px] lg:px-0">
+        <div className="  grid grid-cols-2 lg:grid-cols-4 gap-x-4 md:gap-x-10 lg:gap-x-7 gap-y-10 justify-items-center max-w-[500px] md:max-w-[700px] lg:max-w-none mx-auto">
           {wishlistItems.length > 0 ? (
             wishlistItems.map((item: BookmarkItem) => (
               <div key={item._id} className="w-full max-w-[280px]">
