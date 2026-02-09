@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState, useEffect, useSyncExternalStore, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import useUserStore from "@/zustand/useStore";
 import { usePathname, useRouter } from "next/navigation";
 import Cookies from "js-cookie";
@@ -28,8 +28,6 @@ const Header: React.FC = () => {
 
   // zustand 에서 토큰 끌어오기 - hydration 에러 수정
   const isLoggedIn = !!user?.token?.accessToken;
-  // // 로그인 여부는 토큰에서 파생
-  // const isLoggedIn = !!accessToken;
 
   // 장바구니 총 수량 계산
   const cartCountAll = useMemo(() => {
@@ -121,7 +119,6 @@ const Header: React.FC = () => {
             >
               My Account
             </Link>
-
             {isLoggedIn ? (
               /* 토큰이 있을 때 Logout 표시, 클릭 시 상태 리셋 후 메인 이동 */
               <Link
@@ -145,16 +142,20 @@ const Header: React.FC = () => {
               </Link>
             )}
 
-            <Link
-              href="/signup"
-              className={`text-[10px] font-black uppercase tracking-widest transition-colors ${
-                pathname === "/signup"
-                  ? "text-accent-primary"
-                  : "text-text-tertiary hover:text-text-primary"
-              }`}
-            >
-              Sign Up
-            </Link>
+            {isLoggedIn ? (
+              ""
+            ) : (
+              <Link
+                href="/signup"
+                className={`text-[10px] font-black uppercase tracking-widest transition-colors ${
+                  pathname === "/signup"
+                    ? "text-accent-primary"
+                    : "text-text-tertiary hover:text-text-primary"
+                }`}
+              >
+                Sign Up
+              </Link>
+            )}
             <Link
               href="/cart"
               onClick={handleCartClick}
@@ -331,13 +332,18 @@ const Header: React.FC = () => {
                 로그인
               </Link>
             )}
-            <Link
-              href="/signup"
-              onClick={closeMobileMenu}
-              className="flex-1 py-4 bg-accent-soft text-accent-primary rounded-2xl text-sm font-black border border-accent-primary/10 active:scale-95 transition-all text-center"
-            >
-              회원가입
-            </Link>
+
+            {isLoggedIn ? (
+              ""
+            ) : (
+              <Link
+                href="/signup"
+                onClick={closeMobileMenu}
+                className="flex-1 py-4 bg-accent-soft text-accent-primary rounded-2xl text-sm font-black border border-accent-primary/10 active:scale-95 transition-all text-center"
+              >
+                회원가입
+              </Link>
+            )}
           </div>
 
           {/* 메인 메뉴 목록 */}

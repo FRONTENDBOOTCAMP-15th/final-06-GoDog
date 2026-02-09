@@ -76,6 +76,12 @@ export default function Login() {
 
           {/* 로그인 폼 카드 */}
           <div className="bg-white rounded-[3rem] p-10 md:p-12 shadow-card border border-border-primary mb-8">
+            {userState?.ok === 0 && (
+              <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl text-center font-bold">
+                {"아이디 또는 비밀번호를 확인해주세요."}
+              </div>
+            )}
+
             <form className="space-y-4" action={formAction}>
               <Input label="이메일 주소" name="email" placeholder="hello@9dog.co.kr" />
               <Input label="비밀번호" name="password" placeholder="••••••••" type="password" />
@@ -103,7 +109,7 @@ export default function Login() {
             <p className="text-sm font-bold text-text-secondary">
               아직 9DOG 회원이 아니신가요?
               <Link
-                href="/singup"
+                href="/signup"
                 className="ml-2 text-accent-primary font-black hover:underline underline-offset-4 transition-all"
               >
                 회원가입 하기
