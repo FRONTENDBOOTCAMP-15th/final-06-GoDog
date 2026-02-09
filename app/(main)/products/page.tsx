@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import PaginationWrapper from "@/components/common/PaginationWrapper";
@@ -10,6 +11,36 @@ import ProductsCard from "@/app/(main)/products/_components/productsList/Product
 
 // 상품 목록 페이지
 export default function Products() {
+  return (
+    <Suspense fallback={<ProductsLoading />}>
+      <ProductsContent />
+    </Suspense>
+  );
+}
+
+function ProductsLoading() {
+  return (
+    <div className="w-full min-w-90 bg-bg-secondary px-4 py-10 sm:px-10 md:px-20 lg:px-89 lg:py-17.5 lg:pb-35">
+      <div className="mx-auto flex max-w-300 flex-col items-center gap-8 sm:gap-10 lg:gap-14">
+        <section className="flex w-full max-w-290 flex-col items-center text-center px-2">
+          <h1 className="pb-3 text-2xl sm:text-3xl lg:text-[2.625rem]">상품 목록</h1>
+          <p className="text-sm sm:text-base text-text-secondary">
+            아이의 연령대와 건강 상태에 맞게 설계된 프리미엄 영양 식단을 만나보세요.
+          </p>
+        </section>
+        <section className="w-full">
+          <ul className="flex flex-wrap justify-center gap-4 sm:gap-5 lg:gap-7">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <ProductsSkeleton key={i} />
+            ))}
+          </ul>
+        </section>
+      </div>
+    </div>
+  );
+}
+
+function ProductsContent() {
   const searchParams = useSearchParams();
 
   const lifeStage = searchParams.get("lifeStage") || "";
@@ -23,7 +54,7 @@ export default function Products() {
     "extra.type": type || "사료",
   };
 
-  const { data: resProducts, isLoading } = useQuery({
+  const { data: resProducts, isLoading, isError } = useQuery({
     queryKey: ["products", lifeStage, category, type, currentPage],
     queryFn: () => getProducts({ custom, page: currentPage, limit: 10 }),
   });
@@ -83,9 +114,13 @@ export default function Products() {
         {/* 상품 목록 그리드 */}
         <section className="w-full">
           <ul className="flex flex-wrap justify-center gap-4 sm:gap-5 lg:gap-7">
-            {isLoading
-              ? Array.from({ length: 8 }).map((_, i) => <ProductsSkeleton key={i} />)
-              : products.map((product) => <ProductsCard key={product._id} product={product} />)}
+            {isLoading ? (
+              Array.from({ length: 8 }).map((_, i) => <ProductsSkeleton key={i} />)
+            ) : isError ? (
+              <p>상품을 불러오지 못했습니다.</p>
+            ) : (
+              products.map((product) => <ProductsCard key={product._id} product={product} />)
+            )}
           </ul>
         </section>
 
