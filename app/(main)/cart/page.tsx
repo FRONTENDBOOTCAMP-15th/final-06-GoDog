@@ -42,11 +42,11 @@ export default function Cart() {
   if (isLoading || !cartData) {
     return (
       <div className="bg-[#F9F9FB]">
-        <div className="xl:max-w-300 min-w-90 mx-auto px-4 pt-8 pb-[8.75rem]">
-          <div className="text-center py-20">
+        <main className="xl:max-w-300 min-w-90 mx-auto px-4 pt-8 pb-[8.75rem]">
+          <div className="text-center py-20" role="status" aria-live="polite">
             <p className="text-text-tertiary">로딩 중...</p>
           </div>
-        </div>
+        </main>
       </div>
     );
   }
@@ -55,24 +55,24 @@ export default function Cart() {
   if (error) {
     return (
       <div className="bg-[#F9F9FB]">
-        <div className="xl:max-w-300 min-w-90 mx-auto px-4 pt-8 pb-[8.75rem]">
-          <div className="text-center py-20">
+        <main className="xl:max-w-300 min-w-90 mx-auto px-4 pt-8 pb-[8.75rem]">
+          <div className="text-center py-20" role="alert" aria-live="assertive">
             <p className="text-red-500">{error?.message}</p>
           </div>
-        </div>
+        </main>
       </div>
     );
   }
 
   return (
     <div className="bg-[#F9F9FB] ">
-      <div className="xl:max-w-300 min-w-90 mx-auto px-4 pt-8 pb-[8.75rem]">
+      <main className="xl:max-w-300 min-w-90 mx-auto px-4 pt-8 pb-[8.75rem]">
         {/* 헤더 */}
         <section className="text-center mb-16 mt-10">
-          <Badge variant="accent" className="mb-3.5">
+          <Badge variant="accent" className="mb-3.5" aria-hidden="true">
             SHOPPING CART
           </Badge>
-          <h2 className="text-[2rem] font-black">장바구니</h2>
+          <h1 id="cart-heading" className="text-[2rem] font-black">장바구니</h1>
         </section>
 
         {/* 탭 버튼 */}
@@ -80,7 +80,7 @@ export default function Cart() {
           <Tab tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
         </section>
         {activeTab === "oneTime" ? <OnetimeCart /> : <SubscriptionCart />}
-      </div>
+      </main>
     </div>
   );
 }

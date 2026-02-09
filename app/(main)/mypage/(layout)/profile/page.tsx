@@ -27,12 +27,14 @@ export default async function ProfilePage() {
 
     if (!userData) {
       return (
-        <div className="flex flex-col items-center pt-20">
-          <p>사용자 정보를 불러올 수 없습니다.</p>
+        <main className="flex flex-col items-center pt-20">
+          <div role="alert" aria-live="assertive">
+            <p>사용자 정보를 불러올 수 없습니다.</p>
+          </div>
           <button onClick={() => redirect("/login")} className="mt-4 text-orange-500 underline">
             다시 로그인하기
           </button>
-        </div>
+        </main>
       );
     }
 

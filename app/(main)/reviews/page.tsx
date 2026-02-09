@@ -16,10 +16,13 @@ export default async function ReviewListPage() {
   return (
     <div className="bg-bg-secondary min-h-screen pb-40 pt-20">
       <div className="container-custom">
-        <ReviewStats total={total} />
-        <Suspense fallback={<div>Loading...</div>}>
-          <ReviewList />
-        </Suspense>
+        <h1 className="sr-only">고객 후기</h1>
+        <main>
+          <ReviewStats total={total} />
+          <Suspense fallback={<div role="status" aria-live="polite">후기를 불러오는 중...</div>}>
+            <ReviewList />
+          </Suspense>
+        </main>
       </div>
     </div>
   );

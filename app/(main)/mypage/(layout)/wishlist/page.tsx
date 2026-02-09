@@ -63,35 +63,30 @@ export async function Wishlist({ searchParams }: Props) {
   const totalPages = (response?.ok === 1 && response?.pagination?.totalPages) || 1;
 
   return (
-    <div className="w-full pb-[70px]">
-      {/* <div className="mt-[108px]">
-        <p className="text-[#1A1A1C] text-center text-[26.3px] font-[900]">{userName}님이 저장한</p>
-        <div className="flex flex-row justify-center">
-          <p className="text-[#FBA613] text-center text-[26.3px] font-[900]">관심 상품</p>
-          <p className="text-[#1A1A1C] text-center text-[26.3px] font-[900]">목록입니다</p>
-        </div>
-      </div> */}
-
+    <section className="w-full pb-[70px]">
       <div className="max-w-[1280px] lg:pl-[30px] lg:pr-[30px] pr-[10px] pl-[10px]  mx-auto pt-[57px] pb-[100px] px-[20px] lg:px-0">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 md:gap-x-10 lg:gap-x-7 gap-y-10 justify-items-center max-w-[500px] md:max-w-[700px] lg:max-w-none mx-auto">
+        <ul
+          className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 md:gap-x-10 lg:gap-x-7 gap-y-10 justify-items-center max-w-[500px] md:max-w-[700px] lg:max-w-none mx-auto"
+          aria-label="관심 상품 목록"
+        >
           {wishlistItems.length > 0 ? (
             wishlistItems.map((item: BookmarkItem) => (
-              <div key={item._id} className="w-full max-w-[280px]">
+              <li key={item._id} className="w-full max-w-[280px]">
                 <WishlistComponent Product={item.product} bookmarkId={item._id} token={token} />
-              </div>
+              </li>
             ))
           ) : (
-            <div className="col-span-full py-20 text-center text-[#909094]">
-              저장된 관심 상품이 없습니다.
-            </div>
+            <li className="col-span-full py-20 text-center text-[#909094]">
+              <p role="status">저장된 관심 상품이 없습니다.</p>
+            </li>
           )}
-        </div>
+        </ul>
       </div>
 
-      <div className="flex justify-center">
+      <nav aria-label="관심 상품 페이지네이션" className="flex justify-center">
         <PaginationWrapper currentPage={currentPage} totalPages={totalPages} />
-      </div>
-    </div>
+      </nav>
+    </section>
   );
 }
 
@@ -113,28 +108,30 @@ export default async function WishlistMain({
   }
 
   return (
-    <div className="w-full pb-[70px]">
+    <main className="w-full pb-[70px]">
       <div className="mt-[108px]">
-        <p className="text-[#1A1A1C] text-center text-[26px] font-[900]">{userName}님이 저장한</p>
-        <div className="flex flex-row justify-center">
-          <p className="text-[#FBA613] text-center text-[26px] font-[900]">관심 상품</p>
-          <p className="text-[#1A1A1C] text-center text-[26px] font-[900]">목록입니다</p>
-        </div>
+        <h1 className="text-[#1A1A1C] text-center text-[26px] font-[900]">
+          {userName}님이 저장한 <span className="text-[#FBA613]">관심 상품</span> 목록입니다
+        </h1>
       </div>
 
       <div className="max-w-[1280px] lg:pl-[30px] lg:pr-[30px] pr-[10px] pl-[10px]  mx-auto pt-[57px] pb-[100px] px-[20px] lg:px-0">
         <Suspense
           fallback={
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-7 justify-items-center">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <ProductCardSkeleton key={i} />
-              ))}
+            <div role="status" aria-live="polite" aria-label="로딩 중">
+              <ul className="grid grid-cols-2 lg:grid-cols-4 gap-7 justify-items-center">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <li key={i}>
+                    <ProductCardSkeleton />
+                  </li>
+                ))}
+              </ul>
             </div>
           }
         >
           <Wishlist searchParams={searchParams} token={token} />
         </Suspense>
       </div>
-    </div>
+    </main>
   );
 }

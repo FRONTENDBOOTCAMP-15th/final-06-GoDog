@@ -20,7 +20,7 @@ export default function Products() {
 
 function ProductsLoading() {
   return (
-    <div className="w-full min-w-90 bg-bg-secondary px-4 py-10 lg:py-17.5 lg:pb-35">
+    <main className="w-full min-w-90 bg-bg-secondary px-4 py-10 lg:py-17.5 lg:pb-35" role="status" aria-live="polite">
       <div className="mx-auto flex flex-col items-center gap-8 sm:gap-10 lg:gap-14">
         <section className="flex w-full max-w-290 flex-col items-center text-center px-2">
           <h1 className="pb-3 text-2xl sm:text-3xl lg:text-[2.625rem]">상품 목록</h1>
@@ -36,7 +36,7 @@ function ProductsLoading() {
           </ul>
         </section>
       </div>
-    </div>
+    </main>
   );
 }
 
@@ -67,7 +67,7 @@ function ProductsContent() {
   const totalPages = resProducts?.ok === 1 ? resProducts.pagination.totalPages : 0;
 
   return (
-    <div className="w-full min-w-90 bg-bg-secondary px-4 py-10 lg:py-17.5 lg:pb-35">
+    <main className="w-full min-w-90 bg-bg-secondary px-4 py-10 lg:py-17.5 lg:pb-35">
       <div className="mx-auto flex flex-col items-center gap-8 sm:gap-10 lg:gap-14">
         <section className="flex w-full max-w-290 flex-col items-center text-center px-2">
           <h1 className="pb-3 text-2xl sm:text-3xl lg:text-[2.625rem]">상품 목록</h1>
@@ -98,6 +98,7 @@ function ProductsContent() {
                   <Link
                     key={filter.label}
                     href={href}
+                    aria-current={isActive ? "page" : undefined}
                     className={`relative h-10 sm:h-12.5 w-full sm:w-28 md:w-32 lg:w-38 rounded-[1.25rem] sm:rounded-[1.75rem] text-xs sm:text-sm text-center flex items-center justify-center ${
                       isActive
                         ? "bg-accent-primary text-white font-extrabold"
@@ -106,7 +107,7 @@ function ProductsContent() {
                   >
                     {filter.label}
                     {isActive && (
-                      <span className="pointer-events-none absolute -bottom-6 left-1/2 h-10 w-40 -translate-x-1/2 rounded-full bg-accent-primary/40 blur-2xl hidden sm:block" />
+                      <span className="pointer-events-none absolute -bottom-6 left-1/2 h-10 w-40 -translate-x-1/2 rounded-full bg-accent-primary/40 blur-2xl hidden sm:block" aria-hidden="true" />
                     )}
                   </Link>
                 );
@@ -117,11 +118,13 @@ function ProductsContent() {
 
         {/* 상품 목록 그리드 */}
         <section className="w-full">
-          <ul className="grid grid-cols-[repeat(auto-fill,240px)] gap-4 max-w-6xl mx-auto justify-center">
+          <ul className="grid grid-cols-[repeat(auto-fill,240px)] gap-4 max-w-6xl mx-auto justify-center" role="list">
             {isLoading ? (
               Array.from({ length: 8 }).map((_, i) => <ProductsSkeleton key={i} />)
             ) : isError ? (
-              <p>상품을 불러오지 못했습니다.</p>
+              <li role="alert" aria-live="assertive" className="col-span-full text-center py-10">
+                <p>상품을 불러오지 못했습니다.</p>
+              </li>
             ) : (
               products.map((product) => <ProductCard key={product._id} product={product} />)
             )}
@@ -131,6 +134,6 @@ function ProductsContent() {
         {/* 페이지네이션 */}
         <PaginationWrapper currentPage={currentPage} totalPages={totalPages} />
       </div>
-    </div>
+    </main>
   );
 }

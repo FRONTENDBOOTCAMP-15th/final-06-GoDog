@@ -129,27 +129,34 @@ export default function SurveyPage() {
     <div className="bg-bg-secondary min-h-screen pb-40 pt-16">
       <div className="container-custom max-w-225">
         {/* 헤더 */}
-        <div className="flex flex-col items-center text-center mb-10">
-          <Badge variant="accent" className="mb-4">
+        <header className="flex flex-col items-center text-center mb-10">
+          <Badge variant="accent" className="mb-4" aria-hidden="true">
             DOG NUTRITION SURVEY
           </Badge>
-          <h2 className="text-4xl font-black text-text-primary tracking-tighter mb-4">
+          <h1 className="text-4xl font-black text-text-primary tracking-tighter mb-4">
             {stepTitles[currentStep]}
-          </h2>
-          <p className="text-text-secondary font-medium uppercase tracking-widest text-xs">
+          </h1>
+          <p className="text-text-secondary font-medium uppercase tracking-widest text-xs" aria-live="polite">
             Step {currentStep} of {TOTAL_STEPS}
           </p>
-        </div>
+        </header>
 
         {/* 프로그레스 바 */}
-        <div className="w-full bg-bg-tertiary h-2 rounded-full overflow-hidden mb-16">
+        <div
+          className="w-full bg-bg-tertiary h-2 rounded-full overflow-hidden mb-16"
+          role="progressbar"
+          aria-valuenow={progress}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label={`설문 진행률 ${Math.round(progress)}%`}
+        >
           <div
             className="h-full bg-accent-primary transition-all duration-500 ease-out shadow-glow"
             style={{ width: `${progress}%` }}
           />
         </div>
 
-        <div className="bg-white rounded-[3.5rem] p-10 md:p-16 shadow-card border border-border-primary animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <main className="bg-white rounded-[3.5rem] p-10 md:p-16 shadow-card border border-border-primary animate-in fade-in slide-in-from-bottom-4 duration-500">
           {/* STEP 1: 기본 정보 */}
           {currentStep === 1 && (
             <div className="space-y-16">
@@ -158,7 +165,7 @@ export default function SurveyPage() {
                 title="우리 아이의 크기는 어떻게 되나요?"
                 subtitle="체중에 맞춰 선택해주세요."
               >
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-5" role="radiogroup" aria-labelledby="survey-heading-1">
                   {[
                     { id: "소형견 (~7kg)", label: "소형견", desc: "약 7kg 이하" },
                     { id: "중형견 (7~25kg)", label: "중형견", desc: "7kg ~ 25kg" },
@@ -176,7 +183,7 @@ export default function SurveyPage() {
               </SurveySection>
 
               <SurveySection number={2} title="우리 아이의 나이는 어떻게 되나요?">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-5" role="radiogroup" aria-labelledby="survey-heading-2">
                   {[
                     { id: "puppy", label: "퍼피", desc: "생후 12개월 이하" },
                     { id: "adult", label: "성견", desc: "1세 ~ 7세" },
@@ -192,12 +199,12 @@ export default function SurveyPage() {
                   ))}
                 </div>
                 <p className="mt-4 text-sm text-text-tertiary">
-                  🔸 크기와 견종을 고려해 시니어 시점을 자동 반영합니다!
+                  <span aria-hidden="true">🔸 </span>크기와 견종을 고려해 시니어 시점을 자동 반영합니다!
                 </p>
               </SurveySection>
 
               <SurveySection number={3} title="중성화 수술을 했나요?">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-4" role="radiogroup" aria-labelledby="survey-heading-3">
                   {["예", "아니요"].map((val) => (
                     <ChoiceButton
                       key={val}
@@ -219,7 +226,7 @@ export default function SurveyPage() {
                 title="활동량은 어떤 편인가요?"
                 subtitle="평소 산책 시간과 놀이 수준을 고려해주세요."
               >
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-5" role="radiogroup" aria-labelledby="survey-heading-4">
                   {[
                     { id: "적음", label: "적음", desc: "실내 생활 위주, 주 1회 산책" },
                     { id: "보통", label: "보통", desc: "하루 30분~1시간 걷기" },
@@ -237,7 +244,7 @@ export default function SurveyPage() {
               </SurveySection>
 
               <SurveySection number={5} title="현재 반려견의 체형은 어떤가요?">
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4" role="radiogroup" aria-labelledby="survey-heading-5">
                   {[
                     { id: "thin", label: "마름", desc: "갈비뼈가 눈에 보임" },
                     { id: "ideal", label: "적정", desc: "갈비뼈는 만져지지만 보이지 않음" },
@@ -266,7 +273,7 @@ export default function SurveyPage() {
                 title="알러지나 피해야 할 원재료가 있나요?"
                 subtitle="복수 선택 가능"
               >
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4" role="group" aria-labelledby="survey-heading-6">
                   {[
                     "없음",
                     "닭고기",
@@ -288,7 +295,7 @@ export default function SurveyPage() {
                   ))}
                 </div>
                 <p className="mt-4 text-sm text-text-tertiary">
-                  🔸 &quot;기타 알러지 있음&quot;을 선택하면 저자극성 사료를 우선 추천해드려요.
+                  <span aria-hidden="true">🔸 </span>&quot;기타 알러지 있음&quot;을 선택하면 저자극성 사료를 우선 추천해드려요.
                 </p>
               </SurveySection>
 
@@ -297,7 +304,7 @@ export default function SurveyPage() {
                 title="건강 관련 고민이 있나요?"
                 subtitle="복수 선택 가능, 최대 2개"
               >
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4" role="group" aria-labelledby="survey-heading-7">
                   {[
                     "없음",
                     "피부/모질 (가려움, 비듬, 털 빠짐)",
@@ -321,7 +328,7 @@ export default function SurveyPage() {
           {currentStep === 4 && (
             <div className="space-y-16">
               <SurveySection number={8} title="선호하는 단백질 원재료가 있나요?">
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4" role="radiogroup" aria-labelledby="survey-heading-8">
                   {["상관없음", "닭고기", "오리고기", "양고기", "연어", "소고기"].map((val) => (
                     <ChoiceButton
                       key={val}
@@ -334,7 +341,7 @@ export default function SurveyPage() {
               </SurveySection>
 
               <SurveySection number={9} title="곡물(Grain) 포함 여부 선호">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-4" role="radiogroup" aria-labelledby="survey-heading-9">
                   {["상관없음", "그레인프리(Grain Free) 선호"].map((val) => (
                     <ChoiceButton
                       key={val}
@@ -378,7 +385,7 @@ export default function SurveyPage() {
               )}
             </Button>
           </div>
-        </div>
+        </main>
       </div>
     </div>
   );
@@ -393,16 +400,19 @@ interface SurveySectionProps {
 }
 
 function SurveySection({ number, title, subtitle, children }: SurveySectionProps) {
+  const sectionId = `survey-section-${number}`;
+  const headingId = `survey-heading-${number}`;
+
   return (
-    <section className="space-y-8">
+    <section className="space-y-8" aria-labelledby={headingId} id={sectionId}>
       <div className="flex items-center space-x-3">
-        <span className="w-8 h-8 rounded-full bg-accent-soft text-accent-primary flex items-center justify-center font-black text-sm">
+        <span className="w-8 h-8 rounded-full bg-accent-soft text-accent-primary flex items-center justify-center font-black text-sm" aria-hidden="true">
           {number}
         </span>
-        <h4 className="text-xl font-black text-text-primary tracking-tight">
+        <h2 className="text-xl font-black text-text-primary tracking-tight" id={headingId}>
           {title}{" "}
           {subtitle && <span className="text-sm font-bold text-text-tertiary">{subtitle}</span>}
-        </h4>
+        </h2>
       </div>
       {children}
     </section>

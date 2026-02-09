@@ -25,7 +25,10 @@ export default function ChoiceButton({
   if (!desc) {
     return (
       <button
+        type="button"
         onClick={onClick}
+        role="radio"
+        aria-checked={selected}
         className={`${baseClass} ${stateClass} p-6 rounded-2xl font-black text-sm`}
       >
         {label}
@@ -38,7 +41,10 @@ export default function ChoiceButton({
 
   return (
     <button
+      type="button"
       onClick={onClick}
+      role="radio"
+      aria-checked={selected}
       className={`${baseClass} ${stateClass} ${sizeClass} flex flex-col items-center justify-center duration-300 ${
         selected ? "scale-105" : ""
       }`}

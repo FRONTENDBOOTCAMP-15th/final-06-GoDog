@@ -46,39 +46,40 @@ export default function Orders() {
   const pagination = resOrderlist?.ok === 1 ? resOrderlist.pagination : undefined;
   const showSkeleton = isLoading || isFetching;
   return (
-    <div className="w-full pb-[70px]">
+    <main className="w-full pb-[70px]">
       <div className="mt-[108px]">
-        <p className="text-[#1A1A1C] text-center text-[26.3px] font-[900]">
-          {userName}님이 이용 중인
-        </p>
-        <div className="flex flex-row justify-center">
-          <p className="text-[#FBA613] text-center text-[26.3px] font-[900]">주문 내역</p>
-          <p className="text-[#1A1A1C] text-center text-[26.3px] font-[900]">입니다</p>
-        </div>
+        <h1 className="text-[#1A1A1C] text-center text-[26.3px] font-[900]">
+          {userName}님이 이용 중인 <span className="text-[#FBA613]">주문 내역</span>입니다
+        </h1>
       </div>
 
       <div className="mx-auto pt-[57px] pb-[100px] px-[20px] lg:px-0 max-w-[1280px]">
-        <div
-          className="grid 
-          grid-cols-2 lg:grid-cols-4 
-          gap-x-[15px] md:gap-x-[40px] lg:gap-x-7 
+        <ul
+          className="grid
+          grid-cols-2 lg:grid-cols-4
+          gap-x-[15px] md:gap-x-[40px] lg:gap-x-7
           gap-y-10
           justify-items-center
           max-w-[500px] md:max-w-[700px] lg:max-w-none mx-auto"
+          aria-label="주문 내역 목록"
         >
           {/* 1. 로딩 중일 때 스켈레톤 UI를 보여줍니다. */}
           {showSkeleton ? (
-            Array.from({ length: 4 }).map((_, i) => (
-              <div key={`skeleton-${i}`} className="w-full">
-                <MyItemListSkeleton />
+            <li className="col-span-full" role="status" aria-live="polite" aria-label="로딩 중">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-[15px] md:gap-x-[40px] lg:gap-x-7 gap-y-10">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={`skeleton-${i}`} className="w-full">
+                    <MyItemListSkeleton />
+                  </div>
+                ))}
               </div>
-            ))
+            </li>
           ) : resOrderlist?.ok && resOrderlist.item.length > 0 ? (
             /* 2. 로딩 완료 후 데이터 렌더링 */
             resOrderlist.item.map((item) => {
               const hasReview = !!item.products[0].review_id;
               return (
-                <div key={item._id} className="w-full">
+                <li key={item._id} className="w-full">
                   <MyItemList
                     productid={item.products[0]._id}
                     orderId={String(item._id)}
@@ -88,7 +89,7 @@ export default function Orders() {
                         {item.products[0].image?.path ? (
                           <Image
                             src={item.products[0].image?.path}
-                            alt={item.products[0].name}
+                            alt={`${item.products[0].name} 상품 이미지`}
                             fill
                             className="object-cover"
                             sizes="(max-width: 1024px) 50vw, 25vw"
@@ -109,22 +110,22 @@ export default function Orders() {
                     mark={hasReview ? null : <Pencil />}
                     isReviewed={hasReview}
                   />
-                </div>
+                </li>
               );
             })
           ) : (
-            <div className="col-span-full py-20 text-center">
-              <p className="text-[#909094] text-[18px] font-medium">
+            <li className="col-span-full py-20 text-center">
+              <p className="text-[#909094] text-[18px] font-medium" role="status">
                 현재 이용 중인 주문 내역이 없습니다.
               </p>
-            </div>
+            </li>
           )}
-        </div>
+        </ul>
       </div>
 
-      <div className="flex justify-center">
+      <nav aria-label="주문 내역 페이지네이션" className="flex justify-center">
         <PaginationWrapper currentPage={page} totalPages={pagination?.totalPages || 1} />
-      </div>
-    </div>
+      </nav>
+    </main>
   );
 }

@@ -100,7 +100,7 @@ function CheckoutContent() {
 
         // 상세주소 입력으로 포커스 이동
         const detailInput = document.querySelector<HTMLInputElement>(
-          'input[placeholder="상세 주소를 입력해주세요"]'
+          'input[placeholder="상세 주소를 입력해주세요"]',
         );
         detailInput?.focus();
       },
@@ -235,7 +235,7 @@ function CheckoutContent() {
     });
 
     const results = await Promise.all(
-      individualOrders.map((orderItem) => createOrder([orderItem], token))
+      individualOrders.map((orderItem) => createOrder([orderItem], token)),
     );
 
     const allSuccess = results.every((res) => res.ok === 1);
@@ -277,31 +277,36 @@ function CheckoutContent() {
 
   if (finalCheckoutItems.length === 0) {
     return (
-      <div className="flex flex-col items-center py-40 gap-4">
+      <main className="flex flex-col items-center py-40 gap-4" role="alert">
         <p className="text-text-secondary font-bold">결제할 상품 정보가 없습니다.</p>
         <Button variant="outline" onClick={() => router.push("/cart")}>
           장바구니로 돌아가기
         </Button>
-      </div>
+      </main>
     );
   }
 
   return (
     <div className="bg-(--color-bg-secondary)">
-      <div className="xl:max-w-300 min-w-90 mx-auto px-4 pt-8 pb-[8.75em]">
+      <main className="xl:max-w-300 min-w-90 mx-auto px-4 pt-8 pb-[8.75em]">
         {/* 헤더 */}
-        <section className="text-center mb-16 mt-10">
-          <Badge variant="accent" className="mb-3.5">
+        <section aria-labelledby="checkout-heading" className="text-center mb-16 mt-10">
+          <Badge variant="accent" className="mb-3.5" aria-hidden="true">
             CHECKOUT
           </Badge>
-          <h2 className="text-[2rem] font-black">주문/결제</h2>
+          <h1 id="checkout-heading" className="text-[2rem] font-black">
+            주문/결제
+          </h1>
         </section>
         <div className="flex flex-col xl:flex-row gap-10">
           <div className="flex flex-col gap-9 xl:w-2/3">
             {/* 주문 상품 정보 */}
-            <section>
+            <section aria-labelledby="order-product-info">
               <div className="border border-[#F9F9FB] rounded-[0.875rem] px-3 py-3 sm:px-7 sm:py-7 bg-white shadow-(--shadow-card)">
-                <h2 className="text-lg text-(--color-text-primary) font-black mb-7">
+                <h2
+                  id="order-product-info"
+                  className="text-lg text-(--color-text-primary) font-black mb-7"
+                >
                   주문 상품 정보
                 </h2>
                 <div className="flex gap-2 sm:gap-5">
@@ -331,9 +336,14 @@ function CheckoutContent() {
             </section>
 
             {/* 배송 정보 */}
-            <section>
+            <section aria-labelledby="shipping-info">
               <div className="border border-[#F9F9FB] rounded-[0.875rem] px-3 py-3 sm:px-7 sm:py-7 bg-white shadow-(--shadow-card)">
-                <h2 className="text-lg text-(--color-text-primary) font-black mb-7">배송 정보</h2>
+                <h2
+                  id="shipping-info"
+                  className="text-lg text-(--color-text-primary) font-black mb-7"
+                >
+                  배송 정보
+                </h2>
                 <div className="flex flex-col gap-5">
                   <div className="flex gap-5">
                     <Input
@@ -369,6 +379,7 @@ function CheckoutContent() {
                         size="md"
                         onClick={handleAddressSearch}
                         disabled={isSearching}
+                        aria-label="우편번호 검색"
                       >
                         주소 찾기
                       </Button>
@@ -405,9 +416,14 @@ function CheckoutContent() {
           {/* 최종 결제 금액 */}
           <div className="xl:w-1/3">
             <div className="xl:sticy xl:top-8">
-              <section>
+              <section aria-labelledby="payment-summary">
                 <div className="flex flex-col gap-7 border border-[#F9F9FB] rounded-[0.875rem] px-3 py-3 sm:px-7 sm:py-7 bg-white shadow-(--shadow-card)">
-                  <h2 className="text-lg text-(--color-text-primary) font-black">최종 결제 금액</h2>
+                  <h2
+                    id="payment-summary"
+                    className="text-lg text-(--color-text-primary) font-black"
+                  >
+                    최종 결제 금액
+                  </h2>
                   <div className="flex flex-col gap-3.5">
                     <div className="flex justify-between">
                       <p className="text-xs text-(--color-text-secondary) font-bold">
@@ -442,7 +458,7 @@ function CheckoutContent() {
                       {finalAmount.toLocaleString()}원
                     </p>
                   </div>
-                  <ul className="flex flex-col gap-1.5 py-1.5">
+                  <ul className="flex flex-col gap-1.5 py-1.5" role="group">
                     <li>
                       <Checkbox
                         label="(필수) 주문 정보를 확인하였으며 결제에 동의합니다."
@@ -474,7 +490,11 @@ function CheckoutContent() {
                       />
                     </li>
                   </ul>
-                  <Button disabled={!isAllChecked} onClick={handlePayment}>
+                  <Button
+                    disabled={!isAllChecked}
+                    onClick={handlePayment}
+                    aria-label={`${finalAmount.toLocaleString()}원 결제하기`}
+                  >
                     {finalAmount.toLocaleString()}원 결제하기
                   </Button>
                   <Button
@@ -486,14 +506,14 @@ function CheckoutContent() {
                   </Button>
                 </div>
                 <p className="flex justify-center gap-2.5 text-[0.625rem] text-(--color-text-primary) font-black) mt-7">
-                  <Image src="/images/checkout/safe2.svg" alt="" width={18} height={18} />
+                  <Image src="/images/checkout/safe2.svg" alt="보안 결제" width={18} height={18} />
                   TSL 1.3 암호화 보안 결제 시스템
                 </p>
               </section>
             </div>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
@@ -502,9 +522,13 @@ export default function Checkout() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center">
+        <main
+          className="min-h-screen flex items-center justify-center"
+          role="status"
+          aria-live="polite"
+        >
           <p className="text-text-tertiary">로딩 중...</p>
-        </div>
+        </main>
       }
     >
       <CheckoutContent />
