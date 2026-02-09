@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { showError, showSuccess } from "@/lib/sweetalert";
 
-export default function SignupForm() {
+export default function Signup() {
   const router = useRouter();
   const [formData, setFormData] = useState({
     type: "user" as "user" | "seller",

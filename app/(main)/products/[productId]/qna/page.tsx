@@ -11,7 +11,7 @@ import useUserStore from "@/zustand/useStore";
 import { createQnaPost } from "@/actions/qna";
 import { showWarning, showSuccess, showError } from "@/lib/sweetalert";
 
-export default function ProductQna() {
+export default function ProductQnaForm() {
   const user = useUserStore((state) => state.user);
   const router = useRouter();
   const params = useParams();
