@@ -50,6 +50,11 @@ export default function Login() {
       alert(`${userState.item.name}님 로그인이 완료되었습니다.`);
       router.push("/");
     }
+    // else {
+    //   // 서버에서 보내주는 에러 메시지가 있다면 userState.message 등을 사용하고,
+    //   // 없다면 기본 문구를 출력합니다.
+    //   alert(userState?.message || "아이디 또는 비밀번호를 다시 확인해주세요.");
+    // }
   }, [userState, router, redirect, setUser, checkedState]);
 
   return (
