@@ -10,8 +10,6 @@ import { useState } from "react";
 import useUserStore from "@/zustand/useStore";
 import { createQnaPost } from "@/actions/qna";
 
-// const CATEGORY_OPTIONS = ["상품", "배송", "교환/환불", "기타"] as const;
-
 export default function ProductQna() {
   const user = useUserStore((state) => state.user);
   const router = useRouter();
