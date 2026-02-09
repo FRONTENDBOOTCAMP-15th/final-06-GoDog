@@ -1,13 +1,16 @@
-import OnetimeItemList from "@/app/(main)/cart/_components/onetime-item-list";
+import OnetimeItemList from "@/app/(main)/cart/_components/onetimeItemList";
 import { deleteCartItem, deleteCartItems } from "@/app/(main)/cart/action/cart";
 import useCartStore from "@/zustand/useCartStore";
 import Button from "@/components/common/Button";
 import Checkbox from "@/components/common/Checkbox";
 import useUserStore from "@/zustand/useStore";
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function OnetimeCart() {
+  const router = useRouter();
+
   // 토큰 가져오기
   const { user } = useUserStore();
   const accessToken = user?.token?.accessToken;
@@ -19,6 +22,9 @@ export default function OnetimeCart() {
     getCartTotal,
     getOnetimeItems,
     getSelectCartTotal,
+    setCheckoutItems,
+    isSoldOut,
+    cartData,
   } = useCartStore();
 
   // 체크박스 선택된 상품 ID
@@ -27,22 +33,33 @@ export default function OnetimeCart() {
   // 1회구매 상품 가져오기
   const items = getOnetimeItems();
 
+  // 컴포넌트 최초 로드 시 전체 선택 처리
+  useEffect(() => {
+    if (items.length > 0) {
+      // 모든 상품의 ID를 추출하여 선택 상태로 설정
+      const allIds = items.map((item) => item._id);
+      setSelectIds(allIds);
+    }
+  }, [items.length]);
+
   // 1회구매 총액 계산 (선택 || 전체)
   const { productsPrice, shippingFees, totalPrice, selectCount, availableCount } = useMemo(() => {
-    if (selectIds.length > 0) {
-      // 선택된 상품만 계산
+    if (selectIds.length === 0) {
       return {
-        ...getSelectCartTotal(selectIds, "oneTime"),
-        availableCount: getCartTotal("oneTime").availableCount, // 전체 개수 유지
-      };
-    } else {
-      // 전체 상품 계산
-      return {
-        ...getCartTotal("oneTime"),
-        selectCount: 0, // 기본값 설정
+        productsPrice: 0,
+        shippingFees: 0,
+        totalPrice: 0,
+        selectCount: 0,
+        availableCount: getCartTotal("oneTime").availableCount,
       };
     }
-  }, [selectIds, getSelectCartTotal, getCartTotal]);
+
+    // 선택된 상품이 있는 경우 계산
+    return {
+      ...getSelectCartTotal(selectIds, "oneTime"),
+      availableCount: getCartTotal("oneTime").availableCount,
+    };
+  }, [cartData, selectIds, getSelectCartTotal, getCartTotal]);
 
   // 한건 삭제 핸들러
   const handleDelete = async (cartId: number) => {
@@ -117,6 +134,31 @@ export default function OnetimeCart() {
     }
   };
 
+  // 구매하기 버튼
+  const handlePurchase = () => {
+    const onetimeItems = getOnetimeItems();
+
+    let itemsToPurchase;
+    if (selectIds.length > 0) {
+      // 선택 상품(품절 제외)
+      itemsToPurchase = onetimeItems.filter(
+        (item) => selectIds.includes(item._id) && !isSoldOut(item._id)
+      );
+    } else {
+      // 전체 상품(품절 제외)
+      itemsToPurchase = onetimeItems.filter((item) => !isSoldOut(item._id));
+    }
+
+    if (itemsToPurchase.length === 0) {
+      alert("구매 가능한 상품이 없습니다.");
+      return;
+    }
+
+    // zustand 저장 후 이동
+    setCheckoutItems(itemsToPurchase);
+    router.push("/checkout");
+  };
+
   return (
     <div className="flex flex-col xl:flex-row gap-9 justify-center">
       {/* 장바구니 목록 */}
@@ -141,18 +183,20 @@ export default function OnetimeCart() {
             </section>
 
             {/* 상품 목록 */}
-            {items.map((cart) => (
-              <OnetimeItemList
-                key={cart._id}
-                cart={cart}
-                isSelect={selectIds.includes(cart._id)}
-                onSelect={() => handleSelect(cart._id)}
-                onDelete={handleDelete}
-              />
-            ))}
+            <div className="flex flex-col gap-3.5">
+              {items.map((cart) => (
+                <OnetimeItemList
+                  key={cart._id}
+                  cart={cart}
+                  isSelect={selectIds.includes(cart._id)}
+                  onSelect={() => handleSelect(cart._id)}
+                  onDelete={handleDelete}
+                />
+              ))}
+            </div>
           </>
         ) : (
-          <div className="border border-[#F9F9FB] rounded-[0.875rem] px-7 py-7 sm:px-7 sm:py-7 bg-white shadow-(--shadow-card)">
+          <div className="border border-[#F9F9FB] rounded-[0.875rem] px-7 py-7 xl:px-7 xl:py-20 bg-white shadow-(--shadow-card)">
             <p className="text-[0.75rem] text-[#1A1A1C] font-bold text-center">
               장바구니에 담긴 상품이 없습니다.
             </p>
@@ -174,7 +218,7 @@ export default function OnetimeCart() {
             <div className="flex justify-between">
               <p className="text-[0.75rem] text-text-secondary font-bold">배송비</p>
               <p className="text-[0.75rem] text-[#1A1A1C] font-black">
-                +{shippingFees.toLocaleString()}원
+                {shippingFees.toLocaleString()}원
               </p>
             </div>
 
@@ -184,10 +228,7 @@ export default function OnetimeCart() {
             </div>
 
             {/* 구매하기 버튼 */}
-            <Button
-              href="/checkout"
-              disabled={selectIds.length > 0 ? selectCount === 0 : availableCount === 0}
-            >
+            <Button onClick={handlePurchase} disabled={selectIds.length === 0 || selectCount === 0}>
               {selectIds.length > 0
                 ? selectCount > 0
                   ? `${selectCount}개 상품 구매하기`
