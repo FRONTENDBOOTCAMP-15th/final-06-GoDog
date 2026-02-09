@@ -10,29 +10,6 @@ import { uploadFile } from "@/app/(main)/mypage/(no-layout)/order/[orderid]/revi
 import { UserInfoRes } from "@/types/response";
 import Image from "next/image";
 
-/** 다음 주소 API로부터 전달받는 데이터 타입 정의 */
-interface DaumPostcodeData {
-  zonecode: string;
-  roadAddress: string;
-  jibunAddress: string;
-  bname: string;
-  buildingName: string;
-  apartment: string;
-  autoRoadAddress?: string;
-  autoJibunAddress?: string;
-}
-
-/** window 객체 타입 확장 */
-declare global {
-  interface Window {
-    daum: {
-      Postcode: new (options: { oncomplete: (data: DaumPostcodeData) => void }) => {
-        open: () => void;
-      };
-    };
-  }
-}
-
 export default function ProfileClient({
   token,
   user,
@@ -41,7 +18,6 @@ export default function ProfileClient({
   user: UserInfoRes["item"];
 }) {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
- 
 
   const [isPending, setIsPending] = useState(false);
   const [preview, setPreview] = useState(user?.image || "");

@@ -6,6 +6,7 @@ import React, { useState, useEffect } from "react";
 import useUserStore from "@/zustand/useStore";
 import { usePathname, useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import useCartStore from "@/zustand/useCartStore";
 
 const Header: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
@@ -13,19 +14,35 @@ const Header: React.FC = () => {
 
   const pathname = usePathname();
   const router = useRouter();
-  const { user, resetUser, cartCount, fetchCartCount, resetCart } = useUserStore();
+  const { user, resetUser } = useUserStore();
+
+  // useSyncExternalStore 훅 사용
+  // 토큰 값 가져오기
+  // const accessToken = useSyncExternalStore(
+  //   () => () => {},
+  //   () => Cookies.get("accessToken") ?? null,
+  //   () => null,
+  // );
+
+  const { cartData, fetchCart } = useCartStore();
 
   // zustand 에서 토큰 끌어오기 - hydration 에러 수정
   const isLoggedIn = !!user?.token?.accessToken;
 
+  // 장바구니 총 수량 계산
+  const cartCountAll = useMemo(() => {
+    if (!cartData?.item) return 0;
+    // 상품 개수 (1회구매 + 정기구독)
+    return cartData.item.length;
+  }, [cartData]);
+
   // 로그인 상태일 때 장바구니 수량 조회
   useEffect(() => {
     if (user?.token?.accessToken) {
-      fetchCartCount(user.token.accessToken);
-    } else {
-      resetCart();
+      fetchCart(user.token.accessToken);
     }
-  }, [user?.token?.accessToken, fetchCartCount, resetCart]);
+  }, [user?.token?.accessToken, fetchCart]);
+
   const handleLogout = (e: React.MouseEvent) => {
     // 세션 스토리지를 비우고 상태를 null로 초기화
     e.preventDefault();
@@ -35,6 +52,15 @@ const Header: React.FC = () => {
 
     alert("로그아웃 되었습니다.");
     router.push("/");
+  };
+
+  // 장바구니 클릭 핸들러 (비로그인 시 로그인 페이지로)
+  const handleCartClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!isLoggedIn) {
+      e.preventDefault();
+      alert("로그인이 필요합니다. 로그인 페이지로 이동합니다.");
+      router.push("/login");
+    }
   };
 
   // 모바일 메뉴 열릴 때 스크롤 방지
@@ -132,6 +158,7 @@ const Header: React.FC = () => {
             )}
             <Link
               href="/cart"
+              onClick={handleCartClick}
               className={`text-[10px] font-black uppercase tracking-widest transition-colors flex items-center ${
                 pathname === "/cart"
                   ? "text-accent-primary"
@@ -139,7 +166,9 @@ const Header: React.FC = () => {
               }`}
             >
               Cart{" "}
-              {cartCount > 0 && <span className="ml-1 text-accent-primary">({cartCount})</span>}
+              {isLoggedIn && cartCountAll > 0 && (
+                <span className="ml-1 text-accent-primary">({cartCountAll})</span>
+              )}
             </Link>
           </div>
         </div>
@@ -206,7 +235,11 @@ const Header: React.FC = () => {
           {/* 우측 액션 버튼 */}
           <div className="flex items-center space-x-3 md:space-x-6">
             {/* 모바일 장바구니 */}
-            <Link href="/cart" className="lg:hidden p-2 text-text-primary relative">
+            <Link
+              href="/cart"
+              onClick={handleCartClick}
+              className="lg:hidden p-2 text-text-primary relative"
+            >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
@@ -215,9 +248,9 @@ const Header: React.FC = () => {
                   d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                 />
               </svg>
-              {cartCount > 0 && (
+              {isLoggedIn && cartCountAll > 0 && (
                 <span className="absolute top-1 right-1 w-4 h-4 bg-accent-primary text-white text-[9px] font-black rounded-full flex items-center justify-center">
-                  {cartCount}
+                  {cartCountAll}
                 </span>
               )}
             </Link>
@@ -383,16 +416,21 @@ const Header: React.FC = () => {
 
               <Link
                 href="/cart"
-                onClick={closeMobileMenu}
+                onClick={(e) => {
+                  handleCartClick(e);
+                  if (isLoggedIn) {
+                    closeMobileMenu();
+                  }
+                }}
                 className="text-xl font-black text-text-primary flex items-center justify-between w-full group"
               >
                 <div className="flex items-center">
                   <span className="group-hover:text-accent-primary transition-colors">
                     장바구니
                   </span>
-                  {cartCount > 0 && (
+                  {cartCountAll > 0 && (
                     <span className="ml-2 px-2 py-0.5 bg-accent-primary text-white text-[10px] rounded-full">
-                      {cartCount}
+                      {cartCountAll}
                     </span>
                   )}
                 </div>
