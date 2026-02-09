@@ -11,10 +11,10 @@ import useCartStore from "@/zustand/useCartStore";
 import useUserStore from "@/zustand/useStore";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { deleteCartItems } from "@/app/(main)/cart/action/cart";
 
-export default function Checkout() {
+function CheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { checkoutItems, getSelectCartTotal, clearPurchasedItems, fetchCart } = useCartStore();
@@ -255,7 +255,6 @@ export default function Checkout() {
             const deleteResult = await deleteCartItems(null, formData);
 
             if (deleteResult === null) {
-              console.log("서버 삭제 성공");
             }
 
             // Zustand 업데이트
@@ -493,5 +492,19 @@ export default function Checkout() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function Checkout() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <p className="text-text-tertiary">로딩 중...</p>
+        </div>
+      }
+    >
+      <CheckoutContent />
+    </Suspense>
   );
 }
