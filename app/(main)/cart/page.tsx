@@ -1,4 +1,3 @@
-import CartFrom from "@/app/(main)/cart/CartForm";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -14,6 +13,6 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Cart() {
-  return <CartFrom />;
+export default function CartLayout({ children }: { children: React.ReactNode }) {
+  return <>{children}</>;
 }

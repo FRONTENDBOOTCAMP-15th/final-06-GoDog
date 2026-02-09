@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 
 type TabType = "oneTime" | "subscription";
 
-export default function CartFrom() {
+export default function Cart() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabType>("oneTime");
 
