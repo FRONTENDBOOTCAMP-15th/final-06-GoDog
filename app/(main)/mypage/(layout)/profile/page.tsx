@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import ProfileClient from "@/app/(main)/mypage/(layout)/profile/actions/profile";
-import { getUser } from "@/lib/user";
+import ProfileClient from "@/actions/profile";
+import { getUser } from "@/lib";
 
 export const metadata: Metadata = {
   title: "회원 정보",

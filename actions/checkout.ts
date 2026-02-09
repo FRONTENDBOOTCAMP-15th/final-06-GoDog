@@ -1,7 +1,6 @@
 "use server";
 
-import { ErrorRes } from "@/types/response";
-import { Order } from "@/types/order";
+import { ErrorRes, Order } from "@/types";
 
 // 요청 시 보낼 상품 데이터 타입
 export interface OrderRequestProduct {

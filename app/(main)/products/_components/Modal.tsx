@@ -5,11 +5,10 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Button from "@/components/common/Button";
 import Tab from "@/components/common/Tab";
-import QuantityControl from "@/components/common/Quantitycontrol";
-import { Product } from "@/types/product";
-import { addToCart } from "@/lib/cart";
+import QuantityControl from "@/components/common/QuantityControl";
+import { Product } from "@/types";
+import { addToCart, showWarning, showSuccess, showError, showConfirm } from "@/lib";
 import useUserStore from "@/zustand/useStore";
-import { showWarning, showSuccess, showError, showConfirm } from "@/lib/sweetalert";
 
 type PurchaseType = "oneTime" | "subscription";
 

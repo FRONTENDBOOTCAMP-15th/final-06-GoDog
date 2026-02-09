@@ -8,11 +8,12 @@ import {
   recommendProducts,
   createResultUrl,
   type ExtendedSurveyFormData,
-} from "@/lib/recommendProducts";
+  showWarning,
+  showError,
+} from "@/lib";
 import CheckButton from "@/components/common/CheckButton";
 import ChoiceButton from "@/components/common/ChoiceButton";
 import InfoBox from "@/components/common/InfoBox";
-import { showWarning, showError } from "@/lib/sweetalert";
 
 // 설문조사 4단계
 const TOTAL_STEPS = 4;

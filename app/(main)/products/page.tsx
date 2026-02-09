@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import PaginationWrapper from "@/components/common/PaginationWrapper";
 import Link from "next/link";
-import { getProducts } from "@/lib/product";
+import { getProducts } from "@/lib";
 import ProductsSkeleton from "@/app/(main)/products/_components/productsList/Skeleton";
 import ProductCard from "@/components/common/ProductCard";
 

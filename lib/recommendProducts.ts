@@ -1,4 +1,4 @@
-import { getProducts, getProductsByCodes as fetchProductsByCodes } from "@/lib/product";
+import { getProducts, getProductsByCodes as fetchProductsByCodes } from "./product";
 
 // 기본 설문 타입
 export interface SurveyFormData {

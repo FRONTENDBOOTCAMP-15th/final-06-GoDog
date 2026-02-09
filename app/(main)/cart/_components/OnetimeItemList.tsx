@@ -3,8 +3,8 @@ import useCartStore from "@/zustand/useCartStore";
 import Badge from "@/components/common/Badge";
 import Checkbox from "@/components/common/Checkbox";
 import ProductImage from "@/components/common/ProductImage";
-import QuantityControl from "@/components/common/Quantitycontrol";
-import { Cart } from "@/types/cart";
+import QuantityControl from "@/components/common/QuantityControl";
+import { Cart } from "@/types";
 import useUserStore from "@/zustand/useStore";
 import Image from "next/image";
 

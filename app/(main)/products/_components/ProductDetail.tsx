@@ -7,13 +7,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Button from "@/components/common/Button";
 import PaginationWrapper from "@/components/common/PaginationWrapper";
 import PurchaseModal from "@/app/(main)/products/_components/Modal";
-import { Product } from "@/types/product";
-import { Review } from "@/types/review";
-import { Post } from "@/types/post";
+import { Product, Review, Post } from "@/types";
 import Cookies from "js-cookie";
 import useUserStore from "@/zustand/useStore";
-import { addBookmark, getWishlist, deleteWishlist } from "@/lib/bookmark";
-import { showWarning } from "@/lib/sweetalert";
+import { addBookmark, getWishlist, deleteWishlist, showWarning } from "@/lib";
 
 function StarRating({ rating, size = 16 }: { rating: number; size?: number }) {
   return (

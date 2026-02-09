@@ -4,7 +4,7 @@ import FeatureItem from "@/app/(main)/_components/FeatureItem";
 import HeroSwiper from "@/app/(main)/_components/HeroSwiper";
 import ProductCard from "@/app/(main)/_components/ProductCard";
 import SectionTitle from "@/app/(main)/_components/SectionTitle";
-import { getProducts } from "@/lib/product";
+import { getProducts } from "@/lib";
 import Image from "next/image";
 
 export const metadata: Metadata = {

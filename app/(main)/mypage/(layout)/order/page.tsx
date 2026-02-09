@@ -8,12 +8,12 @@ import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import Cookies from "js-cookie";
 
-import { getOrders } from "@/lib/order";
+import { getOrders } from "@/lib";
 import { useQuery } from "@tanstack/react-query";
 import useUserStore from "@/zustand/useStore";
 import { useEffect } from "react";
-import { OrderListRes, ResData } from "@/types/response";
-import { MyItemListSkeleton } from "@/app/(main)/mypage/(layout)/order/skeleton";
+import { OrderListRes, ResData } from "@/types";
+import { MyItemListSkeleton } from "@/app/(main)/mypage/(layout)/order/Skeleton";
 
 export default function Orders() {
   const user = useUserStore((state) => state.user);

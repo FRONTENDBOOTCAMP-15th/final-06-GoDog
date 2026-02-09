@@ -8,9 +8,9 @@ import Image from "next/image";
 import useUserStore from "@/zustand/useStore";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { getOrders } from "@/lib/order";
+import { getOrders } from "@/lib";
 import Cookies from "js-cookie";
-import { MyItemListSkeleton } from "@/app/(main)/mypage/(layout)/order/skeleton";
+import { MyItemListSkeleton } from "@/app/(main)/mypage/(layout)/order/Skeleton";
 
 export default function Subscription() {
   const user = useUserStore((state) => state.user);

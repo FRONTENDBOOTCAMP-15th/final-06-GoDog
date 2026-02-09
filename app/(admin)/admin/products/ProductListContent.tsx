@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Package, AlertTriangle, XCircle, Pencil } from "lucide-react";
-import { getProducts } from "@/lib/product";
-import { Product } from "@/types/product";
+import { getProducts } from "@/lib";
+import { Product } from "@/types";
 import StatCard from "@/app/(admin)/admin/_components/StatCard";
 import SearchFilter from "@/app/(admin)/admin/_components/SearchFilter";
 import Pagination from "@/app/(admin)/admin/_components/Pagination";

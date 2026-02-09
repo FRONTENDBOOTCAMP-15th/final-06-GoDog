@@ -3,7 +3,7 @@ import Header from "@/components/layouts/Header";
 import Footer from "@/components/layouts/Footer";
 import "pretendard/dist/web/variable/pretendardvariable.css";
 import "pretendard/dist/web/static/pretendard.css";
-import Providers from "@/app/provider";
+import Providers from "@/app/Provider";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

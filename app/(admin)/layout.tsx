@@ -4,7 +4,7 @@ import { AdminLayoutClient } from "@/components/layouts/AdminLayoutClient";
 import { ReactNode, useEffect } from "react";
 import useUserStore from "@/zustand/useStore";
 import { useRouter } from "next/navigation";
-import { showWarning } from "@/lib/sweetalert";
+import { showWarning } from "@/lib";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const router = useRouter();

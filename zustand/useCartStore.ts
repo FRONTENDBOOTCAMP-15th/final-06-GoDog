@@ -1,5 +1,5 @@
-import { getCartItems } from "@/lib/cart";
-import { CartListRes, ErrorRes } from "@/types/response";
+import { getCartItems } from "@/lib";
+import { CartListRes, ErrorRes } from "@/types";
 import { create } from "zustand";
 
 type DeliveryCycle = "2w" | "4w";

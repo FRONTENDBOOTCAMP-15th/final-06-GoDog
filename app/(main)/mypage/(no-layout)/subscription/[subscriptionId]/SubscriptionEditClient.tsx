@@ -4,16 +4,16 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { OrderDetailItem } from "@/app/(main)/mypage/(layout)/order/types/order";
+import { OrderDetailItem } from "@/types/mypage-order";
 import { PrevIcon } from "@/app/(main)/mypage/_components/Icons";
 import { Product404 } from "@/app/(main)/mypage/_components/DogFoodImage";
 import Badge from "@/components/common/Badge";
 import Button from "@/components/common/Button";
 import DetailSub from "@/app/(main)/mypage/_components/DetailSub";
 import DeliveryPeri from "@/app/(main)/mypage/_components/DeliveryPeri";
-import Adjustdelivery from "@/app/(main)/mypage/_components/adjustdelivery";
-import { updateSubscriptionPlan } from "@/app/(main)/mypage/(no-layout)/subscription/[subscriptionId]/editSub";
-import { showSuccess, showError } from "@/lib/sweetalert";
+import Adjustdelivery from "@/app/(main)/mypage/_components/AdjustDelivery";
+import { updateSubscriptionPlan } from "@/app/(main)/mypage/(no-layout)/subscription/[subscriptionId]/EditSub";
+import { showSuccess, showError } from "@/lib";
 
 interface Props {
   initialData: OrderDetailItem;

@@ -5,11 +5,10 @@ import Badge from "@/components/common/Badge";
 import Button from "@/components/common/Button";
 import Input from "@/components/common/Input";
 import { CameraIcon } from "@/app/(main)/mypage/_components/Icons";
-import { updateUser } from "@/lib/user";
-import { uploadFile } from "@/app/(main)/mypage/(no-layout)/order/[orderid]/review/postreview";
-import { UserInfoRes } from "@/types/response";
+import { updateUser, showError, showSuccess } from "@/lib";
+import { uploadFile } from "@/app/(main)/mypage/(no-layout)/order/[orderid]/review/PostReview";
+import { UserInfoRes } from "@/types";
 import Image from "next/image";
-import { showError, showSuccess } from "@/lib/sweetalert";
 
 export default function ProfileClient({
   token,

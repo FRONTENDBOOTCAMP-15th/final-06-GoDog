@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { Product } from "@/types/product";
-import type { ProductData } from "@/lib/recommendProducts";
+import type { Product } from "@/types";
+import type { ProductData } from "@/lib";
 import Badge from "@/components/common/Badge";
 
 interface ProductCardProps {

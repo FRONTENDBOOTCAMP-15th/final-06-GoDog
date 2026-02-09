@@ -3,7 +3,7 @@
 import { Children, InputHTMLAttributes } from "react";
 import { useRouter } from "next/navigation";
 import Badge from "@/components/common/Badge";
-import { OrderStateCode } from "@/types/codes";
+import { OrderStateCode } from "@/types";
 
 interface MyReviewListProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "className"> {
   name: string;

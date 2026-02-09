@@ -6,7 +6,7 @@ import { MessageCircle, CircleCheckBig, Clock, ChevronRight } from "lucide-react
 import StatCard from "@/app/(admin)/admin/_components/StatCard";
 import SearchFilter from "@/app/(admin)/admin/_components/SearchFilter";
 import Pagination from "@/app/(admin)/admin/_components/Pagination";
-import { getPosts } from "@/lib/post";
+import { getPosts } from "@/lib";
 import { useQuery } from "@tanstack/react-query";
 import { useUrlParams } from "@/hooks/useUrlParams";
 import Link from "next/link";

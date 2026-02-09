@@ -11,18 +11,10 @@ import {
   Eye,
   DollarSign,
 } from "lucide-react";
-import { getProducts } from "@/lib/product";
-import { getPosts } from "@/lib/post";
-import { Order } from "@/types/order";
-import { User } from "@/types/user";
-import { Product } from "@/types/product";
-import { Post } from "@/types/post";
-import { getOrders } from "@/lib/order";
-import { getUsers } from "@/lib/user";
-import { getOrderStatistics } from "@/lib/statistics";
+import { getProducts, getPosts, getOrders, getUsers, getOrderStatistics, showWarning } from "@/lib";
+import { Order, User, Product, Post } from "@/types";
 import useUserStore from "@/zustand/useStore";
 import Link from "next/link";
-import { showWarning } from "@/lib/sweetalert";
 
 // 가격 포맷
 const formatPrice = (price: number) => {

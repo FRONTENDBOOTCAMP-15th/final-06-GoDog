@@ -1,4 +1,4 @@
-import { Product, ProductExtra, ProductImage } from "@/types/product";
+import { Product, ProductExtra, ProductImage } from "./product";
 
 export interface OrderProduct {
   _id: number;

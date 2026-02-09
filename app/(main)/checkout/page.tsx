@@ -1,7 +1,7 @@
 "use client";
 
 import * as PortOne from "@portone/browser-sdk/v2";
-import { createOrder, OrderRequestProduct } from "@/app/(main)/checkout/actions/checkout";
+import { createOrder, OrderRequestProduct } from "@/actions/checkout";
 import Badge from "@/components/common/Badge";
 import Button from "@/components/common/Button";
 import Checkbox from "@/components/common/Checkbox";
@@ -13,7 +13,7 @@ import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { deleteCartItems } from "@/app/(main)/cart/action/cart";
-import { showWarning, showSuccess, showError } from "@/lib/sweetalert";
+import { showWarning, showSuccess, showError } from "@/lib";
 
 function CheckoutContent() {
   const router = useRouter();

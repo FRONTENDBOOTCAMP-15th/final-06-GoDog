@@ -1,4 +1,4 @@
-import SubscriptionItemList from "@/app/(main)/cart/_components/subscriptionItemList";
+import SubscriptionItemList from "@/app/(main)/cart/_components/SubscriptionItemList";
 import { deleteCartItem, deleteCartItems } from "@/app/(main)/cart/action/cart";
 import useCartStore from "@/zustand/useCartStore";
 import Button from "@/components/common/Button";
@@ -7,7 +7,7 @@ import useUserStore from "@/zustand/useStore";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { showWarning, showError, showDeleteConfirm } from "@/lib/sweetalert";
+import { showWarning, showError, showDeleteConfirm } from "@/lib";
 
 export default function SubscriptionCart() {
   const router = useRouter();

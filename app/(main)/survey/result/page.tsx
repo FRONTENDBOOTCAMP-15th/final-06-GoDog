@@ -4,7 +4,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import Badge from "@/components/common/Badge";
 import Button from "@/components/common/Button";
-import { parseResultCodes, getProductsByCodeList, type ProductData } from "@/lib/recommendProducts";
+import { parseResultCodes, getProductsByCodeList, type ProductData } from "@/lib";
 import ProductImage from "@/components/common/ProductImage";
 import ProductCard from "@/components/common/ProductCard";
 

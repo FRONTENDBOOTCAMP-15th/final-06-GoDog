@@ -13,14 +13,13 @@ import { useState } from "react";
 import {
   uploadFile,
   createReview,
-} from "@/app/(main)/mypage/(no-layout)/order/[orderid]/review/postreview";
-import MyReviewList from "@/app/(main)/mypage/_components/reviewItem";
-import { getOrders } from "@/lib/order";
+} from "@/app/(main)/mypage/(no-layout)/order/[orderid]/review/PostReview";
+import MyReviewList from "@/app/(main)/mypage/_components/ReviewItem";
+import { getOrders, showWarning, showSuccess, showError } from "@/lib";
 import useUserStore from "@/zustand/useStore";
 import { useQuery } from "@tanstack/react-query";
 import Cookies from "js-cookie";
-import { OrderStateCode } from "@/types/codes";
-import { showWarning, showSuccess, showError } from "@/lib/sweetalert";
+import { OrderStateCode } from "@/types";
 
 export default function Review() {
   const user = useUserStore((state) => state.user);
