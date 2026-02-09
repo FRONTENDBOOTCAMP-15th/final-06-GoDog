@@ -7,6 +7,7 @@ import Badge from "@/components/common/Badge";
 import Button from "@/components/common/Button";
 import { parseResultCodes, getProductsByCodeList, type ProductData } from "@/lib/recommendProducts";
 import ProductImage from "@/components/common/ProductImage";
+import ProductCard from "@/components/common/ProductCard";
 
 function SurveyResultContent() {
   const router = useRouter();
@@ -319,53 +320,17 @@ function SurveyResultContent() {
               </Button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <ul className="grid grid-cols-[repeat(auto-fill,240px)] gap-4 max-w-6xl mx-auto justify-center">
               {topProducts.slice(1).map((product, index) => (
-                <div
-                  key={product.extra.code}
-                  className="bg-white rounded-3xl border border-border-primary shadow-card overflow-hidden hover:shadow-lg hover:border-accent-soft transition-all group cursor-pointer relative"
-                  onClick={() => handleSelectProduct(product)}
-                >
-                  <div className="aspect-square bg-bg-warm flex items-center justify-center p-4 relative">
-                    {product.mainImages?.[0] ? (
-                      <ProductImage
-                        src={`${product.mainImages[0].path}`}
-                        alt={product.name}
-                        className="w-full h-full object-cover rounded-2xl group-hover:scale-105 transition-transform duration-500"
-                      />
-                    ) : (
-                      <div className="text-6xl group-hover:scale-110 transition-transform duration-500">
-                        🐶
-                      </div>
-                    )}
-
-                    <div className="absolute top-3 right-3">
-                      <Badge className="bg-white/90 backdrop-blur-sm">#{index + 2}</Badge>
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <h4 className="font-black text-text-primary mb-2 line-clamp-2">
-                      {product.name}
-                    </h4>
-                    <p className="font-bold text-accent-primary">
-                      {product.price.toLocaleString()}원
-                    </p>
-
-                    {/* 제품 특징 태그 */}
-                    <div className="flex flex-wrap gap-2 mt-3">
-                      {product.extra.healthBenefits.slice(0, 2).map((benefit) => (
-                        <span
-                          key={benefit}
-                          className="text-[10px] px-2 py-1 bg-accent-soft text-accent-primary rounded-full"
-                        >
-                          {benefit}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+                <ProductCard
+                  key={`${product.extra.code}-${index}`}
+                  product={product}
+                  showLifeStage={false}
+                  showRanking={true}
+                  ranking={index + 2}
+                />
               ))}
-            </div>
+            </ul>
           </div>
         )}
 

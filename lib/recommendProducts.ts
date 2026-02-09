@@ -30,6 +30,7 @@ export interface ProductData {
   mainImages?: { path: string; name: string }[];
   show?: boolean;
   extra: {
+    type: "사료" | "간식";
     code: string;
     weight: number;
     size: string[];

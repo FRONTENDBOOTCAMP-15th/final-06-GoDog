@@ -7,7 +7,7 @@ import PaginationWrapper from "@/components/common/PaginationWrapper";
 import Link from "next/link";
 import { getProducts } from "@/lib/product";
 import ProductsSkeleton from "@/app/(main)/products/_components/productsList/Skeleton";
-import ProductsCard from "@/app/(main)/products/_components/productsList/ProductsCard";
+import ProductCard from "@/components/common/ProductCard";
 
 // 상품 목록 페이지
 export default function Products() {
@@ -20,8 +20,8 @@ export default function Products() {
 
 function ProductsLoading() {
   return (
-    <div className="w-full min-w-90 bg-bg-secondary px-4 py-10 sm:px-10 md:px-20 lg:px-89 lg:py-17.5 lg:pb-35">
-      <div className="mx-auto flex max-w-300 flex-col items-center gap-8 sm:gap-10 lg:gap-14">
+    <div className="w-full min-w-90 bg-bg-secondary px-4 py-10 lg:py-17.5 lg:pb-35">
+      <div className="mx-auto flex flex-col items-center gap-8 sm:gap-10 lg:gap-14">
         <section className="flex w-full max-w-290 flex-col items-center text-center px-2">
           <h1 className="pb-3 text-2xl sm:text-3xl lg:text-[2.625rem]">상품 목록</h1>
           <p className="text-sm sm:text-base text-text-secondary">
@@ -29,7 +29,7 @@ function ProductsLoading() {
           </p>
         </section>
         <section className="w-full">
-          <ul className="flex flex-wrap justify-center gap-4 sm:gap-5 lg:gap-7">
+          <ul className="grid grid-cols-[repeat(auto-fill,240px)] gap-4 max-w-6xl mx-auto justify-center">
             {Array.from({ length: 8 }).map((_, i) => (
               <ProductsSkeleton key={i} />
             ))}
@@ -54,7 +54,11 @@ function ProductsContent() {
     "extra.type": type || "사료",
   };
 
-  const { data: resProducts, isLoading, isError } = useQuery({
+  const {
+    data: resProducts,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["products", lifeStage, category, type, currentPage],
     queryFn: () => getProducts({ custom, page: currentPage, limit: 10 }),
   });
@@ -63,8 +67,8 @@ function ProductsContent() {
   const totalPages = resProducts?.ok === 1 ? resProducts.pagination.totalPages : 0;
 
   return (
-    <div className="w-full min-w-90 bg-bg-secondary px-4 py-10 sm:px-10 md:px-20 lg:px-89 lg:py-17.5 lg:pb-35">
-      <div className="mx-auto flex max-w-300 flex-col items-center gap-8 sm:gap-10 lg:gap-14">
+    <div className="w-full min-w-90 bg-bg-secondary px-4 py-10 lg:py-17.5 lg:pb-35">
+      <div className="mx-auto flex flex-col items-center gap-8 sm:gap-10 lg:gap-14">
         <section className="flex w-full max-w-290 flex-col items-center text-center px-2">
           <h1 className="pb-3 text-2xl sm:text-3xl lg:text-[2.625rem]">상품 목록</h1>
           <p className="text-sm sm:text-base text-text-secondary">
@@ -113,13 +117,13 @@ function ProductsContent() {
 
         {/* 상품 목록 그리드 */}
         <section className="w-full">
-          <ul className="flex flex-wrap justify-center gap-4 sm:gap-5 lg:gap-7">
+          <ul className="grid grid-cols-[repeat(auto-fill,240px)] gap-4 max-w-6xl mx-auto justify-center">
             {isLoading ? (
               Array.from({ length: 8 }).map((_, i) => <ProductsSkeleton key={i} />)
             ) : isError ? (
               <p>상품을 불러오지 못했습니다.</p>
             ) : (
-              products.map((product) => <ProductsCard key={product._id} product={product} />)
+              products.map((product) => <ProductCard key={product._id} product={product} />)
             )}
           </ul>
         </section>
