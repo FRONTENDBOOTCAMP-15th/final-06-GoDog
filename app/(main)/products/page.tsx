@@ -3,10 +3,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import PaginationWrapper from "@/components/common/PaginationWrapper";
-import Image from "next/image";
 import Link from "next/link";
 import { getProducts } from "@/lib/product";
-import ProductsSkeleton from "@/app/(main)/products/_components/productscard/skeleton";
+import ProductsSkeleton from "@/app/(main)/products/_components/productsList/Skeleton";
+import ProductsCard from "@/app/(main)/products/_components/productsList/ProductsCard";
 
 // 상품 목록 페이지
 export default function Products() {
@@ -23,10 +23,7 @@ export default function Products() {
     "extra.type": type || "사료",
   };
 
-  const {
-    data: resProducts,
-    isLoading,
-  } = useQuery({
+  const { data: resProducts, isLoading } = useQuery({
     queryKey: ["products", lifeStage, category, type, currentPage],
     queryFn: () => getProducts({ custom, page: currentPage, limit: 10 }),
   });
@@ -86,51 +83,9 @@ export default function Products() {
         {/* 상품 목록 그리드 */}
         <section className="w-full">
           <ul className="flex flex-wrap justify-center gap-4 sm:gap-5 lg:gap-7">
-            {isLoading ? (
-              Array.from({ length: 8 }).map((_, i) => (
-                <ProductsSkeleton key={i} />
-              ))
-            ) : (
-              products.map((product) => (
-                <li
-                  key={product._id}
-                  className="flex w-[calc(25%-21px)] min-w-62.5 flex-col overflow-hidden rounded-3xl sm:rounded-[2.1875rem] border border-black/10 bg-white"
-                >
-                  <Link
-                    href={`/products/${product._id}`}
-                    className="flex w-full flex-col no-underline"
-                  >
-                    <div className="flex aspect-square w-full items-center justify-center overflow-hidden bg-white">
-                      <Image
-                        src={product.mainImages[0]?.path || "/placeholder.png"}
-                        alt={product.name}
-                        width={280}
-                        height={280}
-                        className="block h-full w-full object-contain transition-transform duration-300 ease-in-out hover:scale-110"
-                      />
-                    </div>
-
-                    <div className="flex flex-col items-start gap-2 px-3 py-3 sm:px-4 sm:py-4">
-                      <h3 className="text-base sm:text-lg font-black leading-6 tracking-tight text-text-primary">
-                        {product.name}
-                      </h3>
-                      <p className="text-sm sm:text-base font-black leading-6 text-text-secondary">
-                        {product.price.toLocaleString()}원
-                      </p>
-
-                      {product.extra?.lifeStage?.map((lifeStage: string) => (
-                        <span
-                          key={lifeStage}
-                          className="inline-flex items-center rounded-md bg-orange-500/80 px-2.5 py-1 text-[0.625rem] font-normal uppercase leading-none tracking-wider text-white backdrop-blur-sm"
-                        >
-                          {lifeStage}
-                        </span>
-                      ))}
-                    </div>
-                  </Link>
-                </li>
-              ))
-            )}
+            {isLoading
+              ? Array.from({ length: 8 }).map((_, i) => <ProductsSkeleton key={i} />)
+              : products.map((product) => <ProductsCard key={product._id} product={product} />)}
           </ul>
         </section>
 
