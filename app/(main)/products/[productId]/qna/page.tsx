@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import useUserStore from "@/zustand/useStore";
 import { createQnaPost } from "@/actions/qna";
-import { showWarning, showSuccess, showError } from "@/lib/sweetalert";
+import { showWarning, showSuccess, showError } from "@/lib";
 
 export default function ProductQnaForm() {
   const user = useUserStore((state) => state.user);

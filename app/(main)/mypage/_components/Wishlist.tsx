@@ -1,13 +1,12 @@
 "use client";
 
-import { Product } from "@/types/product";
+import { Product } from "@/types";
 import Link from "next/link";
 import { TrashIcon } from "@/app/(main)/mypage/_components/Icons";
 import Image from "next/image";
-import { deleteWishlist } from "@/lib/bookmark";
+import { deleteWishlist, showDeleteConfirm, showError } from "@/lib";
 import { useRouter } from "next/navigation";
-import { ProductCardSkeleton } from "@/app/(main)/mypage/(layout)/wishlist/skeleton";
-import { showDeleteConfirm, showError } from "@/lib/sweetalert";
+import { ProductCardSkeleton } from "@/app/(main)/mypage/(layout)/wishlist/Skeleton";
 
 interface WishlistComponentProps {
   bookmarkId: number;

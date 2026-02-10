@@ -1,6 +1,5 @@
 import ProductDetail from "@/app/(main)/products/_components/ProductDetail";
-import { getPosts, getReplies } from "@/lib/post";
-import { getProduct } from "@/lib/product";
+import { getPosts, getReplies, getProduct } from "@/lib";
 
 export async function generateMetadata({ params }: { params: Promise<{ productId: string }> }) {
   const { productId } = await params;

@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { getUser } from "@/lib/user";
+import { getUser } from "@/lib";
 import MyTapButton from "@/app/(main)/mypage/_components/MyTapButton";
 import {
   SubscriptionIcon,

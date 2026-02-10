@@ -3,11 +3,10 @@
 import Badge from "@/components/common/Badge";
 import Button from "@/components/common/Button";
 import Input from "@/components/common/Input";
-import { signup } from "@/lib/user";
+import { signup, showError, showSuccess } from "@/lib";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { showError, showSuccess } from "@/lib/sweetalert";
 
 export default function Signup() {
   const router = useRouter();

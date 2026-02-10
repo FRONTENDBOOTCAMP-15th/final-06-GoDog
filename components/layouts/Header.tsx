@@ -7,7 +7,7 @@ import useUserStore from "@/zustand/useStore";
 import { usePathname, useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import useCartStore from "@/zustand/useCartStore";
-import { showLoading, showInfo } from "@/lib/sweetalert";
+import { showLoading, showInfo } from "@/lib";
 
 const Header: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);

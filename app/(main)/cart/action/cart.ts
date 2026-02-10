@@ -1,6 +1,6 @@
 "use server";
-import { getCartItems as apiGetCartItems } from "@/lib/cart";
-import { CartItemRes, CartListRes, ErrorRes } from "@/types/response";
+import { getCartItems as apiGetCartItems } from "@/lib";
+import { CartItemRes, CartListRes, ErrorRes } from "@/types";
 import { revalidatePath } from "next/cache";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;

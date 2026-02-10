@@ -1,4 +1,4 @@
-import { User } from "@/types/user";
+import { User } from "./user";
 
 // 주문 내 개별 상품 정보
 export interface OrderProduct {

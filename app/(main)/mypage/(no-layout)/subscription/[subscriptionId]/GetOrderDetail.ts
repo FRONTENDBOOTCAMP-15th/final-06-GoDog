@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { OrderDetailRes } from "@/app/(main)/mypage/(layout)/order/types/order";
+import { OrderDetailRes } from "@/types/mypage-order";
 
 const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || "";
 /**

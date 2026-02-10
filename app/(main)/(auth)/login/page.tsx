@@ -10,7 +10,7 @@ import Link from "next/link";
 import { redirect, useRouter } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
 import { createJSONStorage } from "zustand/middleware";
-import { showSuccess } from "@/lib/sweetalert";
+import { showSuccess } from "@/lib";
 
 export default function Login() {
   const [userState, formAction, isPending] = useActionState(login, null);

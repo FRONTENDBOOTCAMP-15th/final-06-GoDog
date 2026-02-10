@@ -1,5 +1,5 @@
-import { API_URL, CLIENT_ID } from "@/lib/config";
-import { ResData, ReviewListRes } from "@/types/response";
+import { API_URL, CLIENT_ID } from "./config";
+import { ResData, ReviewListRes } from "@/types";
 
 interface GetAllRepliesOptions {
   rating?: string;

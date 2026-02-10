@@ -1,12 +1,11 @@
 "use client";
 
-import { Post } from "@/types/post";
-import { Product } from "@/types/product";
+import { Post, Product } from "@/types";
 import { useState, ChangeEvent, FormEvent } from "react";
 import { ArrowLeft, Trash2, User, Calendar, Save, MessageCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { deletePost, deleteReply, saveReply } from "@/actions/qna";
-import { showSuccess, showError } from "@/lib/sweetalert";
+import { showSuccess, showError } from "@/lib";
 
 // ===== Props 타입 =====
 interface AnswerFormProps {

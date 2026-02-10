@@ -1,11 +1,9 @@
-import { ProductCardSkeleton } from "@/app/(main)/mypage/(layout)/wishlist/skeleton";
+import { ProductCardSkeleton } from "@/app/(main)/mypage/(layout)/wishlist/Skeleton";
 import { Product404 } from "@/app/(main)/mypage/_components/DogFoodImage";
-import WishlistComponent from "@/app/(main)/mypage/_components/wishlist";
+import WishlistComponent from "@/app/(main)/mypage/_components/Wishlist";
 import PaginationWrapper from "@/components/common/PaginationWrapper";
-import { getWishlist } from "@/lib/bookmark";
-import { getUser } from "@/lib/user";
-import { Product } from "@/types/product";
-import { BookmarkListRes, ResData } from "@/types/response";
+import { getWishlist, getUser } from "@/lib";
+import { Product, BookmarkListRes, ResData } from "@/types";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
 import { Suspense } from "react";

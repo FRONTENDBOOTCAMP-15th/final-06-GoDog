@@ -1,5 +1,5 @@
 import SubscriptionEditClient from "@/app/(main)/mypage/(no-layout)/subscription/[subscriptionId]/SubscriptionEditClient";
-import { getOrderDetail } from "./getOrderDetail";
+import { getOrderDetail } from "./GetOrderDetail";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

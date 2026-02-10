@@ -18,10 +18,10 @@ import {
   HealthBenefit,
   SpecialFeature,
   LineTag,
-} from "@/types/product";
+} from "@/types";
 import { createProduct, updateProduct } from "@/actions/product";
 import { useRouter } from "next/navigation";
-import { showSuccess } from "@/lib/sweetalert";
+import { showSuccess } from "@/lib";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 

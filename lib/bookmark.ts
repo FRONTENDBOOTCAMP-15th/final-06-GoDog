@@ -1,6 +1,5 @@
 // lib/bookmark.ts
-import { BookmarkInfoRes, BookmarkListRes, ResData } from "@/types/response";
-import { EmptyRes } from "@/types/response";
+import { BookmarkInfoRes, BookmarkListRes, ResData, EmptyRes } from "@/types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || "";
