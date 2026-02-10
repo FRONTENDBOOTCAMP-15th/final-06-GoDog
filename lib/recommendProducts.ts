@@ -22,6 +22,7 @@ export interface ExtendedSurveyFormData extends SurveyFormData {
 
 // 상품 데이터 타입
 export interface ProductData {
+  _id: number;
   price: number;
   quantity: number;
   name: string;
