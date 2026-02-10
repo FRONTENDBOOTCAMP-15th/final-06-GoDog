@@ -72,6 +72,7 @@ export default function Orders() {
                     productid={item.products[0]._id}
                     orderId={String(item._id)}
                     title={item.products[0].name}
+                    showNextDelivery={false}
                     image={
                       <div className="rounded-3xl overflow-hidden w-full aspect-square relative bg-gray-50">
                         {item.products[0].image?.path ? (

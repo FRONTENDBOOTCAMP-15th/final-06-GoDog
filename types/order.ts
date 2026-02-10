@@ -59,6 +59,7 @@ export interface Order {
   user: User;
   size: string;
   color?: string;
+  nextdeliverydate: string;
 }
 
 export interface OrderStatistics {
