@@ -1,4 +1,5 @@
 import Badge from "@/components/common/Badge";
+import StarRating from "@/components/common/StarRating";
 import { getReviewStats } from "@/lib";
 
 interface ReviewStatsProps {
@@ -10,7 +11,10 @@ export default async function ReviewStats({ total }: ReviewStatsProps) {
 
   return (
     <section className="bg-white rounded-[4rem] p-12 md:p-16 border border-border-primary shadow-soft mb-16 flex flex-col md:flex-row items-center justify-between gap-12 relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-64 h-64 bg-accent-soft/30 rounded-full blur-[80px] pointer-events-none" aria-hidden="true" />
+      <div
+        className="absolute top-0 right-0 w-64 h-64 bg-accent-soft/30 rounded-full blur-[80px] pointer-events-none"
+        aria-hidden="true"
+      />
 
       <div className="text-center md:text-left relative z-10">
         <Badge variant="accent" className="mb-4">
@@ -32,7 +36,7 @@ export default async function ReviewStats({ total }: ReviewStatsProps) {
           </p>
           <div className="flex flex-col items-center">
             <span className="text-5xl font-black text-text-primary">{stats.average}</span>
-            <div className="flex text-accent-primary text-sm mt-1" aria-hidden="true">★★★★★</div>
+            <StarRating className="mt-0.5" rating={stats.average} size={16} aria-hidden="true" />
           </div>
         </div>
         <div className="w-px h-20 bg-border-primary hidden md:block" aria-hidden="true" />
@@ -41,7 +45,9 @@ export default async function ReviewStats({ total }: ReviewStatsProps) {
             전체 리뷰 수
           </p>
           <span className="text-5xl font-black text-accent-primary">{total}</span>
-          <p className="text-[10px] font-black text-text-tertiary mt-1" aria-hidden="true">REAL FEEDBACK</p>
+          <p className="text-[10px] font-black text-text-tertiary mt-1" aria-hidden="true">
+            REAL FEEDBACK
+          </p>
         </div>
       </div>
     </section>
