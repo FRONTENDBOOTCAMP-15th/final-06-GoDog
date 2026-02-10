@@ -1,4 +1,4 @@
-import { uploadFiles } from "@/actions/Uploadfiles";
+import { uploadFiles } from "@/actions/uploadfiles";
 import useUserStore from "@/zustand/useStore";
 import {
   Product,

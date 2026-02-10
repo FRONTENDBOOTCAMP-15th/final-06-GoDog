@@ -81,7 +81,7 @@ export default function AnswerForm({ postId, questionData, productData }: Answer
     try {
       await saveReply(postId, { content: answer }, isModifyMode ? existingReply._id : undefined);
 
-      await showSuccess("완료", isModifyMode ? "답변이 수정되었습니다." : "답변이 등록되었습니다.");
+      showSuccess("완료", isModifyMode ? "답변이 수정되었습니다." : "답변이 등록되었습니다.");
       router.push("/admin/qna");
     } catch (error) {
       showError("오류", error instanceof Error ? error.message : "오류가 발생했습니다.");
@@ -101,10 +101,10 @@ export default function AnswerForm({ postId, questionData, productData }: Answer
     try {
       if (deleteType === "post") {
         await deletePost(postId);
-        await showSuccess("삭제 완료", "질문이 삭제되었습니다.");
+        showSuccess("삭제 완료", "질문이 삭제되었습니다.");
       } else if (existingReply) {
         await deleteReply(postId, existingReply._id);
-        await showSuccess("삭제 완료", "답변이 삭제되었습니다.");
+        showSuccess("삭제 완료", "답변이 삭제되었습니다.");
       }
       router.push("/admin/qna");
     } catch (error) {

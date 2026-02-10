@@ -59,9 +59,8 @@ const Header: React.FC = () => {
   const handleCartClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (!isLoggedIn) {
       e.preventDefault();
-      showInfo("로그인 필요", "로그인이 필요합니다. 로그인 페이지로 이동합니다.").then(() => {
-        router.push("/login");
-      });
+      showInfo("로그인 필요", "로그인이 필요합니다.");
+      router.push("/login");
     }
   };
 
