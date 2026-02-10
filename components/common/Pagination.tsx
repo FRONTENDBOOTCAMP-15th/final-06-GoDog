@@ -20,10 +20,10 @@ const Pagination = ({ currentPage, totalPages, onPageChange, className = "" }: P
   };
 
   const baseButtonClass =
-    "inline-flex h-10.5 w-10.5 items-center justify-center rounded-[0.875rem] border p-0 leading-none transition-colors";
+    "inline-flex h-10.5 w-10.5 items-center justify-center rounded-[0.875rem] border p-0 leading-none transition-[background-color]";
 
   const activeClass = "border-transparent bg-[#FBA613] text-white shadow-md cursor-pointer";
-  const inactiveClass = "border-black/10 bg-white text-black cursor-pointer hover:bg-gray-50";
+  const inactiveClass = "border-black/10 bg-white text-black cursor-pointer hover:bg-gray-50 focus-visible:text-accent-primary focus-visible:border-accent-primary";
   const disabledClass = "border-black/10 bg-[#F2F2F2] text-[#646468] cursor-not-allowed";
 
   return (

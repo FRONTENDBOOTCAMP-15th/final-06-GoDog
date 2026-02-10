@@ -60,12 +60,12 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             id={inputId}
             aria-invalid={isError}
             aria-describedby={isError && errorMessage ? errorId : undefined}
-            className={`w-full h-12 px-5 py-4 bg-[#F9F9FB] shadow-sm rounded-2xl text-md font-bold leading-4 text-[#1A1A1C] placeholder:text-[#9CA3AF] outline-none ring-2 focus:ring-2 transition-shadow ${
+            className={`w-full h-12 px-5 py-4 bg-[#F9F9FB] shadow-sm rounded-2xl text-md font-bold leading-4 text-[#1A1A1C] placeholder:text-[#9CA3AF] outline-none transition-shadow ${
               isSearch ? "pl-[3.5rem]" : ""
             } ${
               isError
-                ? "ring-[#F87171] focus:ring-[#F87171]"
-                : "ring-transparent focus:ring-[#FBA613]"
+                ? "ring-2 ring-[#F87171]"
+                : ""
             }`}
             {...props}
           />
