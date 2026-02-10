@@ -38,7 +38,7 @@ export default function ProductCard({
         </div>
 
         <div className="flex flex-col items-start gap-2 px-3 py-3 sm:px-4 sm:py-4">
-          <h3 className="text-base sm:text-lg font-black leading-6 tracking-tight text-text-primary line-clamp-2">
+          <h3 className="w-full text-base sm:text-lg font-black leading-6 tracking-tight text-text-primary line-clamp-1 break-all">
             {product.name}
           </h3>
           <p className="text-sm sm:text-base font-black leading-6 text-text-secondary">

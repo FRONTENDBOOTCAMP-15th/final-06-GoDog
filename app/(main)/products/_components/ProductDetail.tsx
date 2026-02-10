@@ -11,23 +11,7 @@ import { Product, Review, Post } from "@/types";
 import Cookies from "js-cookie";
 import useUserStore from "@/zustand/useStore";
 import { addBookmark, getWishlist, deleteWishlist, showWarning } from "@/lib";
-
-function StarRating({ rating, size = 16 }: { rating: number; size?: number }) {
-  return (
-    <div className="flex gap-0.5" role="img" aria-label={`별점 ${rating}점`}>
-      {Array.from({ length: 5 }, (_, i) => (
-        <Image
-          key={i}
-          src={i < rating ? "/images/fullStar.svg" : "/images/emptyStar.svg"}
-          width={size}
-          height={size}
-          alt=""
-          aria-hidden="true"
-        />
-      ))}
-    </div>
-  );
-}
+import StarRating from "@/components/common/StarRating";
 
 interface Props {
   product: Product;
@@ -332,14 +316,14 @@ export default function ProductDetail({
         </div>
 
         {/* 상세 더보기 */}
-        <div className="flex items-center justify-center self-stretch border-y border-black/[0.06] bg-white/95 px-[2.625rem] py-[1.09375rem] backdrop-blur-[12px]">
-          <button
-            type="button"
-            onClick={() => setIsDetailExpanded(!isDetailExpanded)}
-            aria-expanded={isDetailExpanded}
-            aria-label={isDetailExpanded ? "상세 정보 접기" : "상세 정보 더보기"}
-            className="flex items-center gap-1 text-center text-[0.8125rem] font-bold leading-[17.5px] text-gray-600"
-          >
+        <button
+          type="button"
+          onClick={() => setIsDetailExpanded(!isDetailExpanded)}
+          aria-expanded={isDetailExpanded}
+          aria-label={isDetailExpanded ? "상세 정보 접기" : "상세 정보 더보기"}
+          className="flex w-full cursor-pointer items-center justify-center self-stretch border-y border-black/[0.06] bg-white/95 px-[2.625rem] py-[1.09375rem] backdrop-blur-[12px]"
+        >
+          <span className="flex items-center gap-1 text-center text-[0.8125rem] font-bold leading-[17.5px] text-gray-600">
             {isDetailExpanded ? "상세 접기" : "상세 더보기"}
             <svg
               width="18"
@@ -358,8 +342,8 @@ export default function ProductDetail({
                 strokeLinejoin="round"
               />
             </svg>
-          </button>
-        </div>
+          </span>
+        </button>
       </section>
 
       {/* 리뷰 */}
@@ -367,7 +351,7 @@ export default function ProductDetail({
         id="review"
         role="tabpanel"
         aria-labelledby="review-heading"
-        className="mt-[4rem] flex flex-col gap-4 border-b border-black/[0.06] pb-[2.1875rem] sm:mt-[7rem] sm:flex-row sm:items-end sm:justify-between"
+        className="mt-[4rem] scroll-mt-24 flex flex-col gap-4 border-b border-black/[0.06] pb-[2.1875rem] sm:mt-[7rem] sm:flex-row sm:items-end sm:justify-between"
       >
         <div className="flex w-full flex-col items-start justify-end gap-[0.4375rem] pt-[2.375rem] sm:w-auto">
           <h2
@@ -469,9 +453,9 @@ export default function ProductDetail({
       />
 
       {/* QnA */}
-      <div id="qna" className="mx-auto mt-14 flex max-w-[75rem] flex-col gap-2.5 sm:mt-28">
+      <div className="mx-auto mt-14 flex max-w-[75rem] flex-col gap-2.5 sm:mt-28">
         <section className="flex flex-col gap-4 border-b border-black/[0.06] pb-5 sm:flex-row sm:justify-between sm:gap-6">
-          <div className="flex flex-col items-start gap-2">
+          <div id="qna" className="scroll-mt-33 flex flex-col items-start gap-2">
             <span className="inline-flex h-7 w-fit items-center justify-center">
               <svg
                 width="46"
@@ -658,7 +642,7 @@ export default function ProductDetail({
                         <div className="flex flex-1 flex-col gap-1">
                           {item.replies.map((reply) => (
                             <div key={reply._id} className="flex flex-col gap-2">
-                              <p className="text-sm text-[black]">{reply.content}</p>
+                              <p className="whitespace-pre-wrap text-sm text-[black]">{reply.content}</p>
                               <p className="self-end text-xs text-[#808084]">
                                 {reply.createdAt.slice(0, 20)}
                               </p>

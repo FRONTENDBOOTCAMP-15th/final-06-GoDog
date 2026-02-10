@@ -64,7 +64,7 @@ function ProductsContent() {
     isError,
   } = useQuery({
     queryKey: ["products", lifeStage, category, type, currentPage],
-    queryFn: () => getProducts({ custom, page: currentPage, limit: 10, showSoldOut: true }),
+    queryFn: () => getProducts({ custom, page: currentPage, limit: 12, showSoldOut: true }),
   });
 
   const products = resProducts?.ok === 1 ? resProducts.item : [];
@@ -130,7 +130,7 @@ function ProductsContent() {
             role="list"
           >
             {isLoading ? (
-              Array.from({ length: 8 }).map((_, i) => <ProductsSkeleton key={i} />)
+              Array.from({ length: 12 }).map((_, i) => <ProductsSkeleton key={i} />)
             ) : isError ? (
               <li role="alert" aria-live="assertive" className="col-span-full text-center py-10">
                 <p>상품을 불러오지 못했습니다.</p>
