@@ -58,7 +58,7 @@ export default async function ProductPage({ params, searchParams }: Props) {
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
   if (currentReviewFilter === "photo") {
-    filteredReviews = filteredReviews.filter((review) => review.product?.image);
+    filteredReviews = filteredReviews.filter((review) => review.extra?.image);
   }
 
   const reviewTotalPages = Math.max(1, Math.ceil(filteredReviews.length / REVIEW_PER_PAGE));
