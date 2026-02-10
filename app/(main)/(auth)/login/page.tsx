@@ -90,13 +90,13 @@ export default function Login() {
 
               <div className="flex items-center justify-between pt-2 mb-6">
                 <Checkbox checked={checkedState} onChange={handleChange} label="로그인 상태 유지" />
-                <button
+                {/* <button
                   type="button"
                   className="text-xs font-bold text-text-tertiary hover:text-text-primary transition-colors underline underline-offset-4"
                   aria-label="비밀번호 찾기"
                 >
                   비밀번호 찾기
-                </button>
+                </button> */}
               </div>
 
               <Button

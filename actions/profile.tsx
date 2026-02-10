@@ -120,7 +120,11 @@ export default function ProfileClient({
         회원정보 수정
       </h1>
 
-      <form className="w-full max-w-[672px] mt-10" onSubmit={handleSubmit} aria-label="회원정보 수정 폼">
+      <form
+        className="w-full max-w-[672px] mt-10"
+        onSubmit={handleSubmit}
+        aria-label="회원정보 수정 폼"
+      >
         <div className="mb-[161px] pr-[55px] pl-[57px] pt-[56px] pb-[70px] rounded-[49px] border border-black/[0.06] bg-[#FFF] shadow-sm">
           <div className="flex flex-col items-center mb-10">
             <div className="relative">
@@ -196,7 +200,7 @@ export default function ProfileClient({
             >
               {isPending ? "저장 중..." : "정보 저장하기"}
             </Button>
-            <Button
+            {/* <Button
               type="button"
               variant="outline"
               className="flex-1"
@@ -204,7 +208,7 @@ export default function ProfileClient({
               aria-label="취소하고 이전 페이지로 돌아가기"
             >
               취소
-            </Button>
+            </Button> */}
           </div>
         </div>
       </form>

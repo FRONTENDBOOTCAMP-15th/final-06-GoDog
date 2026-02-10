@@ -90,6 +90,7 @@ export default function Subscription() {
                   quantity={item.products[0].quantity}
                   price={`${item.products[0].price.toLocaleString()}원`}
                   mark={<RigthMark />}
+                  nextdeliverydate={item.nextdeliverydate}
                 />
               </li>
             ))

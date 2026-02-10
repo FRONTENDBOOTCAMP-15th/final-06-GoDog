@@ -45,6 +45,8 @@ export default function Orders() {
 
   const pagination = resOrderlist?.ok === 1 ? resOrderlist.pagination : undefined;
   const showSkeleton = isLoading || isFetching;
+  console.log(resOrderlist, "콘솔");
+
   return (
     <main className="w-full pb-[70px]">
       <div className="mt-[108px]">
@@ -69,9 +71,11 @@ export default function Orders() {
               return (
                 <li key={item._id} className="w-full">
                   <MyItemList
+                    subscriptionId={String(item.products[0]._id)}
                     productid={item.products[0]._id}
                     orderId={String(item._id)}
                     title={item.products[0].name}
+                    showNextDelivery={false}
                     image={
                       <div className="rounded-3xl overflow-hidden w-full aspect-square relative bg-gray-50">
                         {item.products[0].image?.path ? (
