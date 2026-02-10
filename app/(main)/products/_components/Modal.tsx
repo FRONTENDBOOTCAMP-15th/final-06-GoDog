@@ -153,7 +153,7 @@ export default function PurchaseModal({ isOpen, onClose, product }: Props) {
         {purchaseType === "subscription" && (
           <div className="flex flex-col gap-6 mt-10">
             <span className="font-semibold text-m">배송주기 선택</span>
-            <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
+            <div className="flex flex-row gap-4">
               <Button
                 variant={deliveryCycle === "2w" ? "secondary" : "outline"}
                 onClick={() => setDeliveryCycle("2w")}
