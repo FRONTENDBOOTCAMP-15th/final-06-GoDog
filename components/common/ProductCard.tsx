@@ -17,7 +17,7 @@ export default function ProductCard({
   showRanking = false,
   ranking,
 }: ProductCardProps) {
-  const productId = "_id" in product ? product._id : product.extra?.code;
+  const productId = product?._id;
 
   return (
     <li className="flex flex-col max-w-[250px] overflow-hidden rounded-3xl sm:rounded-[2.1875rem] border border-black/10 bg-white hover:shadow-lg hover:border-accent-soft transition-all group cursor-pointer">

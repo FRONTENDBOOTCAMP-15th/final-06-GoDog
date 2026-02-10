@@ -1,18 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import {
-  MessageCircle,
-  Clock,
-  AlertTriangle,
-  Users,
-  ShoppingCart,
-  ArrowRight,
-  Eye,
-  DollarSign,
-} from "lucide-react";
+import { Clock, AlertTriangle, Users, ShoppingCart, ArrowRight, DollarSign } from "lucide-react";
 import { getProducts, getPosts, getOrders, getUsers, getOrderStatistics, showWarning } from "@/lib";
-import { Order, User, Product, Post } from "@/types";
+import { Order, Product, Post } from "@/types";
 import useUserStore from "@/zustand/useStore";
 import Link from "next/link";
 
@@ -167,14 +158,14 @@ export default function AdminDashboardPage() {
 
   if (loading) {
     return (
-      <main className="flex items-center justify-center h-64" role="status" aria-live="polite">
+      <div className="flex items-center justify-center h-64" role="status" aria-live="polite">
         <p className="text-gray-500">로딩 중...</p>
-      </main>
+      </div>
     );
   }
 
   return (
-    <main>
+    <div>
       {/* 헤더 */}
       <div className="mb-6">
         <h1 className="text-3xl font-semibold text-gray-900">대시보드</h1>
@@ -182,7 +173,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* 상단 통계 카드 */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+      <section className="grid grid-cols-1 xl:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 gap-4 mb-6">
         {/* 총 판매금액 */}
         <div className="bg-white rounded-lg shadow p-5" role="region">
           <div className="flex items-center justify-between">
@@ -252,7 +243,7 @@ export default function AdminDashboardPage() {
       </section>
 
       {/* 메인 콘텐츠 그리드 */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
         {/* 답변 대기 Q&A */}
         <div className="lg:col-span-2 bg-white rounded-lg shadow">
           <div className="p-6 border-b border-gray-200 flex items-center justify-between">
@@ -442,6 +433,6 @@ export default function AdminDashboardPage() {
           </table>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

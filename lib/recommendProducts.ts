@@ -22,6 +22,7 @@ export interface ExtendedSurveyFormData extends SurveyFormData {
 
 // 상품 데이터 타입
 export interface ProductData {
+  _id: number;
   price: number;
   quantity: number;
   name: string;
@@ -185,7 +186,6 @@ function filterBySuitability(
 ): ProductData[] {
   return products.filter((product) => {
     if (!product.extra) return false;
-    console.log(product);
     if (mappedSize && !product.extra.size.includes(mappedSize)) return false;
     if (mappedAge && !product.extra.lifeStage.includes(mappedAge)) return false;
     if (mappedFoodType && product.extra.foodType !== mappedFoodType) return false;

@@ -66,6 +66,10 @@
       sans-serif;
   }
 
+  * {
+    word-break: keep-all;
+  }
+
   .container-custom {
     max-width: 1200px;
     margin-left: auto;
@@ -78,7 +82,6 @@
     border-radius: 50px !important;
   }
 
-  /* Screen Reader Only - 스크린 리더 전용 클래스 */
   .sr-only {
     position: absolute;
     width: 1px;

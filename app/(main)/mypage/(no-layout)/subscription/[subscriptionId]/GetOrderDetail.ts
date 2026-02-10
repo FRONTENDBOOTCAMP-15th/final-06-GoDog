@@ -11,7 +11,6 @@ export async function getOrderDetail(_id: string): Promise<OrderDetailRes | null
 
   try {
     const cookieStore = await cookies();
-    console.log(url, "url");
     const token = cookieStore.get("accessToken")?.value;
     const res = await fetch(url, {
       method: "GET",

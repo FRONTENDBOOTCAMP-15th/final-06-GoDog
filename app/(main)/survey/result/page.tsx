@@ -56,24 +56,19 @@ function SurveyResultContent() {
   // 건강 고민 파싱
   const healthConcerns = healthParam ? healthParam.split(",").filter((c) => c !== "없음") : [];
 
-  const handleRetake = () => {
-    router.push("/survey");
-  };
-
-  const handleSelectProduct = (product: ProductData) => {
-    router.push(`/products/${product.extra.code}`);
-  };
-
-  const handleViewAll = () => {
-    router.push("/products");
-  };
-
   // 로딩 중
   if (isLoading) {
     return (
-      <div className="bg-bg-secondary min-h-screen flex items-center justify-center" role="status" aria-live="polite">
+      <div
+        className="bg-bg-secondary min-h-screen flex items-center justify-center"
+        role="status"
+        aria-live="polite"
+      >
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-accent-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" aria-hidden="true" />
+          <div
+            className="w-16 h-16 border-4 border-accent-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"
+            aria-hidden="true"
+          />
           <p className="text-text-secondary font-medium">추천 결과를 분석하고 있습니다...</p>
         </div>
       </div>
@@ -98,17 +93,24 @@ function SurveyResultContent() {
   }
 
   return (
-    <main className="bg-bg-secondary min-h-screen pb-40 pt-16">
+    <main className="bg-bg-secondary min-h-screen pb-20 pt-8 md:pb-40 md:pt-16">
       <div className="container-custom max-w-[1100px]">
         {/* 상단 요약 */}
-        <section className="text-center mb-16" aria-labelledby="result-title">
-          <Badge variant="accent" className="mb-4" aria-hidden="true">
+        <section className="text-center mb-8 md:mb-16" aria-labelledby="result-title">
+          <Badge variant="accent" className="mb-3 md:mb-4" aria-hidden="true">
             ANALYSIS COMPLETE
           </Badge>
-          <h1 id="result-title" className="text-4xl md:text-5xl font-black text-text-primary tracking-tighter mb-6">
+          <h1
+            id="result-title"
+            className="text-2xl sm:text-3xl md:text-5xl font-black text-text-primary tracking-tighter mb-4 md:mb-6"
+          >
             우리 아이를 위한 <span className="text-accent-primary">최적의 사료</span>를 찾았습니다
           </h1>
-          <ul className="flex flex-wrap justify-center gap-3" role="list" aria-label="선택된 설문 조건">
+          <ul
+            className="flex flex-wrap justify-center gap-2 md:gap-3"
+            role="list"
+            aria-label="선택된 설문 조건"
+          >
             <li className="px-5 py-2.5 bg-white rounded-full text-xs font-black text-text-secondary border border-border-primary shadow-soft">
               # {sizeParam}
             </li>
@@ -131,7 +133,10 @@ function SurveyResultContent() {
           </ul>
         </section>
 
-        <section className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start" aria-labelledby="main-recommendation">
+        <section
+          className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start"
+          aria-labelledby="main-recommendation"
+        >
           {/* 메인 추천 제품 비주얼 (1순위) */}
           <div className="lg:col-span-5 animate-in fade-in slide-in-from-left-8 duration-700">
             <div className="bg-white rounded-[4rem] p-4 shadow-card border border-border-primary overflow-hidden group">
@@ -143,43 +148,49 @@ function SurveyResultContent() {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                 ) : (
-                  <div className="text-[120px] group-hover:scale-110 transition-transform duration-700" role="img" aria-label="반려견 이미지">
+                  <div
+                    className="text-[120px] group-hover:scale-110 transition-transform duration-700"
+                    role="img"
+                    aria-label="반려견 이미지"
+                  >
                     🐕
                   </div>
                 )}
-
-                <div className="absolute top-8 left-8">
-                  <Badge
-                    variant="accent"
-                    className="bg-white/95 backdrop-blur-md px-6 py-2 text-sm shadow-xl"
-                    aria-label="최고 매칭 1위"
-                  >
-                    BEST MATCH #1
-                  </Badge>
-                </div>
               </div>
               <div className="p-10 text-center">
-                <h2 id="main-recommendation" className="text-3xl font-black text-text-primary mb-3 tracking-tighter">
+                <h2
+                  id="main-recommendation"
+                  className="text-3xl font-black text-text-primary mb-3 tracking-tighter"
+                >
                   {mainProduct.name}
                 </h2>
-                <p className="text-lg font-black text-accent-primary mb-8" aria-label={`가격 ${mainProduct.price.toLocaleString()}원`}>
+                <p
+                  className="text-lg font-black text-accent-primary mb-8"
+                  aria-label={`가격 ${mainProduct.price.toLocaleString()}원`}
+                >
                   {mainProduct.price.toLocaleString()}원
                 </p>
                 <div className="flex justify-center space-x-2">
                   <Button
                     variant="primary"
                     className="flex-1 py-5 rounded-2xl shadow-glow"
-                    onClick={() => handleSelectProduct(mainProduct)}
+                    href={`/products/${mainProduct._id}`}
                   >
                     제품 상세보기
                   </Button>
                   <Button
                     variant="outline"
                     className="px-6 rounded-2xl"
-                    onClick={handleRetake}
+                    href="/survey"
                     aria-label="설문 다시하기"
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -197,7 +208,10 @@ function SurveyResultContent() {
           <div className="lg:col-span-7 space-y-8 animate-in fade-in slide-in-from-right-8 duration-700 delay-100">
             <article className="bg-white rounded-[3.5rem] p-10 md:p-12 border border-border-primary shadow-soft">
               <h3 className="text-xl font-black text-text-primary mb-10 tracking-tight flex items-center">
-                <span className="w-8 h-8 bg-accent-soft text-accent-primary rounded-xl flex items-center justify-center mr-3 text-sm" aria-hidden="true">
+                <span
+                  className="w-8 h-8 bg-accent-soft text-accent-primary rounded-xl flex items-center justify-center mr-3 text-sm"
+                  aria-hidden="true"
+                >
                   💡
                 </span>
                 영양 전문가의 추천 사유
@@ -206,7 +220,10 @@ function SurveyResultContent() {
               <ol className="space-y-6" aria-label="추천 사유 목록">
                 <li className="p-6 bg-bg-secondary rounded-3xl border border-transparent hover:border-accent-soft transition-colors">
                   <div className="flex items-start gap-4">
-                    <div className="w-8 h-8 bg-accent-primary text-white rounded-xl flex items-center justify-center shrink-0 font-black text-sm" aria-hidden="true">
+                    <div
+                      className="w-8 h-8 bg-accent-primary text-white rounded-xl flex items-center justify-center shrink-0 font-black text-sm"
+                      aria-hidden="true"
+                    >
                       1
                     </div>
                     <p className="text-sm font-medium text-text-secondary leading-relaxed pt-1">
@@ -222,7 +239,10 @@ function SurveyResultContent() {
                 {mainProduct.extra.healthBenefits.length > 0 && (
                   <li className="p-6 bg-bg-secondary rounded-3xl border border-transparent hover:border-accent-soft transition-colors">
                     <div className="flex items-start gap-4">
-                      <div className="w-8 h-8 bg-accent-primary text-white rounded-xl flex items-center justify-center shrink-0 font-black text-sm" aria-hidden="true">
+                      <div
+                        className="w-8 h-8 bg-accent-primary text-white rounded-xl flex items-center justify-center shrink-0 font-black text-sm"
+                        aria-hidden="true"
+                      >
                         2
                       </div>
                       <p className="text-sm font-medium text-text-secondary leading-relaxed pt-1">
@@ -237,7 +257,10 @@ function SurveyResultContent() {
 
                 <li className="p-6 bg-bg-secondary rounded-3xl border border-transparent hover:border-accent-soft transition-colors">
                   <div className="flex items-start gap-4">
-                    <div className="w-8 h-8 bg-accent-primary text-white rounded-xl flex items-center justify-center shrink-0 font-black text-sm" aria-hidden="true">
+                    <div
+                      className="w-8 h-8 bg-accent-primary text-white rounded-xl flex items-center justify-center shrink-0 font-black text-sm"
+                      aria-hidden="true"
+                    >
                       3
                     </div>
                     <p className="text-sm font-medium text-text-secondary leading-relaxed pt-1">
@@ -254,7 +277,10 @@ function SurveyResultContent() {
 
             {/* 영양 정보 */}
             <article className="bg-text-primary rounded-[3.5rem] p-10 md:p-12 text-white shadow-2xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-accent-primary/20 rounded-full blur-[80px] pointer-events-none" aria-hidden="true"></div>
+              <div
+                className="absolute top-0 right-0 w-64 h-64 bg-accent-primary/20 rounded-full blur-[80px] pointer-events-none"
+                aria-hidden="true"
+              ></div>
 
               <h3 className="text-xl font-black mb-10 tracking-tight relative z-10">
                 영양 밸런스 리포트
@@ -290,7 +316,10 @@ function SurveyResultContent() {
               </dl>
 
               <div className="mt-10 p-6 bg-white/10 rounded-[2rem] border border-white/10 flex items-center space-x-6">
-                <div className="w-12 h-12 bg-accent-primary rounded-2xl flex items-center justify-center shrink-0 shadow-glow" aria-hidden="true">
+                <div
+                  className="w-12 h-12 bg-accent-primary rounded-2xl flex items-center justify-center shrink-0 shadow-glow"
+                  aria-hidden="true"
+                >
                   <svg
                     className="w-6 h-6 text-white"
                     fill="none"
@@ -318,15 +347,24 @@ function SurveyResultContent() {
 
         {/* 다른 추천 제품 보기 (2~5순위) */}
         {topProducts.length > 1 && (
-          <section className="mt-20 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200" aria-labelledby="other-recommendations">
+          <section
+            className="mt-20 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200"
+            aria-labelledby="other-recommendations"
+          >
             <div className="flex items-center justify-between mb-10">
-              <h2 id="other-recommendations" className="text-2xl font-black text-text-primary">다른 추천 제품</h2>
-              <Button variant="ghost" onClick={handleViewAll}>
+              <h2 id="other-recommendations" className="text-2xl font-black text-text-primary">
+                다른 추천 제품
+              </h2>
+              <Button variant="ghost" href="/products">
                 전체 보기
               </Button>
             </div>
 
-            <ul className="grid grid-cols-[repeat(auto-fill,240px)] gap-4 max-w-6xl mx-auto justify-center" role="list" aria-label="다른 추천 제품 목록">
+            <ul
+              className="grid grid-cols-[repeat(auto-fill,240px)] gap-4 max-w-6xl mx-auto justify-center"
+              role="list"
+              aria-label="다른 추천 제품 목록"
+            >
               {topProducts.slice(1).map((product, index) => (
                 <ProductCard
                   key={`${product.extra.code}-${index}`}
@@ -347,11 +385,11 @@ function SurveyResultContent() {
             <Button
               variant="outline"
               className="px-12 py-5 rounded-[1.5rem] font-black"
-              onClick={handleViewAll}
+              href="/products"
             >
               전체 상품 구경하기
             </Button>
-            <Button variant="ghost" className="px-10 rounded-[1.5rem]" onClick={handleRetake}>
+            <Button variant="ghost" className="px-10 rounded-[1.5rem]" href="/survey">
               설문 다시하기
             </Button>
           </div>
@@ -365,9 +403,16 @@ export default function SurveyResultPage() {
   return (
     <Suspense
       fallback={
-        <div className="bg-bg-secondary min-h-screen flex items-center justify-center" role="status" aria-live="polite">
+        <div
+          className="bg-bg-secondary min-h-screen flex items-center justify-center"
+          role="status"
+          aria-live="polite"
+        >
           <div className="text-center">
-            <div className="w-16 h-16 border-4 border-accent-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" aria-hidden="true" />
+            <div
+              className="w-16 h-16 border-4 border-accent-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"
+              aria-hidden="true"
+            />
             <p className="text-text-secondary font-medium">추천 결과를 분석하고 있습니다...</p>
           </div>
         </div>

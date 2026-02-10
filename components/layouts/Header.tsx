@@ -59,9 +59,8 @@ const Header: React.FC = () => {
   const handleCartClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (!isLoggedIn) {
       e.preventDefault();
-      showInfo("로그인 필요", "로그인이 필요합니다. 로그인 페이지로 이동합니다.").then(() => {
-        router.push("/login");
-      });
+      showInfo("로그인 필요", "로그인이 필요합니다.");
+      router.push("/login");
     }
   };
 
@@ -88,11 +87,11 @@ const Header: React.FC = () => {
       ],
     },
     { name: "구매후기", href: "/reviews" },
-    {
-      name: "고객지원",
-      href: "/support/faq",
-      subMenu: [{ name: "자주 묻는 질문", href: "/support/faq" }],
-    },
+    // {
+    //   name: "고객지원",
+    //   href: "/support/faq",
+    //   subMenu: [{ name: "자주 묻는 질문", href: "/support/faq" }],
+    // },
   ];
 
   const closeMobileMenu = () => {
@@ -105,12 +104,14 @@ const Header: React.FC = () => {
         {/* 최상단 유틸리티 바 (데스크탑 전용) */}
         <div className="hidden lg:block border-b border-border-primary bg-bg-secondary/50">
           <div className="max-w-[1200px] mx-auto px-4 h-10 flex items-center justify-end space-x-6">
-            <Link
-              href="/admin"
-              className="text-[10px] font-black text-text-tertiary hover:text-text-primary uppercase tracking-widest transition-colors"
-            >
-              Admin Page
-            </Link>
+            {user?.type === "admin" && (
+              <Link
+                href="/admin"
+                className="text-[10px] font-black text-text-tertiary hover:text-text-primary uppercase tracking-widest transition-colors"
+              >
+                Admin Page
+              </Link>
+            )}
             <Link
               href="/mypage"
               className={`text-[10px] font-black uppercase tracking-widest transition-colors ${
@@ -226,12 +227,12 @@ const Header: React.FC = () => {
               </ul>
             </nav>
 
-            <Link
+            {/* <Link
               href="/sitemap"
               className="block ms-auto text-sm tracking-tight transition-all relative py-2"
             >
               사이트맵
-            </Link>
+            </Link> */}
           </div>
 
           {/* 우측 액션 버튼 */}
@@ -451,26 +452,30 @@ const Header: React.FC = () => {
                 </svg>
               </Link>
 
-              <Link
-                href="/admin"
-                onClick={closeMobileMenu}
-                className="text-xl font-black text-text-tertiary flex items-center justify-between w-full group"
-              >
-                <span className="group-hover:text-text-primary transition-colors">Admin Page</span>
-                <svg
-                  className="w-4 h-4 opacity-50"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+              {user?.type === "admin" && (
+                <Link
+                  href="/admin"
+                  onClick={closeMobileMenu}
+                  className="text-xl font-black text-text-tertiary flex items-center justify-between w-full group"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="3"
-                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                  />
-                </svg>
-              </Link>
+                  <span className="group-hover:text-text-primary transition-colors">
+                    Admin Page
+                  </span>
+                  <svg
+                    className="w-4 h-4 opacity-50"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="3"
+                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                    />
+                  </svg>
+                </Link>
+              )}
             </div>
           </nav>
 

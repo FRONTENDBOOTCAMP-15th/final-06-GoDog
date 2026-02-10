@@ -48,43 +48,39 @@ export const Confirm = Swal.mixin({
   reverseButtons: true, // 취소 버튼을 왼쪽에 배치
 });
 
-// 성공 메시지
+// 성공 메시지 (우측 상단 토스트)
 export const showSuccess = (title: string, text?: string) => {
-  return Alert.fire({
+  return Toast.fire({
     icon: "success",
     title,
     text,
-    confirmButtonText: "확인",
   });
 };
 
-// 에러 메시지
+// 에러 메시지 (우측 상단 토스트)
 export const showError = (title: string, text?: string) => {
-  return Alert.fire({
+  return Toast.fire({
     icon: "error",
     title,
     text,
-    confirmButtonText: "확인",
   });
 };
 
-// 경고 메시지
+// 경고 메시지 (우측 상단 토스트)
 export const showWarning = (title: string, text?: string) => {
-  return Alert.fire({
+  return Toast.fire({
     icon: "warning",
     title,
     text,
-    confirmButtonText: "확인",
   });
 };
 
-// 정보 메시지
+// 정보 메시지 (우측 상단 토스트)
 export const showInfo = (title: string, text?: string) => {
-  return Alert.fire({
+  return Toast.fire({
     icon: "info",
     title,
     text,
-    confirmButtonText: "확인",
   });
 };
 
@@ -120,15 +116,13 @@ export const showDeleteConfirm = (text?: string) => {
   });
 };
 
-// 로딩 표시 (타이머 있는)
+// 로딩 표시 (우측 상단 토스트, 타이머)
 export const showLoading = (title: string, text?: string, timer = 1500) => {
-  return Alert.fire({
+  return Toast.fire({
     icon: "success",
     title,
     text,
     timer,
-    showConfirmButton: false,
-    timerProgressBar: true,
   });
 };
 
