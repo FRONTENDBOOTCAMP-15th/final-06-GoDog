@@ -11,13 +11,6 @@ export async function generateMetadata({ params }: { params: Promise<{ productId
     return {
       title: product.name,
       description: `${product.name} - 9DOG 맞춤 사료`,
-      openGraph: {
-        title: `${product.name}`,
-        description: `${product.name} - 9DOG 맞춤 사료`,
-        images: {
-          url: "",
-        },
-      },
     };
   }
 }

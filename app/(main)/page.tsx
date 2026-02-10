@@ -8,18 +8,8 @@ import { getProducts } from "@/lib";
 import Image from "next/image";
 
 export const metadata: Metadata = {
-  title: "9DOG - 반려견 맞춤형 건강 식단 구독 서비스",
-  description:
-    "데이터로 그리는 가장 정밀한 건강 지도. 반려견의 생체 리듬과 활동량, 알러지 정보까지 모두 통합하여 가장 과학적인 한 그릇을 설계합니다.",
-  openGraph: {
-    title: "9DOG - 반려견 맞춤형 건강 식단 구독 서비스",
-    description:
-      "데이터로 그리는 가장 정밀한 건강 지도. 반려견의 생체 리듬과 활동량, 알러지 정보까지 모두 통합하여 가장 과학적인 한 그릇을 설계합니다.",
-    url: "/",
-    images: {
-      url: "",
-    },
-  },
+  title: "반려견 맞춤형 건강 식단 구독 서비스",
+  description: "건강한 반려견 사료와 간식을 정기구독으로 만나보세요.",
 };
 
 export default async function Home() {

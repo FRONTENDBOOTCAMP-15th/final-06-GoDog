@@ -1,4 +1,4 @@
-import { updateCartItem } from "@/app/(main)/cart/action/cart";
+import { updateCartItem } from "@/actions/cart";
 import useCartStore from "@/zustand/useCartStore";
 import Badge from "@/components/common/Badge";
 import Button from "@/components/common/Button";
@@ -86,8 +86,35 @@ export default function SubscriptionItemList({
 
   // 배송 주기 변경 핸들러
   const handleCycleChange = async (cycle: "2w" | "4w") => {
+    const prevCycle = getDeliveryCycle(cart._id);
+
+    // zustand 먼저 업데이트
     setDeliveryCycle(cart._id, cycle);
-    // 필요하다면 여기서 API 호출도 가능
+
+    // FormData 생성
+    const formData = new FormData();
+    formData.append("cartId", cart._id.toString());
+    formData.append("quantity", cart.quantity.toString());
+    formData.append("size", cycle);
+    // 토큰 추가
+    if (accessToken) {
+      formData.append("accessToken", accessToken);
+    }
+
+    try {
+      const result = await updateCartItem(null, formData);
+
+      if (result?.ok !== 0) {
+        setError(result);
+      } else {
+        // 실패 시 이전 값으로 되돌리기
+        setDeliveryCycle(cart._id, prevCycle);
+        setError(result);
+      }
+    } catch {
+      setDeliveryCycle(cart._id, prevCycle);
+      setError({ ok: 0, message: "배송주기 변경에 실패했습니다. 다시 시도해 주세요." });
+    }
   };
 
   return (
