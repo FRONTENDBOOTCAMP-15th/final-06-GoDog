@@ -23,10 +23,6 @@ export default function Login() {
   };
 
   useEffect(() => {
-    console.log(checkedState);
-  }, [checkedState]);
-
-  useEffect(() => {
     if (userState?.ok === 1) {
       const storageType = !checkedState ? localStorage : sessionStorage;
       const token = userState.item.token?.accessToken;
@@ -46,8 +42,6 @@ export default function Login() {
           refreshToken: userState.item.token?.refreshToken || "",
         },
       });
-      console.log(userState.item._id);
-      console.log("setUser 후:", useUserStore.getState());
       showSuccess(`${userState.item.name}님 로그인이 완료되었습니다.`);
       router.push("/");
     }

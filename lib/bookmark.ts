@@ -32,9 +32,7 @@ export async function getWishlist(
       },
       cache: "no-store",
     });
-    console.log(`${API_URL}/bookmarks/product?${params.toString()}`);
     const data = await res.json();
-    console.log(data, "데이터");
     return data;
   } catch (error) {
     console.error("getWishlist 에러:", error);

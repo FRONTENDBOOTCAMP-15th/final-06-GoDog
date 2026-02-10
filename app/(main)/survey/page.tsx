@@ -54,7 +54,6 @@ export default function SurveyPage() {
         }
 
         const resultUrl = createResultUrl(results, formData);
-        console.log("전체 설문 결과:", formData);
         router.push(resultUrl);
       } catch (error) {
         console.error("추천 처리 중 오류:", error);
@@ -137,7 +136,10 @@ export default function SurveyPage() {
           <h1 className="text-2xl md:text-4xl font-black text-text-primary tracking-tighter mb-3 md:mb-4">
             {stepTitles[currentStep]}
           </h1>
-          <p className="text-text-secondary font-medium uppercase tracking-widest text-xs" aria-live="polite">
+          <p
+            className="text-text-secondary font-medium uppercase tracking-widest text-xs"
+            aria-live="polite"
+          >
             Step {currentStep} of {TOTAL_STEPS}
           </p>
         </header>
@@ -166,7 +168,11 @@ export default function SurveyPage() {
                 title="우리 아이의 크기는 어떻게 되나요?"
                 subtitle="체중에 맞춰 선택해주세요."
               >
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-5" role="radiogroup" aria-labelledby="survey-heading-1">
+                <div
+                  className="grid grid-cols-1 sm:grid-cols-3 gap-5"
+                  role="radiogroup"
+                  aria-labelledby="survey-heading-1"
+                >
                   {[
                     { id: "소형견 (~7kg)", label: "소형견", desc: "약 7kg 이하" },
                     { id: "중형견 (7~25kg)", label: "중형견", desc: "7kg ~ 25kg" },
@@ -184,7 +190,11 @@ export default function SurveyPage() {
               </SurveySection>
 
               <SurveySection number={2} title="우리 아이의 나이는 어떻게 되나요?">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-5" role="radiogroup" aria-labelledby="survey-heading-2">
+                <div
+                  className="grid grid-cols-1 sm:grid-cols-3 gap-5"
+                  role="radiogroup"
+                  aria-labelledby="survey-heading-2"
+                >
                   {[
                     { id: "puppy", label: "퍼피", desc: "생후 12개월 이하" },
                     { id: "adult", label: "성견", desc: "1세 ~ 7세" },
@@ -200,12 +210,17 @@ export default function SurveyPage() {
                   ))}
                 </div>
                 <p className="mt-4 text-sm text-text-tertiary">
-                  <span aria-hidden="true">🔸 </span>크기와 견종을 고려해 시니어 시점을 자동 반영합니다!
+                  <span aria-hidden="true">🔸 </span>크기와 견종을 고려해 시니어 시점을 자동
+                  반영합니다!
                 </p>
               </SurveySection>
 
               <SurveySection number={3} title="중성화 수술을 했나요?">
-                <div className="grid grid-cols-2 gap-4" role="radiogroup" aria-labelledby="survey-heading-3">
+                <div
+                  className="grid grid-cols-2 gap-4"
+                  role="radiogroup"
+                  aria-labelledby="survey-heading-3"
+                >
                   {["예", "아니요"].map((val) => (
                     <ChoiceButton
                       key={val}
@@ -227,7 +242,11 @@ export default function SurveyPage() {
                 title="활동량은 어떤 편인가요?"
                 subtitle="평소 산책 시간과 놀이 수준을 고려해주세요."
               >
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-5" role="radiogroup" aria-labelledby="survey-heading-4">
+                <div
+                  className="grid grid-cols-1 sm:grid-cols-3 gap-5"
+                  role="radiogroup"
+                  aria-labelledby="survey-heading-4"
+                >
                   {[
                     { id: "적음", label: "적음", desc: "실내 생활 위주, 주 1회 산책" },
                     { id: "보통", label: "보통", desc: "하루 30분~1시간 걷기" },
@@ -245,7 +264,11 @@ export default function SurveyPage() {
               </SurveySection>
 
               <SurveySection number={5} title="현재 반려견의 체형은 어떤가요?">
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4" role="radiogroup" aria-labelledby="survey-heading-5">
+                <div
+                  className="grid grid-cols-2 sm:grid-cols-4 gap-4"
+                  role="radiogroup"
+                  aria-labelledby="survey-heading-5"
+                >
                   {[
                     { id: "thin", label: "마름", desc: "갈비뼈가 눈에 보임" },
                     { id: "ideal", label: "적정", desc: "갈비뼈는 만져지지만 보이지 않음" },
@@ -274,7 +297,11 @@ export default function SurveyPage() {
                 title="알러지나 피해야 할 원재료가 있나요?"
                 subtitle="복수 선택 가능"
               >
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4" role="group" aria-labelledby="survey-heading-6">
+                <div
+                  className="grid grid-cols-2 sm:grid-cols-4 gap-4"
+                  role="group"
+                  aria-labelledby="survey-heading-6"
+                >
                   {[
                     "없음",
                     "닭고기",
@@ -296,7 +323,8 @@ export default function SurveyPage() {
                   ))}
                 </div>
                 <p className="mt-4 text-sm text-text-tertiary">
-                  <span aria-hidden="true">🔸 </span>&quot;기타 알러지 있음&quot;을 선택하면 저자극성 사료를 우선 추천해드려요.
+                  <span aria-hidden="true">🔸 </span>&quot;기타 알러지 있음&quot;을 선택하면
+                  저자극성 사료를 우선 추천해드려요.
                 </p>
               </SurveySection>
 
@@ -305,7 +333,11 @@ export default function SurveyPage() {
                 title="건강 관련 고민이 있나요?"
                 subtitle="복수 선택 가능, 최대 2개"
               >
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4" role="group" aria-labelledby="survey-heading-7">
+                <div
+                  className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+                  role="group"
+                  aria-labelledby="survey-heading-7"
+                >
                   {[
                     "없음",
                     "피부/모질 (가려움, 비듬, 털 빠짐)",
@@ -329,7 +361,11 @@ export default function SurveyPage() {
           {currentStep === 4 && (
             <div className="space-y-10 md:space-y-16">
               <SurveySection number={8} title="선호하는 단백질 원재료가 있나요?">
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4" role="radiogroup" aria-labelledby="survey-heading-8">
+                <div
+                  className="grid grid-cols-2 sm:grid-cols-3 gap-4"
+                  role="radiogroup"
+                  aria-labelledby="survey-heading-8"
+                >
                   {["상관없음", "닭고기", "오리고기", "양고기", "연어", "소고기"].map((val) => (
                     <ChoiceButton
                       key={val}
@@ -342,7 +378,11 @@ export default function SurveyPage() {
               </SurveySection>
 
               <SurveySection number={9} title="곡물(Grain) 포함 여부 선호">
-                <div className="grid grid-cols-2 gap-4" role="radiogroup" aria-labelledby="survey-heading-9">
+                <div
+                  className="grid grid-cols-2 gap-4"
+                  role="radiogroup"
+                  aria-labelledby="survey-heading-9"
+                >
                   {["상관없음", "그레인프리(Grain Free) 선호"].map((val) => (
                     <ChoiceButton
                       key={val}
@@ -407,12 +447,20 @@ function SurveySection({ number, title, subtitle, children }: SurveySectionProps
   return (
     <section className="space-y-5 md:space-y-8" aria-labelledby={headingId} id={sectionId}>
       <div className="flex items-center space-x-3">
-        <span className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-accent-soft text-accent-primary flex items-center justify-center font-black text-xs md:text-sm shrink-0" aria-hidden="true">
+        <span
+          className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-accent-soft text-accent-primary flex items-center justify-center font-black text-xs md:text-sm shrink-0"
+          aria-hidden="true"
+        >
           {number}
         </span>
-        <h2 className="text-base md:text-xl font-black text-text-primary tracking-tight" id={headingId}>
+        <h2
+          className="text-base md:text-xl font-black text-text-primary tracking-tight"
+          id={headingId}
+        >
           {title}{" "}
-          {subtitle && <span className="text-xs md:text-sm font-bold text-text-tertiary">{subtitle}</span>}
+          {subtitle && (
+            <span className="text-xs md:text-sm font-bold text-text-tertiary">{subtitle}</span>
+          )}
         </h2>
       </div>
       {children}

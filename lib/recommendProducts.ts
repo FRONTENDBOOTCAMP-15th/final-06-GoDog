@@ -186,7 +186,6 @@ function filterBySuitability(
 ): ProductData[] {
   return products.filter((product) => {
     if (!product.extra) return false;
-    console.log(product);
     if (mappedSize && !product.extra.size.includes(mappedSize)) return false;
     if (mappedAge && !product.extra.lifeStage.includes(mappedAge)) return false;
     if (mappedFoodType && product.extra.foodType !== mappedFoodType) return false;

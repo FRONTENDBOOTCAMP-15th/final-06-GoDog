@@ -29,8 +29,6 @@ const Header: React.FC = () => {
 
   // zustand 에서 토큰 끌어오기 - hydration 에러 수정
   const isLoggedIn = !!user?.token?.accessToken;
-  console.log("[헤더---------------------]");
-  console.log(user);
 
   // 장바구니 총 수량 계산
   const cartCountAll = useMemo(() => {

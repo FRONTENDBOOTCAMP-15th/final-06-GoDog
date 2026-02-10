@@ -52,8 +52,6 @@ export async function getPosts(options: GetPostsOptions): Promise<ResData<PostLi
     if (sort) params.append("sort", JSON.stringify(sort));
     if (custom) params.append("custom", JSON.stringify(custom));
 
-    console.log(params.toString());
-
     const res = await fetch(`${API_URL}/posts?${params.toString()}`, {
       headers: {
         "Client-Id": CLIENT_ID,

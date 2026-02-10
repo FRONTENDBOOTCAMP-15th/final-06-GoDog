@@ -108,7 +108,10 @@ export default function ProductQnaForm() {
         )}
 
         {/* 문의 작성 폼 */}
-        <div className="bg-white w-full max-w-[632px] rounded-[35px] flex flex-col items-center p-[20px] lg:p-[40px] shadow-sm" role="form" aria-label="상품 문의 작성">
+        <div
+          className="bg-white w-full max-w-[632px] rounded-[35px] flex flex-col items-center p-[20px] lg:p-[40px] shadow-sm"
+          role="form"
+        >
           {/* 문의 유형 */}
           {/* <div className="w-full max-w-[532px]">
             <p className="text-[#1A1A1C] text-[11.5px] font-black mb-[12px]">문의 유형</p>
@@ -128,7 +131,12 @@ export default function ProductQnaForm() {
 
           {/* 제목 */}
           <div className="w-full max-w-[532px]">
-            <label htmlFor="qna-title" className="text-[#1A1A1C] text-[11.5px] font-black mb-[8px] block">제목</label>
+            <label
+              htmlFor="qna-title"
+              className="text-[#1A1A1C] text-[11.5px] font-black mb-[8px] block"
+            >
+              제목
+            </label>
             <Input
               id="qna-title"
               className="w-full mb-[28px]"
@@ -173,7 +181,10 @@ export default function ProductQnaForm() {
         </div>
 
         {/* 안내 문구 */}
-        <div className="w-full max-w-[632px] mt-[40px] flex items-center gap-[12px] pt-[35px] pb-[28px] px-[28px] bg-[#FFF5E6]/30 rounded-[21px]" role="note" aria-label="문의 작성 안내">
+        <div
+          className="w-full max-w-[632px] mt-[40px] flex items-center gap-[12px] pt-[35px] pb-[28px] px-[28px] bg-[#FFF5E6]/30 rounded-[21px]"
+          role="note"
+        >
           <div className="flex-shrink-0 bg-white rounded-[15px] p-[10px]" aria-hidden="true">
             <svg
               width="30"

@@ -47,8 +47,6 @@ export async function getAllReplies(
     if (page) params.append("page", String(page));
     if (limit) params.append("limit", String(limit));
 
-    console.log(params.toString());
-
     const res = await fetch(`${API_URL}/replies/all?${params.toString()}`, {
       headers: {
         "Client-Id": CLIENT_ID,

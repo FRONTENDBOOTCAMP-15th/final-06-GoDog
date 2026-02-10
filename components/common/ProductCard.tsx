@@ -17,7 +17,6 @@ export default function ProductCard({
   showRanking = false,
   ranking,
 }: ProductCardProps) {
-  console.log(product);
   const productId = product?._id;
 
   return (

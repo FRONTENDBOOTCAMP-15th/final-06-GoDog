@@ -252,10 +252,7 @@ export default function ProductDetail({
       </section>
 
       {/* 메뉴 이동 버튼 */}
-      <nav
-        aria-label="상품 상세 정보 탐색"
-        className="mx-auto flex w-full max-w-[75rem] flex-col items-center border-y border-black/[0.06] bg-white/95 px-2 backdrop-blur-[12px] sm:px-5"
-      >
+      <nav className="mx-auto flex w-full max-w-[75rem] flex-col items-center border-y border-black/[0.06] bg-white/95 px-2 backdrop-blur-[12px] sm:px-5">
         <div
           className="flex w-full max-w-[75rem] items-start justify-center self-stretch px-0 sm:px-5"
           role="tablist"
@@ -400,7 +397,7 @@ export default function ProductDetail({
             </div>
           </div>
         </div>
-        <div className="flex items-start gap-[0.4375rem]" role="group" aria-label="리뷰 필터">
+        <div className="flex items-start gap-[0.4375rem]" role="group">
           <Button
             variant={reviewFilter === "latest" ? "primary" : "outline"}
             size="sm"

@@ -32,8 +32,6 @@ export default function MyReviewList({
   productid,
   state,
 }: MyReviewListProps) {
-  console.log(productid, "프로덕트아이디");
-
   return (
     <div
       className={`w-full rounded-[42px] overflow-hidden flex flex-row items-center border border-[rgba(0,0,0,0.06)] bg-[#FFFFFF] shadow-[0_2px_12px_0_rgba(0,0,0,0.03)] ${className}`}
