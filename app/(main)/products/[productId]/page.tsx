@@ -11,18 +11,6 @@ export async function generateMetadata({ params }: { params: Promise<{ productId
     return {
       title: product.name,
       description: `${product.name} - 9DOG 맞춤 사료`,
-      openGraph: {
-        title: `${product.name}`,
-        description: `${product.name} - 9DOG 맞춤 사료`,
-        images: [
-          {
-            url: "https://final-06-gu-dog-release.vercel.app/images/ogimage.png",
-            width: 1200,
-            height: 630,
-            alt: "9DOG - 반려견 건강 식단 정기 구독 서비스",
-          },
-        ],
-      },
     };
   }
 }

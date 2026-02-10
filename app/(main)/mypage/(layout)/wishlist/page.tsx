@@ -11,19 +11,6 @@ import { Suspense } from "react";
 export const metadata: Metadata = {
   title: "관심 상품",
   description: "9DOG 관심 상품 목록 페이지입니다.",
-  openGraph: {
-    title: "관심 상품",
-    description: "9DOG 관심 상품 목록 페이지입니다.",
-    url: "https://final-06-gu-dog-release.vercel.app/cart/mypage/wishlist",
-    images: [
-      {
-        url: "https://final-06-gu-dog-release.vercel.app/images/ogimage.png",
-        width: 1200,
-        height: 630,
-        alt: "9DOG - 반려견 건강 식단 정기 구독 서비스",
-      },
-    ],
-  },
 };
 
 interface BookmarkItem {
