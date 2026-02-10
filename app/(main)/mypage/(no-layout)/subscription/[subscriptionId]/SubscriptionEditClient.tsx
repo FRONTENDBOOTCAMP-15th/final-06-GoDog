@@ -24,8 +24,8 @@ export default function SubscriptionEditClient({ initialData, orderId }: Props) 
   const router = useRouter();
   const product = initialData.products[0];
 
-  const [deteletedPeriod, setDeletedPeriod] = useState(initialData.period);
-  const [selectedPeriod, setSelectedPeriod] = useState(initialData.period);
+  // const [deteletedPeriod, setDeletedPeriod] = useState(initialData.period);
+  const [selectedPeriod, setSelectedPeriod] = useState(initialData.period || product.size || "");
   const [selectedDate, setSelectedDate] = useState(initialData.nextdeliverydate || "");
   const isSaveDisabled = !selectedPeriod || !selectedDate;
 
