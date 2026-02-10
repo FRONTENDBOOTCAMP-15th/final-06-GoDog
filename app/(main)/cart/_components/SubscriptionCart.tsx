@@ -1,5 +1,5 @@
 import SubscriptionItemList from "@/app/(main)/cart/_components/SubscriptionItemList";
-import { deleteCartItem, deleteCartItems } from "@/app/(main)/cart/action/cart";
+import { deleteCartItem, deleteCartItems } from "@/actions/cart";
 import useCartStore from "@/zustand/useCartStore";
 import Button from "@/components/common/Button";
 import Checkbox from "@/components/common/Checkbox";
