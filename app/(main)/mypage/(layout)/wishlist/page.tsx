@@ -74,30 +74,25 @@ export async function Wishlist({ searchParams }: Props) {
   const totalPages = (response?.ok === 1 && response?.pagination?.totalPages) || 1;
 
   return (
-    <section className="w-full pb-[70px]">
-      <div className="max-w-[1280px] lg:pl-[30px] lg:pr-[30px] pr-[10px] pl-[10px]  mx-auto pt-[57px] pb-[100px] px-[20px] lg:px-0">
-        <ul
-          className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 md:gap-x-10 lg:gap-x-7 gap-y-10 justify-items-center max-w-[500px] md:max-w-[700px] lg:max-w-none mx-auto"
-          aria-label="관심 상품 목록"
-        >
-          {wishlistItems.length > 0 ? (
-            wishlistItems.map((item: BookmarkItem) => (
-              <li key={item._id} className="w-full max-w-[280px]">
-                <WishlistComponent Product={item.product} bookmarkId={item._id} token={token} />
-              </li>
-            ))
-          ) : (
-            <li className="col-span-full py-20 text-center text-[#909094]">
-              <p role="status">저장된 관심 상품이 없습니다.</p>
+    <>
+      <ul className="grid grid-cols-[repeat(auto-fill,240px)] gap-4 max-w-6xl mx-auto justify-center">
+        {wishlistItems.length > 0 ? (
+          wishlistItems.map((item: BookmarkItem) => (
+            <li key={item._id} className="w-full max-w-[280px]">
+              <WishlistComponent Product={item.product} bookmarkId={item._id} token={token} />
             </li>
-          )}
-        </ul>
-      </div>
+          ))
+        ) : (
+          <li className="col-span-full py-20 text-center text-[#909094]">
+            <p role="status">저장된 관심 상품이 없습니다.</p>
+          </li>
+        )}
+      </ul>
 
-      <nav aria-label="관심 상품 페이지네이션" className="flex justify-center">
+      <nav className="flex justify-center mt-[100px]">
         <PaginationWrapper currentPage={currentPage} totalPages={totalPages} />
       </nav>
-    </section>
+    </>
   );
 }
 
@@ -130,9 +125,9 @@ export default async function WishlistMain({
         <Suspense
           fallback={
             <div role="status" aria-live="polite" aria-label="로딩 중">
-              <ul className="grid grid-cols-2 lg:grid-cols-4 gap-7 justify-items-center">
+              <ul className="grid grid-cols-[repeat(auto-fill,240px)] gap-4 max-w-6xl mx-auto justify-center">
                 {Array.from({ length: 4 }).map((_, i) => (
-                  <li key={i}>
+                  <li key={i} className="w-full max-w-[280px]">
                     <ProductCardSkeleton />
                   </li>
                 ))}

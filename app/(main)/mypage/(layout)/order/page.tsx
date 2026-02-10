@@ -48,32 +48,20 @@ export default function Orders() {
   return (
     <main className="w-full pb-[70px]">
       <div className="mt-[108px]">
-        <h1 className="text-[#1A1A1C] text-center text-[26.3px] font-[900]">
+        <h1 className="text-[#1A1A1C] text-center text-[26px] font-[900] px-4 break-keep">
           {userName}님이 이용 중인 <span className="text-[#FBA613]">주문 내역</span>입니다
         </h1>
       </div>
 
       <div className="mx-auto pt-[57px] pb-[100px] px-[20px] lg:px-0 max-w-[1280px]">
-        <ul
-          className="grid
-          grid-cols-2 lg:grid-cols-4
-          gap-x-[15px] md:gap-x-[40px] lg:gap-x-7
-          gap-y-10
-          justify-items-center
-          max-w-[500px] md:max-w-[700px] lg:max-w-none mx-auto"
-          aria-label="주문 내역 목록"
-        >
+        <ul className="grid grid-cols-[repeat(auto-fill,240px)] gap-4 max-w-6xl mx-auto justify-center">
           {/* 1. 로딩 중일 때 스켈레톤 UI를 보여줍니다. */}
           {showSkeleton ? (
-            <li className="col-span-full" role="status" aria-live="polite" aria-label="로딩 중">
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-[15px] md:gap-x-[40px] lg:gap-x-7 gap-y-10">
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <div key={`skeleton-${i}`} className="w-full">
-                    <MyItemListSkeleton />
-                  </div>
-                ))}
-              </div>
-            </li>
+            Array.from({ length: 4 }).map((_, i) => (
+              <li key={`skeleton-${i}`} className="w-full">
+                <MyItemListSkeleton />
+              </li>
+            ))
           ) : resOrderlist?.ok && resOrderlist.item.length > 0 ? (
             /* 2. 로딩 완료 후 데이터 렌더링 */
             resOrderlist.item.map((item) => {
@@ -123,7 +111,7 @@ export default function Orders() {
         </ul>
       </div>
 
-      <nav aria-label="주문 내역 페이지네이션" className="flex justify-center">
+      <nav className="flex justify-center">
         <PaginationWrapper currentPage={page} totalPages={pagination?.totalPages || 1} />
       </nav>
     </main>
