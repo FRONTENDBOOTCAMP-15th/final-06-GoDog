@@ -2,9 +2,10 @@
 import { cookies } from "next/headers";
 
 const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || "";
+
 export const updateSubscriptionPlan = async (
   orderId: string,
-  data: { period: string; date: string },
+  data: { _id: number; size: string; color: string; date: string },
 ) => {
   const cookieStore = await cookies();
 
@@ -17,9 +18,10 @@ export const updateSubscriptionPlan = async (
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
-      period: data.period,
+      products: [{ _id: data._id, size: data.size, color: data.color }],
+      // period: data.period,
       nextdeliverydate: data.date,
-      memo: `배송 주기를 ${data.period}로 변경 요청`,
+      // memo: `배송 주기를 ${data.period}로 변경 요청`,
     }),
   });
 

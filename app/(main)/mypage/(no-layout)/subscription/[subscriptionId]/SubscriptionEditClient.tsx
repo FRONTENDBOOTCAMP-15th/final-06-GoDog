@@ -31,7 +31,7 @@ export default function SubscriptionEditClient({ initialData, orderId }: Props) 
 
   const onDelete = async () => {
     try {
-      await updateSubscriptionPlan(orderId, { period: "", date: "" });
+      await updateSubscriptionPlan(orderId, { _id: product._id, color: "", size: "", date: "" });
       showSuccess("변경 사항이 성공적으로 저장되었습니다.");
       router.push("/mypage/subscription");
     } catch (error) {
@@ -41,7 +41,12 @@ export default function SubscriptionEditClient({ initialData, orderId }: Props) 
 
   const handleSave = async () => {
     try {
-      await updateSubscriptionPlan(orderId, { period: selectedPeriod, date: selectedDate });
+      await updateSubscriptionPlan(orderId, {
+        _id: product._id,
+        color: "subscription",
+        size: selectedPeriod,
+        date: selectedDate,
+      });
       showSuccess("변경 사항이 성공적으로 저장되었습니다.");
       router.push("/mypage/subscription");
     } catch (error) {
