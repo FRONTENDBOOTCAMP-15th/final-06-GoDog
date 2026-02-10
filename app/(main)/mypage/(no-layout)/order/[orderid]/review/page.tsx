@@ -19,7 +19,7 @@ import { getOrders, showWarning, showSuccess, showError } from "@/lib";
 import useUserStore from "@/zustand/useStore";
 import { useQuery } from "@tanstack/react-query";
 import Cookies from "js-cookie";
-import { OrderStateCode } from "@/types";
+import { Order, OrderListRes, OrderProduct, ResData } from "@/types";
 
 export default function Review() {
   const user = useUserStore((state) => state.user);
@@ -43,8 +43,8 @@ export default function Review() {
   const MAX_LEN = 100;
 
   const token = Cookies.get("accessToken");
-
-  const { data: resOrderlist, isLoading } = useQuery({
+  const product_id_str = String(searchParams.get("productid"));
+  const { data: resOrderlist, isLoading } = useQuery<ResData<OrderListRes>>({
     queryKey: ["order", order_id],
     queryFn: () =>
       getOrders(token ?? "", {
@@ -54,7 +54,10 @@ export default function Review() {
     enabled: !!order_id && !!token,
   });
 
-  const order = resOrderlist?.ok === 1 ? resOrderlist.item[0] : null;
+  const orderData = resOrderlist?.ok === 1 ? resOrderlist.item : [];
+  const currentOrder = orderData.find((o) => o._id === order_id);
+
+  const targetProduct = currentOrder?.products.find((p) => String(p._id) === product_id_str);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -141,12 +144,12 @@ export default function Review() {
         <div className="w-full max-w-[632px] mb-[35px]">
           {isLoading ? (
             <p>로딩 중...</p>
-          ) : order ? (
+          ) : currentOrder && targetProduct ? (
             <MyReviewList
-              image={order.products[0].image.path || preview}
-              name={order.products[0].name}
-              price={order.products[0].price.toLocaleString() + "원"}
-              date={order.createdAt.split(" ")[0]}
+              image={targetProduct?.image?.path || preview}
+              name={targetProduct?.name || ""}
+              price={targetProduct?.price.toLocaleString() + "원"}
+              date={currentOrder.createdAt.split(" ")[0]}
               state={"배송중"}
             />
           ) : (

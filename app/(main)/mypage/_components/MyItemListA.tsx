@@ -2,7 +2,7 @@
 
 import { InputHTMLAttributes } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface MyItemListProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "className"> {
   title: string;
