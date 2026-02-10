@@ -127,14 +127,14 @@ export default function SurveyPage() {
   };
 
   return (
-    <div className="bg-bg-secondary min-h-screen pb-40 pt-16">
+    <div className="bg-bg-secondary min-h-screen pb-20 pt-8 md:pb-40 md:pt-16">
       <div className="container-custom max-w-225">
         {/* 헤더 */}
-        <header className="flex flex-col items-center text-center mb-10">
-          <Badge variant="accent" className="mb-4" aria-hidden="true">
+        <header className="flex flex-col items-center text-center mb-6 md:mb-10">
+          <Badge variant="accent" className="mb-3 md:mb-4" aria-hidden="true">
             DOG NUTRITION SURVEY
           </Badge>
-          <h1 className="text-4xl font-black text-text-primary tracking-tighter mb-4">
+          <h1 className="text-2xl md:text-4xl font-black text-text-primary tracking-tighter mb-3 md:mb-4">
             {stepTitles[currentStep]}
           </h1>
           <p className="text-text-secondary font-medium uppercase tracking-widest text-xs" aria-live="polite">
@@ -144,7 +144,7 @@ export default function SurveyPage() {
 
         {/* 프로그레스 바 */}
         <div
-          className="w-full bg-bg-tertiary h-2 rounded-full overflow-hidden mb-16"
+          className="w-full bg-bg-tertiary h-2 rounded-full overflow-hidden mb-8 md:mb-16"
           role="progressbar"
           aria-valuenow={progress}
           aria-valuemin={0}
@@ -157,10 +157,10 @@ export default function SurveyPage() {
           />
         </div>
 
-        <main className="bg-white rounded-[3.5rem] p-10 md:p-16 shadow-card border border-border-primary animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <main className="bg-white rounded-[2rem] p-5 sm:p-8 md:rounded-[3.5rem] md:p-16 shadow-card border border-border-primary animate-in fade-in slide-in-from-bottom-4 duration-500">
           {/* STEP 1: 기본 정보 */}
           {currentStep === 1 && (
-            <div className="space-y-16">
+            <div className="space-y-10 md:space-y-16">
               <SurveySection
                 number={1}
                 title="우리 아이의 크기는 어떻게 되나요?"
@@ -221,7 +221,7 @@ export default function SurveyPage() {
 
           {/* STEP 2: 생활 패턴 */}
           {currentStep === 2 && (
-            <div className="space-y-16">
+            <div className="space-y-10 md:space-y-16">
               <SurveySection
                 number={4}
                 title="활동량은 어떤 편인가요?"
@@ -268,7 +268,7 @@ export default function SurveyPage() {
 
           {/* STEP 3: 건강 상태 */}
           {currentStep === 3 && (
-            <div className="space-y-16">
+            <div className="space-y-10 md:space-y-16">
               <SurveySection
                 number={6}
                 title="알러지나 피해야 할 원재료가 있나요?"
@@ -327,7 +327,7 @@ export default function SurveyPage() {
 
           {/* STEP 4: 선호도 */}
           {currentStep === 4 && (
-            <div className="space-y-16">
+            <div className="space-y-10 md:space-y-16">
               <SurveySection number={8} title="선호하는 단백질 원재료가 있나요?">
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4" role="radiogroup" aria-labelledby="survey-heading-8">
                   {["상관없음", "닭고기", "오리고기", "양고기", "연어", "소고기"].map((val) => (
@@ -363,7 +363,7 @@ export default function SurveyPage() {
           )}
 
           {/* 네비게이션 */}
-          <div className="mt-16 pt-10 border-t border-border-primary flex items-center justify-between">
+          <div className="mt-10 pt-6 md:mt-16 md:pt-10 border-t border-border-primary flex items-center justify-between">
             <Button onClick={handlePrev} variant="ghost" size="lg" leftIcon disabled={isSubmitting}>
               {currentStep === 1 ? "취소하기" : "이전으로"}
             </Button>
@@ -405,14 +405,14 @@ function SurveySection({ number, title, subtitle, children }: SurveySectionProps
   const headingId = `survey-heading-${number}`;
 
   return (
-    <section className="space-y-8" aria-labelledby={headingId} id={sectionId}>
+    <section className="space-y-5 md:space-y-8" aria-labelledby={headingId} id={sectionId}>
       <div className="flex items-center space-x-3">
-        <span className="w-8 h-8 rounded-full bg-accent-soft text-accent-primary flex items-center justify-center font-black text-sm" aria-hidden="true">
+        <span className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-accent-soft text-accent-primary flex items-center justify-center font-black text-xs md:text-sm shrink-0" aria-hidden="true">
           {number}
         </span>
-        <h2 className="text-xl font-black text-text-primary tracking-tight" id={headingId}>
+        <h2 className="text-base md:text-xl font-black text-text-primary tracking-tight" id={headingId}>
           {title}{" "}
-          {subtitle && <span className="text-sm font-bold text-text-tertiary">{subtitle}</span>}
+          {subtitle && <span className="text-xs md:text-sm font-bold text-text-tertiary">{subtitle}</span>}
         </h2>
       </div>
       {children}

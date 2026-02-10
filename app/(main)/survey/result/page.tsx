@@ -93,21 +93,21 @@ function SurveyResultContent() {
   }
 
   return (
-    <main className="bg-bg-secondary min-h-screen pb-40 pt-16">
+    <main className="bg-bg-secondary min-h-screen pb-20 pt-8 md:pb-40 md:pt-16">
       <div className="container-custom max-w-[1100px]">
         {/* 상단 요약 */}
-        <section className="text-center mb-16" aria-labelledby="result-title">
-          <Badge variant="accent" className="mb-4" aria-hidden="true">
+        <section className="text-center mb-8 md:mb-16" aria-labelledby="result-title">
+          <Badge variant="accent" className="mb-3 md:mb-4" aria-hidden="true">
             ANALYSIS COMPLETE
           </Badge>
           <h1
             id="result-title"
-            className="text-4xl md:text-5xl font-black text-text-primary tracking-tighter mb-6"
+            className="text-2xl sm:text-3xl md:text-5xl font-black text-text-primary tracking-tighter mb-4 md:mb-6"
           >
             우리 아이를 위한 <span className="text-accent-primary">최적의 사료</span>를 찾았습니다
           </h1>
           <ul
-            className="flex flex-wrap justify-center gap-3"
+            className="flex flex-wrap justify-center gap-2 md:gap-3"
             role="list"
             aria-label="선택된 설문 조건"
           >
