@@ -47,7 +47,6 @@
   }
 }
 
-/* Custom utility for hero gradient */
 @layer utilities {
   button {
     cursor: pointer;
@@ -95,7 +94,6 @@
   }
 }
 
-/* 전역 포커스 스타일 - @layer 바깥이라 Tailwind 유틸리티보다 우선 */
 *:focus-visible {
   outline: 2px solid var(--color-accent-primary);
   outline-offset: 2px;
