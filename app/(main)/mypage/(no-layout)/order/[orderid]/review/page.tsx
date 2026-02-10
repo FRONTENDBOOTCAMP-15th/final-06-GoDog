@@ -125,7 +125,7 @@ export default function Review() {
     <div className="w-full min-w-[360px] bg-[#F9F9F9] lg:bg-transparent">
       <div className="pt-[70px] pb-[112px] px-[20px] max-w-[1280px] mx-auto lg:px-0 flex flex-col items-center">
         <div className="w-full max-w-[632px]">
-          <Link className="flex flex-row gap-[7px] mb-[35px]" href={"/mypage/subscription"}>
+          <Link className="flex flex-row gap-[7px] mb-[35px]" href={"/mypage/order"}>
             <PrevIcon className="w-[17.5px] h-[17.5px] text-[#909094]" />
             <p className="text-[#909094] text-[11.7px] font-black">뒤로가기</p>
           </Link>
