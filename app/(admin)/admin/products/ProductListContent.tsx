@@ -109,8 +109,8 @@ export default function ProductListContent() {
     { value: '{"name":-1}', label: "상품명 내림차순" },
     { value: '{"extra.code":1}', label: "코드명 오름차순" },
     { value: '{"extra.code":-1}', label: "코드명 내림차순" },
-    { value: '{"quantity":1}', label: "재고 적은순" },
-    { value: '{"quantity":-1}', label: "재고 많은순" },
+    // { value: '{"quantity":1}', label: "재고 적은순" }, // api 미제공
+    // { value: '{"quantity":-1}', label: "재고 많은순" }, // api 미제공
     { value: '{"price":1}', label: "가격 높은순" },
     { value: '{"price":-1}', label: "가격 낮은순" },
   ];
@@ -175,25 +175,46 @@ export default function ProductListContent() {
             <caption className="sr-only">상품 목록</caption>
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   번호
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   상품명
                 </th>
-                <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   종류
                 </th>
-                <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   코드명
                 </th>
-                <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   재고
                 </th>
-                <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   등록일
                 </th>
-                <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   작업
                 </th>
               </tr>
