@@ -90,7 +90,7 @@ export default function PurchaseModal({ isOpen, onClose, product }: Props) {
       onClick={onClose}
     >
       <div
-        className="flex flex-col w-full sm:w-[73rem] rounded-t-4xl bg-white px-5 sm:px-20 py-10 shadow-xl"
+        className="flex flex-col w-full sm:max-w-[73rem] rounded-t-4xl bg-white px-5 sm:px-20 py-10 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* 닫기 막대 */}
@@ -215,7 +215,7 @@ export default function PurchaseModal({ isOpen, onClose, product }: Props) {
         </div>
 
         {/* 하단 버튼 */}
-        <div className="mt-6 flex flex-col sm:flex-row sm:gap-4">
+        <div className="mt-6 flex flex-row gap-4">
           <Button
             type="button"
             size="lg"
