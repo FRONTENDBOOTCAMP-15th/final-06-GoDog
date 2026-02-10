@@ -21,7 +21,6 @@ export async function uploadFile(formData: FormData) {
 
   if (!res.ok) throw new Error("이미지 업로드 실패");
   const data = await res.json();
-  console.log("서버 응답 전체 구조:", data);
   return data.file || data.item?.[0] || data;
 }
 

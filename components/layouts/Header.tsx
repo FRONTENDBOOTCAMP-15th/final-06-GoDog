@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import useUserStore from "@/zustand/useStore";
 import { usePathname, useRouter } from "next/navigation";
 import Cookies from "js-cookie";
@@ -12,6 +12,8 @@ import { showLoading, showInfo } from "@/lib";
 const Header: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const hamburgerRef = useRef<HTMLButtonElement>(null);
+  const drawerRef = useRef<HTMLDivElement>(null);
 
   const pathname = usePathname();
   const router = useRouter();
@@ -96,10 +98,26 @@ const Header: React.FC = () => {
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
+    hamburgerRef.current?.focus();
   };
+
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      const firstFocusable = drawerRef.current?.querySelector<HTMLElement>(
+        'a[href], button'
+      );
+      firstFocusable?.focus();
+    }
+  }, [isMobileMenuOpen]);
 
   return (
     <>
+      <a
+        href="#main-content"
+        className="fixed top-2 left-2 z-9999 px-4 py-2 bg-accent-primary text-white rounded-lg text-sm font-bold -translate-y-20 focus-visible:translate-y-0 transition-transform"
+      >
+        본문 바로가기
+      </a>
       <header className="w-full bg-white/95 backdrop-blur-xl border-b border-border-primary sticky top-0 z-[500]">
         {/* 최상단 유틸리티 바 (데스크탑 전용) */}
         <div className="hidden lg:block border-b border-border-primary bg-bg-secondary/50">
@@ -107,14 +125,14 @@ const Header: React.FC = () => {
             {user?.type === "admin" && (
               <Link
                 href="/admin"
-                className="text-[10px] font-black text-text-tertiary hover:text-text-primary uppercase tracking-widest transition-colors"
+                className="text-[10px] font-black text-text-tertiary hover:text-text-primary focus-visible:text-accent-primary uppercase tracking-widest transition-colors"
               >
                 Admin Page
               </Link>
             )}
             <Link
               href="/mypage"
-              className={`text-[10px] font-black uppercase tracking-widest transition-colors ${
+              className={`text-[10px] font-black uppercase tracking-widest transition-colors focus-visible:text-accent-primary ${
                 pathname === "/mypage"
                   ? "text-accent-primary"
                   : "text-text-tertiary hover:text-text-primary"
@@ -127,7 +145,7 @@ const Header: React.FC = () => {
               <Link
                 href="/"
                 onClick={handleLogout}
-                className="text-[10px] font-black uppercase tracking-widest transition-colors text-text-tertiary hover:text-text-primary"
+                className="text-[10px] font-black uppercase tracking-widest transition-colors text-text-tertiary hover:text-text-primary focus-visible:text-accent-primary"
               >
                 Logout
               </Link>
@@ -135,7 +153,7 @@ const Header: React.FC = () => {
               /* 토큰이 없을 때 Login 표시 */
               <Link
                 href="/login"
-                className={`text-[10px] font-black uppercase tracking-widest transition-colors ${
+                className={`text-[10px] font-black uppercase tracking-widest transition-colors focus-visible:text-accent-primary ${
                   pathname === "/login"
                     ? "text-accent-primary"
                     : "text-text-tertiary hover:text-text-primary"
@@ -150,7 +168,7 @@ const Header: React.FC = () => {
             ) : (
               <Link
                 href="/signup"
-                className={`text-[10px] font-black uppercase tracking-widest transition-colors ${
+                className={`text-[10px] font-black uppercase tracking-widest transition-colors focus-visible:text-accent-primary ${
                   pathname === "/signup"
                     ? "text-accent-primary"
                     : "text-text-tertiary hover:text-text-primary"
@@ -162,7 +180,7 @@ const Header: React.FC = () => {
             <Link
               href="/cart"
               onClick={handleCartClick}
-              className={`text-[10px] font-black uppercase tracking-widest transition-colors flex items-center ${
+              className={`text-[10px] font-black uppercase tracking-widest transition-colors flex items-center focus-visible:text-accent-primary ${
                 pathname === "/cart"
                   ? "text-accent-primary"
                   : "text-text-tertiary hover:text-text-primary"
@@ -193,6 +211,21 @@ const Header: React.FC = () => {
                     className="relative h-20 flex items-center"
                     onMouseEnter={() => setActiveMenu(item.name)}
                     onMouseLeave={() => setActiveMenu(null)}
+                    onFocus={() => setActiveMenu(item.name)}
+                    onBlur={(e) => {
+                      if (
+                        !e.currentTarget.contains(e.relatedTarget as Node)
+                      ) {
+                        setActiveMenu(null);
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Escape" && activeMenu === item.name) {
+                        setActiveMenu(null);
+                        const mainLink = e.currentTarget.querySelector("a");
+                        mainLink?.focus();
+                      }
+                    }}
                   >
                     <Link
                       href={item.href}
@@ -201,6 +234,10 @@ const Header: React.FC = () => {
                           ? "text-accent-primary"
                           : "text-text-secondary hover:text-text-primary"
                       }`}
+                      {...(item.subMenu && {
+                        "aria-haspopup": "true",
+                        "aria-expanded": activeMenu === item.name,
+                      })}
                     >
                       {item.name}
                       {(pathname === item.href ||
@@ -210,12 +247,16 @@ const Header: React.FC = () => {
                     </Link>
 
                     {item.subMenu && activeMenu === item.name && (
-                      <div className="absolute top-[70px] left-1/2 -translate-x-1/2 w-56 bg-white border border-border-secondary shadow-2xl rounded-3xl py-4">
+                      <div
+                        role="menu"
+                        className="absolute top-[70px] left-1/2 -translate-x-1/2 w-56 bg-white border border-border-secondary shadow-2xl rounded-3xl py-4"
+                      >
                         {item.subMenu.map((sub) => (
                           <Link
                             key={sub.name}
                             href={sub.href}
-                            className="block w-full text-left px-6 py-3 text-xs font-bold text-text-secondary hover:text-accent-primary hover:bg-accent-soft transition-colors"
+                            role="menuitem"
+                            className="block w-full text-left px-6 py-3 text-xs font-bold text-text-secondary hover:text-accent-primary hover:bg-accent-soft focus-visible:text-accent-primary focus-visible:bg-accent-soft transition-colors"
                           >
                             {sub.name}
                           </Link>
@@ -260,8 +301,9 @@ const Header: React.FC = () => {
 
             {/* 햄버거 메뉴 (모바일) */}
             <button
+              ref={hamburgerRef}
               onClick={() => setIsMobileMenuOpen(true)}
-              className="lg:hidden p-2 text-text-primary focus:outline-none"
+              className="lg:hidden p-2 text-text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary rounded-md"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -286,9 +328,35 @@ const Header: React.FC = () => {
 
       {/* 모바일 전체 화면 네비게이션 드로어 */}
       <div
+        ref={drawerRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="모바일 메뉴"
+        inert={!isMobileMenuOpen || undefined}
         className={`fixed top-0 right-0 h-full w-[85%] max-w-[400px] bg-white z-[1100] transition-transform duration-500 ease-in-out lg:hidden shadow-[0_0_40px_rgba(0,0,0,0.3)] flex flex-col ${
           isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
+        onKeyDown={(e) => {
+          if (e.key === "Escape") {
+            closeMobileMenu();
+            return;
+          }
+          if (e.key === "Tab") {
+            const focusable = drawerRef.current?.querySelectorAll<HTMLElement>(
+              'a[href], button, [tabindex]:not([tabindex="-1"])'
+            );
+            if (!focusable || focusable.length === 0) return;
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            if (e.shiftKey && document.activeElement === first) {
+              e.preventDefault();
+              last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+              e.preventDefault();
+              first.focus();
+            }
+          }
+        }}
       >
         {/* 드로어 헤더 */}
         <div className="flex items-center justify-between px-8 py-6 border-b border-border-primary shrink-0">
@@ -298,7 +366,8 @@ const Header: React.FC = () => {
           </Link>
           <button
             onClick={closeMobileMenu}
-            className="p-2 text-text-tertiary hover:text-text-primary transition-colors"
+            aria-label="메뉴 닫기"
+            className="p-2 text-text-tertiary hover:text-text-primary transition-colors rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path

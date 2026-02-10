@@ -47,7 +47,6 @@
   }
 }
 
-/* Custom utility for hero gradient */
 @layer utilities {
   button {
     cursor: pointer;
@@ -93,4 +92,9 @@
     white-space: nowrap;
     border-width: 0;
   }
+}
+
+*:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
 }
