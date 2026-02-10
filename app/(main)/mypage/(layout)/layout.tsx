@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { cookies } from "next/headers";
 import { getUser } from "@/lib";
 import MyTapButton from "@/app/(main)/mypage/_components/MyTapButton";
@@ -41,10 +42,12 @@ export default async function Mypagelayout({ children }: Readonly<{ children: Re
       {/* 프로필 영역 */}
       <div className="w-full bg-linear-to-l from-[#FFF9F2] to-[#FFFFFF] h-105.25 relative z-10">
         <div className="flex flex-col pt-[129px] items-center relative">
-          <img
+          <Image
             className="w-[97px] h-[97px] rounded-full ring-4 ring-white shadow-2xl object-cover relative z-50"
             src={profileImage}
             alt="프로필 이미지"
+            width={97}
+            height={97}
           />
 
           <div className="flex items-baseline">
