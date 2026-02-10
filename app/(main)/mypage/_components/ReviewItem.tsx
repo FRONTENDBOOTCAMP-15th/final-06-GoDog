@@ -20,7 +20,7 @@ interface MyReviewListProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
   subscriptionId?: string;
   productid?: number;
   isReviewed?: boolean; // 리뷰 완료 여부 추가
-  state?: OrderStateCode;
+  state?: string;
 }
 
 export default function MyReviewList({

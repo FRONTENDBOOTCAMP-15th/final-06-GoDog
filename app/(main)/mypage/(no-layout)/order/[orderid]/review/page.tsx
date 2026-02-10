@@ -147,7 +147,7 @@ export default function Review() {
               name={order.products[0].name}
               price={order.products[0].price.toLocaleString() + "원"}
               date={order.createdAt.split(" ")[0]}
-              state={order.state as OrderStateCode}
+              state={"배송중"}
             />
           ) : (
             <div className="col-span-full py-20 text-center">
