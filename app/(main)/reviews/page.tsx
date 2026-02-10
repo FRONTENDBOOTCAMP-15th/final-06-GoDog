@@ -5,16 +5,8 @@ import { getAllReplies } from "@/lib";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "고객 후기",
+  title: "구매 후기",
   description: "9DOG을 이용한 견주님들이 후기 페이지입니다.",
-  openGraph: {
-    title: "고객 후기",
-    description: "9DOG을 이용한 견주님들이 후기 페이지입니다.",
-    url: "/reviews",
-    images: {
-      url: "",
-    },
-  },
 };
 
 export default async function ReviewListPage() {
@@ -33,7 +25,13 @@ export default async function ReviewListPage() {
         <h1 className="sr-only">고객 후기</h1>
         <main>
           <ReviewStats total={total} />
-          <Suspense fallback={<div role="status" aria-live="polite">후기를 불러오는 중...</div>}>
+          <Suspense
+            fallback={
+              <div role="status" aria-live="polite">
+                후기를 불러오는 중...
+              </div>
+            }
+          >
             <ReviewList />
           </Suspense>
         </main>

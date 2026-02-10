@@ -11,14 +11,6 @@ import { Suspense } from "react";
 export const metadata: Metadata = {
   title: "관심 상품",
   description: "9DOG 관심 상품 목록 페이지입니다.",
-  openGraph: {
-    title: "관심 상품",
-    description: "9DOG 관심 상품 목록 페이지입니다.",
-    url: "/mypage/wishlist",
-    images: {
-      url: "",
-    },
-  },
 };
 
 interface BookmarkItem {

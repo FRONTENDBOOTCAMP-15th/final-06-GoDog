@@ -5,8 +5,6 @@ import { revalidatePath } from "next/cache";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID || "";
-// const TEMP_TOKEN =
-//   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOjMsInR5cGUiOiJ1c2VyIiwiaWF0IjoxNzcwMDg0MDE0LCJleHAiOjE3NzAxNzA0MTQsImlzcyI6IkZFQkMifQ.wYaIJ3zoIJrF1CPf1P_vgYDRPPQWHn3XfdgKXpF97G0";
 
 type ActionState = ErrorRes | null;
 
@@ -30,9 +28,15 @@ export async function updateCartItem(
 
   const cartId = formData.get("cartId");
 
-  const body = {
+  const body: { quantity: number; size?: string } = {
     quantity: Number(formData.get("quantity")),
   };
+
+  // 배송주기(size)가 있으면 추가
+  const size = formData.get("size");
+  if (size) {
+    body.size = size as string;
+  }
 
   let res: Response;
   let data: CartItemRes | ErrorRes;

@@ -7,14 +7,6 @@ import { getUser } from "@/lib";
 export const metadata: Metadata = {
   title: "회원 정보",
   description: "9DOG 회원 정보 페이지입니다.",
-  openGraph: {
-    title: "회원 정보",
-    description: "9DOG 회원 정보 페이지입니다.",
-    url: "/mypage/profile",
-    images: {
-      url: "",
-    },
-  },
 };
 
 export default async function ProfilePage() {

@@ -12,7 +12,7 @@ import useUserStore from "@/zustand/useStore";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useState } from "react";
-import { deleteCartItems } from "@/app/(main)/cart/action/cart";
+import { deleteCartItems } from "@/actions/cart";
 import { showWarning, showSuccess, showError } from "@/lib";
 
 function CheckoutContent() {
@@ -100,7 +100,7 @@ function CheckoutContent() {
 
         // 상세주소 입력으로 포커스 이동
         const detailInput = document.querySelector<HTMLInputElement>(
-          'input[placeholder="상세 주소를 입력해주세요"]',
+          'input[placeholder="상세 주소를 입력해주세요"]'
         );
         detailInput?.focus();
       },
@@ -235,7 +235,7 @@ function CheckoutContent() {
     });
 
     const results = await Promise.all(
-      individualOrders.map((orderItem) => createOrder([orderItem], token)),
+      individualOrders.map((orderItem) => createOrder([orderItem], token))
     );
 
     const allSuccess = results.every((res) => res.ok === 1);

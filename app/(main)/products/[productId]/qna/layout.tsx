@@ -10,13 +10,6 @@ export async function generateMetadata({ params }: { params: Promise<{ productId
     return {
       title: `${product.name} 문의하기`,
       description: `${product.name}에 대해 궁금한 점을 문의하세요.`,
-      openGraph: {
-        title: `${product.name} 문의하기`,
-        description: `${product.name}에 대해 궁금한 점을 문의하세요.`,
-        images: {
-          url: "",
-        },
-      },
     };
   }
 }

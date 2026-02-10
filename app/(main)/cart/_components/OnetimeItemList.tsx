@@ -1,4 +1,4 @@
-import { updateCartItem } from "@/app/(main)/cart/action/cart";
+import { updateCartItem } from "@/actions/cart";
 import useCartStore from "@/zustand/useCartStore";
 import Badge from "@/components/common/Badge";
 import Checkbox from "@/components/common/Checkbox";
