@@ -67,10 +67,15 @@ export default function PurchaseModal({ isOpen, onClose, product }: Props) {
 
     if (res.ok === 1) {
       incrementCart(1);
-      const result = await showConfirm("장바구니에 담았습니다.", "장바구니로 이동하시겠습니까?", "확인", "취소");
+      const result = await showConfirm(
+        "장바구니에 담았습니다.",
+        "장바구니로 이동하시겠습니까?",
+        "확인",
+        "취소",
+      );
       if (result.isConfirmed) {
         onClose();
-        router.push(purchaseType === "subscription" ? "/cart?tab=subscription" : "/cart");
+        router.push(`/cart?tab=${purchaseType}`);
       }
     } else {
       showError("장바구니 담기에 실패했습니다.");
@@ -85,7 +90,7 @@ export default function PurchaseModal({ isOpen, onClose, product }: Props) {
       onClick={onClose}
     >
       <div
-        className="flex flex-col w-[73rem] rounded-t-4xl bg-white px-20 py-10 shadow-xl"
+        className="flex flex-col w-full sm:w-[73rem] rounded-t-4xl bg-white px-5 sm:px-20 py-10 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* 닫기 막대 */}
@@ -152,14 +157,14 @@ export default function PurchaseModal({ isOpen, onClose, product }: Props) {
               <Button
                 variant={deliveryCycle === "2w" ? "secondary" : "outline"}
                 onClick={() => setDeliveryCycle("2w")}
-                className="flex-1 w-[35rem]"
+                className="flex-1 w-full sm:w-[35rem]"
               >
                 격주 배송(2주)
               </Button>
               <Button
                 variant={deliveryCycle === "4w" ? "secondary" : "outline"}
                 onClick={() => setDeliveryCycle("4w")}
-                className="flex-1 w-[35rem]"
+                className="flex-1 w-full sm:w-[35rem]"
               >
                 매월 배송(4주)
               </Button>
@@ -184,9 +189,14 @@ export default function PurchaseModal({ isOpen, onClose, product }: Props) {
           <div className="flex justify-center items-center gap-3">
             <p className="font-semibold text-xl">총 결제금액</p>
             {purchaseType === "subscription" && (
-              <span className="rounded-lg bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-600">
-                10% 할인
-              </span>
+              <>
+                <span className="rounded-lg bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-600">
+                  무료배송
+                </span>
+                <span className="rounded-lg bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-600">
+                  10% 할인
+                </span>
+              </>
             )}
             {purchaseType !== "subscription" && (
               <span className="rounded-lg bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-600">
@@ -211,7 +221,7 @@ export default function PurchaseModal({ isOpen, onClose, product }: Props) {
             size="lg"
             variant="outline"
             onClick={handleAddToCart}
-            className="flex-1 w-[35rem] border border-black rounded bg-white py-2"
+            className="flex-1 w-full sm:w-[35rem] border border-black rounded bg-white py-2"
           >
             장바구니 담기
           </Button>
@@ -238,7 +248,7 @@ export default function PurchaseModal({ isOpen, onClose, product }: Props) {
               }
               router.push(`/checkout?${params.toString()}`);
             }}
-            className="flex-1 w-[35rem] rounded py-2"
+            className="flex-1 w-full sm:w-[35rem] rounded py-2"
           >
             바로 구매하기
           </Button>
