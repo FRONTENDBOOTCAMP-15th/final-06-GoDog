@@ -86,13 +86,14 @@ export default function PurchaseModal({ isOpen, onClose, product }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-500 flex items-end justify-center bg-black/50 overflow-y-auto"
+      className="fixed inset-0 z-500 overflow-y-auto bg-black/50"
       onClick={onClose}
     >
-      <div
-        className="flex flex-col w-full sm:max-w-[73rem] rounded-t-4xl bg-white px-5 sm:px-20 py-10 shadow-xl"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="flex min-h-full items-end justify-center">
+        <div
+          className="flex flex-col w-full sm:max-w-[73rem] rounded-t-4xl bg-white px-5 sm:px-20 py-10 shadow-xl"
+          onClick={(e) => e.stopPropagation()}
+        >
         {/* 닫기 막대 */}
         <div className="flex justify-center pb-7 cursor-pointer" onClick={onClose}>
           <span className="h-1.5 w-15 rounded-full bg-gray-200" />
@@ -123,8 +124,12 @@ export default function PurchaseModal({ isOpen, onClose, product }: Props) {
                 일회성구매
               </span>
             )}
-            <p className="text-center font-bold text-base sm:text-2xl truncate max-w-full">{product.name}</p>
-            <p className="font-bold text-sm sm:text-xl text-[#fba613]">{basePrice.toLocaleString()}원</p>
+            <p className="text-center font-bold text-base sm:text-2xl truncate max-w-full">
+              {product.name}
+            </p>
+            <p className="font-bold text-sm sm:text-xl text-[#fba613]">
+              {basePrice.toLocaleString()}원
+            </p>
           </div>
 
           <button
@@ -210,7 +215,9 @@ export default function PurchaseModal({ isOpen, onClose, product }: Props) {
                 {(basePrice * quantity).toLocaleString()}원
               </span>
             )}
-            <p className="font-bold text-sm sm:text-2xl text-[#fba613] whitespace-nowrap">{totalPrice.toLocaleString()}원</p>
+            <p className="font-bold text-sm sm:text-2xl text-[#fba613] whitespace-nowrap">
+              {totalPrice.toLocaleString()}원
+            </p>
           </div>
         </div>
 
@@ -253,6 +260,7 @@ export default function PurchaseModal({ isOpen, onClose, product }: Props) {
             바로 구매하기
           </Button>
         </div>
+      </div>
       </div>
     </div>
   );
