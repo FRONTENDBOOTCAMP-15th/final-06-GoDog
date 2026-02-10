@@ -4,7 +4,7 @@ interface ImageProps {
 }
 
 export const RigthMark = ({ className }: ImageProps) => {
-  return <img src="/images/rightmark.png" alt="className" />;
+  return <img src="/images/right-mark.png" alt="className" />;
 };
 
 export const Pencil = ({ className }: ImageProps) => {

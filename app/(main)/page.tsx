@@ -179,7 +179,7 @@ export default async function Home() {
             </div>
             <Image
               className="hidden lg:inline-block"
-              src="/images/logo-D.png"
+              src="/images/logo-d.png"
               alt="구독 브랜드 로고"
               width={394}
               height={459}

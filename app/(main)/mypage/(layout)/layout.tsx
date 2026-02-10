@@ -34,7 +34,7 @@ export default async function Mypagelayout({ children }: Readonly<{ children: Re
     ? user.image.startsWith("http")
       ? user.image
       : `${API_URL}${user.image}`
-    : "/images/userImage.jpg";
+    : "/images/user-image.jpg";
 
   return (
     <>
