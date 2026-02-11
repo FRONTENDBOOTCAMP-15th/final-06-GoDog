@@ -182,15 +182,15 @@ export default function ProductDetail({
             <div className="flex w-full flex-row items-start gap-3.5">
               <button
                 className={`flex h-[3.25rem] flex-1 items-center justify-center rounded-[0.875rem] px-4 py-[1.09375rem] sm:px-[1.3125rem] ${
-                  product.quantity <= 0
+                  product.quantity - product.buyQuantity <= 0
                     ? "cursor-not-allowed bg-[#d1d1d6] text-white"
                     : "bg-[#fba613] text-white shadow-[0_0.5rem_2rem_0_rgba(251,166,19,0.2)]"
                 }`}
                 type="button"
-                disabled={product.quantity <= 0}
+                disabled={product.quantity - product.buyQuantity <= 0}
                 onClick={() => setIsModalOpen(true)}
               >
-                {product.quantity <= 0 ? "Sold Out" : "구매하기"}
+                {product.quantity - product.buyQuantity <= 0 ? "Sold Out" : "구매하기"}
               </button>
 
               {/* 관심상품 버튼 */}
