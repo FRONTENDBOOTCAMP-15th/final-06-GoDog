@@ -116,7 +116,7 @@ export default function ProductDetail({
         className="mx-auto max-w-300 px-2 pb-21 pt-10.5 sm:px-5"
       >
         <Link
-          href="/products"
+          href={`/products?type=${product.extra?.type || "사료"}`}
           className="mb-7 inline-flex cursor-pointer items-center gap-2 border-0 bg-transparent font-semibold text-[#8b8b8f]"
         >
           ‹ 목록으로
