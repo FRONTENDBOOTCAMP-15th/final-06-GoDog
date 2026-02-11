@@ -118,7 +118,7 @@ export default async function Home() {
                     title={product.name}
                     kcal={totalKcal ? `${totalKcal.toLocaleString()} kcal` : ""}
                     description={product.extra.content || product.content}
-                    tag={product.extra?.category?.[0] ?? ""}
+                    tag={product.extra?.lifeStage ?? []}
                     href={`/products/${product._id}`}
                   />
                 </li>
