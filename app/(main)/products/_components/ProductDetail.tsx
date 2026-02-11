@@ -495,6 +495,11 @@ export default function ProductDetail({
             size="sm"
             className="h-11 w-fit self-start whitespace-nowrap rounded-[0.875rem] border-0 bg-[#fba613] px-[1.125rem] text-center text-[0.76875rem] font-bold leading-[1.09375rem] text-white shadow-[0_8px_32px_rgba(251,166,19,0.2)] sm:self-end"
             onClick={() => {
+              if (!token) {
+                showWarning("로그인이 필요합니다.");
+                router.push("/login");
+                return;
+              }
               const params = new URLSearchParams();
               params.set("productName", product.name);
               params.set("productImage", product.mainImages[0]?.path || "");
