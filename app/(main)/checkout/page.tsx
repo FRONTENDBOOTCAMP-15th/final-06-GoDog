@@ -166,7 +166,7 @@ function CheckoutContent() {
   // 결제하기 버튼 활성화 조건 계산
   const isAllChecked = useMemo(() => {
     if (isSubscribe) {
-      // 정기구독: 3개 모두 체크 필요
+      // 정기구독: 3개 모두 체크 필요,
       return checkedList.order && checkedList.autoPay && checkedList.thirdParty;
     }
     // 일반구매: 주문동의와 제3자제공동의 2개 체크 필요
@@ -397,7 +397,8 @@ function CheckoutContent() {
                       errorMessage="수령인을 입력해주세요."
                       onChange={(e) => {
                         setShippingInfo((prev) => ({ ...prev, recipient: e.target.value }));
-                        if (shippingErrors.recipient) setShippingErrors((prev) => ({ ...prev, recipient: false }));
+                        if (shippingErrors.recipient)
+                          setShippingErrors((prev) => ({ ...prev, recipient: false }));
                       }}
                     />
                     <Input
@@ -410,7 +411,8 @@ function CheckoutContent() {
                       errorMessage="연락처를 입력해주세요."
                       onChange={(e) => {
                         setShippingInfo((prev) => ({ ...prev, phone: e.target.value }));
-                        if (shippingErrors.phone) setShippingErrors((prev) => ({ ...prev, phone: false }));
+                        if (shippingErrors.phone)
+                          setShippingErrors((prev) => ({ ...prev, phone: false }));
                       }}
                     />
                   </div>
